@@ -96,6 +96,20 @@
 \usepackage{amsmath}          % Usar equacoes matematicas
 
 \makeglossaries % Organiza e gera a lista de abreviaturas, simbolos e glossario
-\makeindex      % Gera o Indice do documento         
+\makeindex      % Gera o Indice do documento
+
+% --- Macros específicas do TCC (harness arquitetural) ------------------------
+\usepackage{tabularx}                               % tabelas com largura total (\textwidth)
+\usepackage{siunitx}                                % unidades: \SI{12.4}{\joule}, \si{\joule\per\token}
+\sisetup{locale = DE, output-decimal-marker = {,}}
+
+% Marcador de pendência no texto — some do PDF final ao trocar \newcommand por
+% \newcommand{\pendencia}[1]{}
+\newcommand{\pendencia}[1]{\textcolor{red}{[PENDENTE: #1]}}
+
+% Termos recorrentes — mudar aqui muda o documento inteiro
+\newcommand{\harness}{\textit{harness}}
+\newcommand{\versaoH}{versão~H}
+\newcommand{\versaoD}{versão~D}
 
 

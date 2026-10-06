@@ -120,14 +120,14 @@
 
 \ies{Universidade Federal do Ceará}
 \iessigla{UFC}
-\centro{Centro de Xxxxxxxx}
-\departamento{Departamento de Xxxxxxxxx}
+\centro{\pendencia{Centro/Campus}}
+\departamento{\pendencia{Departamento}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%        Informacao para TCC de Graduacao         %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\graduacaoem{Engenharia Xxxxxxx}
+\graduacaoem{Engenharia de Software}
 \habilitacao{bacharel} % Ou licenciado(a)
 
 % AVISO: Caso necessario alterar o texto de apresenta-
@@ -175,9 +175,11 @@
 %%      Informacoes relacionadas ao trabalho       %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\autor{Nome Sobrenome}
-\titulo{Título do Trabalho}
-\data{2019}
+\autor{Vitor Manoel Alves da Silva}
+\titulo{Projeto e avaliação experimental de uma camada arquitetural desacoplada
+  agêntica (\textit{harness}) para integração de modelos de IA em aplicações web:
+  custo de substituição de provedor e custo energético}
+\data{\pendencia{Ano}}
 \local{Fortaleza}
 
 % Exemplo: \dataaprovacao{01 de Janeiro de 2012}
@@ -187,9 +189,9 @@
 %%           Informação sobre o Orientador         %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\orientador{Prof. Dr. Xxxxxxx Xxxxxx Xxxxxxx}
+\orientador{Prof. \pendencia{titulação} Sidarta Carvalho} % titulação a confirmar (A03)
 \orientadories{Universidade Federal do Ceará (UFC)}
-\orientadorcentro{Centro de Ciências e Tecnologia (CCT)}
+\orientadorcentro{\pendencia{Centro/Campus do orientador}}
 \orientadorfeminino{nao} % Coloque 'sim' se for do sexo feminino
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -214,21 +216,23 @@
 % \membrodabancadoisies{Universidade Federal do Ceará - UFC}
 
 
-\membrodabancadois{Prof. Dr. Xxxxxxx Xxxxxx Xxxxxxx}
-\membrodabancadoiscentro{Faculdade de Filosofia Dom Aureliano Matos (FAFIDAM)}
-\membrodabancadoisies{Universidade do Membro da Banca Dois (SIGLA)}
-\membrodabancatres{Prof. Dr. Xxxxxxx Xxxxxx Xxxxxxx}
-\membrodabancatrescentro{Centro de Ciências e Tecnologia (CCT)}
-\membrodabancatresies{Universidade do Membro da Banca Três (SIGLA)}
-\membrodabancaquatro{Prof. Dr. Xxxxxxx Xxxxxx Xxxxxxx}
-\membrodabancaquatrocentro{Centro de Ciências e Tecnologia (CCT)}
-\membrodabancaquatroies{Universidade do Membro da Banca Quatro (SIGLA)}
-\membrodabancacinco{Prof. Dr. Xxxxxxx Xxxxxx Xxxxxxx}
-\membrodabancacincocentro{Teste}
-\membrodabancacincoies{Universidade do Membro da Banca Cinco (SIGLA)}
-\membrodabancaseis{Prof. Dr. Xxxxxxx Xxxxxx Xxxxxxx}
+% Banca ainda não definida (A03 do action_log) — nomes em branco removem o
+% membro da folha de aprovação; preencher quando confirmada.
+\membrodabancadois{}
+\membrodabancadoiscentro{}
+\membrodabancadoisies{}
+\membrodabancatres{}
+\membrodabancatrescentro{}
+\membrodabancatresies{}
+\membrodabancaquatro{}
+\membrodabancaquatrocentro{}
+\membrodabancaquatroies{}
+\membrodabancacinco{}
+\membrodabancacincocentro{}
+\membrodabancacincoies{}
+\membrodabancaseis{}
 \membrodabancaseiscentro{}
-\membrodabancaseisies{Universidade do Membro da Banca Seis (SIGLA)}
+\membrodabancaseisies{}
 
 \begin{document}	
 
@@ -259,6 +263,7 @@
 	\textual
 	\input{2-textuais/1-introducao}
 	\input{2-textuais/2-fundamentacao-teorica}
+	\input{2-textuais/trabalhos-relacionados}
 	\input{2-textuais/3-metodologia}
 	\input{2-textuais/4-resultados}
 	\input{2-textuais/5-conclusao}
@@ -269,13 +274,18 @@
 	\imprimirapendices
 		% Adicione aqui os apendices do seu trabalho
 		\input{3-pos-textuais/apendices/apendice-a}
-		\input{3-pos-textuais/apendices/apendice-b}
-		\input{3-pos-textuais/apendices/apendice-c}
-		\input{3-pos-textuais/apendices/apendice-d}
+		% apendice-b/c/d são exemplos do template (questionário, código-fonte,
+		% artigo de outro trabalho) sem relação com este TCC — desativados até
+		% que o autor tenha apêndices reais para incluir.
+		%\input{3-pos-textuais/apendices/apendice-b}
+		%\input{3-pos-textuais/apendices/apendice-c}
+		%\input{3-pos-textuais/apendices/apendice-d}
 	\imprimiranexos
 		% Adicione aqui os anexos do seu trabalho
-		\input{3-pos-textuais/anexos/anexo-a}
-		\input{3-pos-textuais/anexos/anexo-b}		
+		% anexo-a/b são exemplos do template, sem relação com este TCC —
+		% desativados até que o autor tenha anexos reais para incluir.
+		%\input{3-pos-textuais/anexos/anexo-a}
+		%\input{3-pos-textuais/anexos/anexo-b}
 	\imprimirindice
 
 \end{document}
