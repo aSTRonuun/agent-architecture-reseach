@@ -1,0 +1,44 @@
+# --- LaTeX (build artifacts do documento.tex) ---
+*.aux
+*.bbl
+*.blg
+*.brf
+*.fdb_latexmk
+*.fls
+*.idx
+*.ilg
+*.ind
+*.lof
+*.lot
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.gl?
+*.ntn
+*.not
+*.loa
+*.lsg
+*.nlo
+*.nls
+*.glg
+*.glo
+*.xdy
+*.acn
+*.acr
+*.alg
+*.loq
+documento.pdf
+
+# --- Código (quando houver code/ no futuro) ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+node_modules/
+.env
+*.env.local
+
+# --- Sistema / editor ---
+.DS_Store
+Thumbs.db
