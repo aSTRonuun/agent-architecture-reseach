@@ -1,4 +1,21 @@
-\pendencia{Abstract --- traduzir o Resumo após a redação final.}
+% Tradução da versão provisória do Resumo — atualizar junto com ele.
+Large language models are usually integrated into web applications through
+direct calls to the provider's software development kit, scattered across the
+business code, which couples the application to a specific vendor. An
+alternative is to place an intermediate architectural layer --- here called a
+\textit{harness} --- that centralizes communication with providers, tool
+execution, state, failure handling, and event logging. The literature proposes
+such architectures and discusses their trade-offs qualitatively, but does not
+measure them in controlled studies. This work experimentally evaluates the
+trade-off between decoupling and energy efficiency introduced by this layer,
+comparing two functionally equivalent versions of the same web application:
+one integrated with the provider through the harness and one integrated
+directly. Provider replacement cost is quantified through behavioral and
+structural code metrics, and energy cost through hardware telemetry for simple
+and agentic requests to an open model running locally. The work is expected to
+characterize under which conditions the decoupling achieved outweighs the
+energy cost of the layer, providing quantitative evidence for an architectural
+decision currently made on the basis of design principles or vendor claims.
 
 % Separe as Keywords por ponto
-\keywords{Arquitetura de software. Integração de LLM. Substituibilidade. Eficiência energética. Green AI.}
+\keywords{Software architecture. LLM integration. Substitutability. Energy efficiency. Green AI.}

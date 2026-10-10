@@ -1,6 +1,25 @@
-% Redigir por último (após o Cap. 5). Estrutura: contexto · problema · método
-% (B1 + B2) · resultados · conclusão. 150–500 palavras (NBR 6028).
-\pendencia{Resumo — redigir após os resultados.}
+% Versão provisória (projeto, sem resultados). Reescrever após o Cap. 5:
+% contexto · problema · método (B1 + B2) · resultados · conclusão.
+% 150–500 palavras (NBR 6028).
+A integração de modelos de linguagem de grande escala a aplicações \textit{web}
+costuma ser feita por chamadas diretas ao kit de desenvolvimento do provedor,
+espalhadas pelo código de negócio, o que acopla a aplicação a um fornecedor
+específico. Uma alternativa é interpor uma camada arquitetural intermediária
+--- aqui denominada \textit{harness} --- que centraliza a comunicação com os
+provedores, a execução de ferramentas, o estado, o tratamento de falhas e o
+registro de eventos. A literatura propõe arquiteturas desse tipo e discute seus
+compromissos de forma qualitativa, mas não os mede em estudo controlado. Este
+trabalho avalia experimentalmente o \textit{trade-off} entre desacoplamento e
+eficiência energética introduzido por essa camada, comparando duas versões
+funcionalmente equivalentes de uma mesma aplicação \textit{web}: uma integrada
+ao provedor por meio do \textit{harness} e outra integrada diretamente. O custo
+de substituição do provedor é quantificado por métricas comportamentais e
+estruturais do código, e o custo energético, por telemetria de \textit{hardware}
+em requisições simples e agênticas a um modelo aberto executado localmente.
+Espera-se caracterizar em que condições o desacoplamento obtido compensa o
+custo energético da camada, oferecendo evidência quantitativa para uma decisão
+arquitetural hoje tomada com base em princípios de projeto ou em alegações de
+fornecedores.
 
 % Separe as palavras-chave por ponto
 \palavraschave{Arquitetura de software. Integração de LLM. Substituibilidade. Eficiência energética. Green AI.}

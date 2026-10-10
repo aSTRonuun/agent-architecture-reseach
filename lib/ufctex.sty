@@ -620,7 +620,8 @@
         \vspace{-0.4cm}
 		\MakeUppercase{\imprimiries} \\
 		\MakeUppercase{\imprimircentro} \\
-		\MakeUppercase{\imprimirdepartamento} \\
+		% Campi sem departamento (ex.: Quixadá): \departamento{} omite a linha
+		\ifx\@departamento\@empty\else\MakeUppercase{\imprimirdepartamento} \\\fi
 		\MakeUppercase{Curso de #1 em \imprimirgraduacaoem} \\
 
 		\vspace{\onelineskip}

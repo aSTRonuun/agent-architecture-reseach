@@ -120,8 +120,8 @@
 
 \ies{Universidade Federal do Ceará}
 \iessigla{UFC}
-\centro{\pendencia{Centro/Campus}}
-\departamento{\pendencia{Departamento}}
+\centro{Campus de Quixadá}
+\departamento{} % o Campus de Quixadá não tem departamento; vazio omite a linha na capa
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%        Informacao para TCC de Graduacao         %%
@@ -179,8 +179,8 @@
 \titulo{Projeto e avaliação experimental de uma camada arquitetural desacoplada
   agêntica (\textit{harness}) para integração de modelos de IA em aplicações web:
   custo de substituição de provedor e custo energético}
-\data{\pendencia{Ano}}
-\local{Fortaleza}
+\data{2026}
+\local{Quixadá}
 
 % Exemplo: \dataaprovacao{01 de Janeiro de 2012}
 \dataaprovacao{}
@@ -189,9 +189,9 @@
 %%           Informação sobre o Orientador         %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\orientador{Prof. \pendencia{titulação} Sidarta Carvalho} % titulação a confirmar (A03)
+\orientador{Prof. Dr. Sidarta Carvalho}
 \orientadories{Universidade Federal do Ceará (UFC)}
-\orientadorcentro{\pendencia{Centro/Campus do orientador}}
+\orientadorcentro{Campus de Quixadá}
 \orientadorfeminino{nao} % Coloque 'sim' se for do sexo feminino
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -234,43 +234,61 @@
 \membrodabancaseiscentro{}
 \membrodabancaseisies{}
 
-\begin{document}	
+% Entrega parcial (TCC I — Introdução): com \entregaintroducaotrue, o PDF traz
+% só os elementos já redigidos (pré-textuais, Introdução e Referências); os
+% capítulos ainda em esqueleto, as listas sem itens e os apêndices ficam de
+% fora. Trocar para \entregaintroducaofalse para compilar a monografia inteira.
+\newif\ifentregaintroducao
+\entregaintroducaotrue
+
+\begin{document}
 
 	% Elementos pré-textuais
 	\imprimircapa
 	\imprimirfolhaderosto{}
-	\imprimirfichacatalografica{1-pre-textuais/ficha-catalografica}
+	% Ficha catalográfica: a do template era um exemplo de outro trabalho; a
+	% definitiva é gerada pela Biblioteca da UFC no depósito final.
+	%\imprimirfichacatalografica{1-pre-textuais/ficha-catalografica}
 	%\imprimirerrata{elementos-pre-textuais/errata}
 	\imprimirfolhadeaprovacao
-	\imprimirdedicatoria{1-pre-textuais/dedicatoria}
-	\imprimiragradecimentos{1-pre-textuais/agradecimentos}
-	\imprimirepigrafe{1-pre-textuais/epigrafe}
+	% Dedicatória, agradecimentos e epígrafe são opcionais; os arquivos ainda
+	% têm o texto de exemplo do template — reativar quando forem redigidos.
+	%\imprimirdedicatoria{1-pre-textuais/dedicatoria}
+	%\imprimiragradecimentos{1-pre-textuais/agradecimentos}
+	%\imprimirepigrafe{1-pre-textuais/epigrafe}
 	\imprimirresumo{1-pre-textuais/resumo}
 	\imprimirabstract{1-pre-textuais/abstract}
+	\ifentregaintroducao\else
 	\renewcommand*\listfigurename{Lista de Figuras} %Se você comentar esta linha o título da lista fica: LISTA DE ILUSTRAÇÕES
 	\imprimirlistadeilustracoes
 	\imprimirlistadetabelas
+	\fi
 	%\imprimirlistadequadros
 	%\imprimirlistadealgoritmos
 	%\imprimirlistadecodigosfonte
 	\imprimirlistadeabreviaturasesiglas
-	\imprimirlistadesimbolos{1-pre-textuais/lista-de-simbolos}   
+	% Lista de símbolos: a do template era de outro trabalho; o arquivo
+	% 1-pre-textuais/lista-de-simbolos.tex precisa ser reescrito antes de voltar.
+	%\imprimirlistadesimbolos{1-pre-textuais/lista-de-simbolos}
 	\imprimirsumario
-	
+
 	\setcounter{table}{0}% Deixe este comando antes da primeira tabela.
-	
+
 	%Elementos textuais
 	\textual
 	\input{2-textuais/1-introducao}
+	\ifentregaintroducao\else
 	\input{2-textuais/2-fundamentacao-teorica}
 	\input{2-textuais/trabalhos-relacionados}
 	\input{2-textuais/3-metodologia}
 	\input{2-textuais/4-resultados}
 	\input{2-textuais/5-conclusao}
-	
-	%Elementos pós-textuais	
+	\fi
+
+	%Elementos pós-textuais
 	\bibliography{3-pos-textuais/referencias}
-%	\imprimirglossario	
+%	\imprimirglossario
+	\ifentregaintroducao\else
 	\imprimirapendices
 		% Adicione aqui os apendices do seu trabalho
 		\input{3-pos-textuais/apendices/apendice-a}
@@ -287,5 +305,6 @@
 		%\input{3-pos-textuais/anexos/anexo-a}
 		%\input{3-pos-textuais/anexos/anexo-b}
 	\imprimirindice
+	\fi
 
 \end{document}

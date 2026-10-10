@@ -1,56 +1,227 @@
 % =============================================================================
 % Capítulo 1 — Introdução                                         (peso: leve)
 % -----------------------------------------------------------------------------
-% GATE (context/action_log.md §2): só redigir após fechar A02 e A03.
+% Narrativa-base: pitch do plano (§11); lacuna (§2.1); problema (§3);
+% objetivos (§4, reescritos após o feedback do orientador "parece
+% metodologia": métricas e protocolo saíram dos específicos e ficam no Cap. 4).
 % Ressalva A28: enquanto aberto, NÃO afirmar que as responsabilidades do harness
-% já foram mapeadas contra R21 — redigir como procedimento da fundamentação.
-% A26: não herdar o meta-comentário do plano ("nesta versão", "v5" etc.).
-% Narrativa-base: pitch do plano (§11).
+% já foram mapeadas contra R21.
+% Números de contexto (Stack Overflow, Menlo, IEA): relatórios, acesso 09/10/2026.
 % =============================================================================
 \chapter{Introdução}
 \label{cap:introducao}
 
 \section{Contexto e motivação}
 \label{sec:contexto}
-% Fonte: plano §2 (contexto e definição operacional do harness).
-% Citações previstas: R21 (Liu), R10 (Kandogan), R11 (Zhu); Green AI: R2, R3.
-% Também: 5w2h.md, perguntas 1 e 2.
-\pendencia{Contexto: integração de LLMs em aplicações web e acoplamento ao provedor.}
 
-\section{Lacuna e problema de pesquisa}
+Os modelos de linguagem de grande escala (\textit{Large Language Models},
+LLMs)\glsadd{LLM} deixaram de ser objeto restrito de pesquisa e passaram a
+compor o cotidiano do desenvolvimento de \textit{software}. Na pesquisa anual
+da plataforma Stack Overflow, a proporção de desenvolvedores que usam ou
+pretendem usar ferramentas de inteligência artificial (IA)\glsadd{IA} subiu de
+76\% em 2024 para 84\% em 2025, e 31\% dos respondentes já declaravam usar
+agentes de IA \cite{stackoverflow2025}. O movimento não se limita às
+ferramentas de apoio ao programador: os próprios produtos passaram a incorporar
+modelos. Segundo levantamento da Menlo Ventures com líderes técnicos de empresas
+e \textit{startups}, o gasto corporativo com interfaces de programação de
+aplicações (\textit{Application Programming Interfaces},
+APIs)\glsadd{API} de LLMs mais que dobrou em seis meses, de 3,5 bilhões de
+dólares em novembro de 2024 para 8,4 bilhões em meados de 2025
+\cite{menlo2025}.
+
+Em uma aplicação \textit{web}, essa incorporação costuma ocorrer da forma mais
+direta possível: o código de negócio importa o kit de desenvolvimento
+(\textit{Software Development Kit}, SDK)\glsadd{SDK} do provedor escolhido e
+chama o modelo nos pontos em que precisa dele. Cada provedor, porém, define o
+próprio formato de mensagens, de declaração e de chamada de ferramentas, de
+erros e de limites de uso. À medida que as integrações deixam de ser uma
+pergunta isolada ao modelo e passam a envolver a execução de ferramentas
+externas em ciclos de várias etapas --- o que \citeonline{sapkota2026} chamam de
+agentes de IA, em contraste com sistemas multiagentes de \textit{IA agêntica}
+---, a quantidade de código dependente dessas convenções cresce. Esse tipo de
+dependência já foi descrito como dívida técnica em sistemas de aprendizado de
+máquina: o \textit{glue code} que adapta a aplicação à API de um pacote
+específico tende a prender o sistema às particularidades desse pacote e a
+encarecer qualquer substituição posterior \cite{sculley2015}.
+
+A Engenharia de Software conhece há décadas a resposta de princípio para esse
+problema. \citeonline{parnas1972} propôs que as decisões de projeto com maior
+probabilidade de mudar fossem encapsuladas em módulos que as escondessem do
+restante do sistema, e a modificabilidade é hoje tratada como um atributo de
+qualidade arquitetural a ser deliberadamente projetado \cite{bass2021}. Fora do
+domínio da IA, a dependência de um único fornecedor (\textit{vendor lock-in})
+é um problema arquitetural consolidado: a literatura de computação em nuvem
+reúne um amplo conjunto de abordagens de interoperabilidade e portabilidade
+baseadas em camadas intermediárias \cite{kaur2017}, a noção de
+\textit{middleware} como camada reutilizável que absorve a heterogeneidade entre
+plataformas está bem estabelecida \cite{issarny2007}, e há comparações empíricas
+entre funções \textit{serverless} escritas sobre bibliotecas de abstração e
+sobre as APIs nativas do provedor \cite{mo2023}.
+
+No caso dos modelos de IA, a escolha do provedor é justamente uma decisão com
+alta probabilidade de mudar. O mesmo levantamento da Menlo Ventures registra
+que a participação da OpenAI no uso corporativo de LLMs caiu de 50\%, ao fim de
+2023, para 25\% em meados de 2025, enquanto a Anthropic chegou a 32\% e o
+Google a 20\% \cite{menlo2025}. Ainda assim, apenas 11\% das equipes
+consultadas trocaram de fornecedor no último ano, ao passo que 66\% apenas
+atualizaram o modelo dentro do provedor que já utilizavam \cite{menlo2025}.
+Esses números não isolam a causa da baixa taxa de troca --- desempenho,
+contratos e preço também pesam ---, mas são coerentes com a hipótese de que
+trocar de provedor tem custo técnico relevante para quem integrou o modelo
+diretamente ao código.
+
+Uma alternativa arquitetural é interpor, entre a aplicação e o provedor, uma
+camada dedicada à integração com os modelos. Na prática recente, o termo
+\harness{} passou a designar a camada de \textit{software} que envolve o modelo
+e se responsabiliza pela execução de ferramentas, pelo gerenciamento de estado
+e pela recuperação de erros. Neste trabalho, \harness{} é definido
+operacionalmente como a \textbf{camada arquitetural intermediária entre a
+aplicação \textit{web} e o provedor de IA}, que abstrai e centraliza as
+interações da aplicação com modelos e agentes, de modo que a aplicação não
+acessa diretamente os SDKs dos provedores. Atribuem-se a essa camada a
+padronização da comunicação com os provedores, a orquestração de chamadas e a
+execução controlada de ferramentas, o gerenciamento de contexto e estado, o
+tratamento de falhas e o registro estruturado de eventos; ela não implementa
+regras de negócio nem treina modelos. Essas responsabilidades dialogam com o
+catálogo de padrões arquiteturais para agentes baseados em modelos de fundação
+proposto por \citeonline{liu2025}, que serve de referência para o projeto da
+camada.
+
+Essa camada, contudo, não é gratuita. Cada nível de indireção acrescenta
+trabalho a toda requisição --- normalização de mensagens, serialização,
+orquestração do ciclo de ferramentas, registro de eventos ---, e esse trabalho
+consome energia. A questão ganhou peso com a escala atual da IA. A Agência
+Internacional de Energia estima que os centros de dados consumiram cerca de
+415~TWh em 2024, aproximadamente 1,5\% da eletricidade mundial, e projeta que
+esse consumo mais que dobre até 2030, chegando a cerca de 945~TWh, com a IA como
+principal vetor de crescimento \cite{iea2025}. A área de \textit{Green AI}
+propõe tratar a eficiência energética como critério de avaliação ao lado da
+acurácia \cite{schwartz2020}, depois que \citeonline{strubell2019} chamaram
+atenção para o custo energético e ambiental do treinamento de modelos de
+linguagem.
+
+Na fase de uso, que se repete a cada requisição, os números também são
+expressivos. \citeonline{luccioni2024} mostram que arquiteturas generativas de
+propósito geral chegam a ser ordens de grandeza mais custosas que sistemas
+específicos para a mesma tarefa: gerar texto consumiu em média 0,047~kWh a cada
+mil inferências, contra 0,002~kWh da classificação de texto. Além disso, o
+consumo depende fortemente da pilha de \textit{software}, e não apenas do
+modelo: \citeonline{fernandez2025} verificaram que estimativas baseadas em
+contagem de operações de ponto flutuante subestimam o consumo real e que
+otimizações bem aplicadas reduzem a energia total em até 73\%.
+\citeonline{vellaisamy2026} decompõem a sobrecarga de orquestração executada no
+processador hospedeiro, fora da unidade de processamento gráfico
+(GPU)\glsadd{GPU}, e mostram que ela é um custo oculto da inferência, enquanto
+\citeonline{ifath2026} caracterizam os compromissos entre desempenho e energia
+em fluxos agênticos de múltiplas requisições, o mesmo padrão de uso que uma
+camada de \harness{} orquestra. Decorre daí que uma decisão puramente
+arquitetural, como acrescentar uma camada entre a aplicação e o modelo, pode
+ter consequências energéticas mensuráveis, que raramente entram na avaliação
+dessa decisão.
+
+\section{Problema e lacuna de pesquisa}
 \label{sec:problema}
-% Fonte: plano §2.1 (lacuna) e §3 (problema).
-\pendencia{Lacuna: trade-offs discutidos qualitativamente, sem avaliação controlada.}
 
-% Pergunta de pesquisa (plano §3) — manter literal:
-\begin{citacao}
-  A introdução de uma camada arquitetural intermediária entre uma aplicação web
-  e um provedor de IA reduz o custo de substituição do provedor, e qual é o
-  custo energético dessa redução?
-\end{citacao}
-% (trocar o ambiente citacao por destaque próprio se não for citação direta)
+A literatura já propõe arquiteturas para integrar modelos e agentes a sistemas
+de \textit{software} e discute os compromissos envolvidos. O catálogo de
+\citeonline{liu2025} descreve, para cada padrão, contexto, forças e
+\textit{trade-offs}, mas o faz qualitativamente, a partir de revisão de
+literatura. \citeonline{kandogan2025} propõem uma arquitetura de referência
+para IA composta, com registros de agentes e de dados que abstraem provedores e
+APIs proprietárias, ilustrada por um caso de uso, sem comparação controlada com
+uma integração direta. \citeonline{zhu2026}, ao comparar
+\textit{frameworks} de orquestração de agentes baseados em LLMs, destacam que
+parte relevante das alegações sobre esses \textit{frameworks} provém dos
+próprios fornecedores, e não de avaliação revisada por pares.
+
+A lacuna, portanto, não está na ausência de discussão sobre os
+\textit{trade-offs} dessa camada, mas na ausência de \textbf{medição
+controlada} deles: não foram encontrados estudos que comparem, sob as mesmas
+condições, uma aplicação com e sem a camada de integração, quantificando ao
+mesmo tempo o benefício mais alegado da camada --- a facilidade de trocar de
+provedor --- e o preço que ela cobra em energia. Sem essa medição, a decisão de
+adotar ou não uma camada de \harness{} fica apoiada em argumentos de princípio
+ou em alegações de fornecedores.
+
+Diante disso, este trabalho busca responder à seguinte questão de pesquisa:
+\textit{a introdução de uma camada arquitetural intermediária entre uma
+aplicação \textit{web} e um provedor de IA reduz o custo de substituição do
+provedor, e qual é o custo energético dessa redução?}
+
+Parte-se da hipótese de que a camada reduz o custo de substituição e cobra por
+isso um custo energético; essa hipótese é tratada como algo a testar, e não
+como pressuposto. Caso a camada reduza o custo de substituição sem acréscimo
+relevante de energia, ou caso acrescente custo energético sem reduzir o esforço
+de substituição, ambos os resultados são informativos para quem precisa tomar a
+decisão arquitetural.
+
+\section{Justificativa}
+\label{sec:justificativa}
+
+Do ponto de vista prático, desenvolvedores e arquitetos que integram LLMs a
+aplicações \textit{web} decidem, explícita ou implicitamente, entre acoplar o
+código ao SDK de um provedor ou investir em uma camada de abstração, própria ou
+oferecida por um \textit{framework}. Em um mercado no qual a liderança entre
+provedores mudou em menos de dois anos \cite{menlo2025}, o custo de trocar de
+provedor deixa de ser hipotético; e, em um cenário de demanda crescente por
+energia nos centros de dados \cite{iea2025}, qualquer sobrecarga paga a cada
+requisição é multiplicada pelo volume de uso. Evidência quantitativa sobre os
+dois lados dessa decisão permite tomá-la com base em dados, e não apenas em
+princípios de projeto ou em material promocional.
+
+Do ponto de vista científico, o trabalho contribui para a arquitetura de
+\textit{software} de sistemas com IA ao submeter a avaliação experimental uma
+decisão que, até aqui, foi discutida principalmente de forma qualitativa
+\cite{liu2025}, e aproxima a Engenharia de Software da agenda de \textit{Green
+AI} \cite{schwartz2020} ao tratar o consumo de energia como atributo de
+qualidade de uma decisão arquitetural, e não apenas do modelo. O estudo segue
+os princípios de experimentação controlada em Engenharia de Software
+sistematizados por \citeonline{wohlin2024}, comparando duas versões
+funcionalmente equivalentes de uma mesma aplicação: uma integrada ao provedor
+por meio da camada e outra integrada diretamente.
+
+O recorte em duas dimensões é deliberado. A substituibilidade do provedor
+representa o benefício mais associado à camada, e o custo energético, o preço
+que ela cobra; juntos, formam um compromisso fechado sobre a mesma decisão.
+Outros atributos usualmente atribuídos a uma camada desse tipo, como a
+recuperação de falhas e a auditabilidade, serão implementados por serem
+pré-requisitos técnicos do experimento, mas não serão avaliados. Por isso, a
+conclusão do trabalho se limita a responder se a camada compensa pelo
+desacoplamento que proporciona, e não se ela compensa de modo geral.
+
+Por fim, o trabalho é viável no prazo de um trabalho de conclusão de curso. A
+medição energética apoia-se em protocolo de telemetria de \textit{hardware} já
+empregado pelo autor em trabalho anterior \cite{barros2026}, e o experimento
+utiliza infraestrutura com GPU disponível na instituição e modelos abertos
+executados localmente.
 
 \section{Objetivos}
 \label{sec:objetivos}
-% Fonte: plano §4. Verbo único no geral; específicos verificáveis.
 
 \subsection{Objetivo geral}
-\pendencia{Avaliar experimentalmente o trade-off desacoplamento × eficiência (plano §4).}
+\label{subsec:objetivo-geral}
+
+Avaliar experimentalmente o \textit{trade-off} entre desacoplamento e eficiência
+energética introduzido por uma camada arquitetural intermediária
+(\harness{}) entre aplicações \textit{web} e provedores de modelos de IA, em
+comparação com a integração direta ao provedor.
 
 \subsection{Objetivos específicos}
-\begin{enumerate}
-  \item \pendencia{Quantificar o custo de substituição de provedor com e sem a camada (B1).}
-  \item \pendencia{Mensurar o impacto energético da camada sob gating de corretude (B2).}
-  \item \pendencia{Confrontar os dois resultados (síntese do trade-off).}
-\end{enumerate}
+\label{subsec:objetivos-especificos}
 
-\section{Justificativa do recorte}
-\label{sec:justificativa}
-% Fonte: plano §5.2 — B1 e B2 como "benefício alegado × preço cobrado";
-% B3/B4 implementados no artefato, fora dos objetivos.
-\pendencia{Por que duas dimensões.}
+\begin{alineas}
+  \item projetar uma camada de \harness{} para a integração de modelos de IA em
+        aplicações \textit{web}, delimitando suas responsabilidades com base em
+        padrões arquiteturais publicados;
+  \item quantificar o custo de substituição do provedor de IA em uma aplicação
+        \textit{web} com e sem a camada de \harness{};
+  \item mensurar o custo energético que a camada de \harness{} acrescenta à
+        execução de requisições simples e agênticas a um modelo de IA;
+  \item identificar em que condições a redução do custo de substituição
+        compensa o custo energético da camada.
+\end{alineas}
 
-\section{Estrutura do trabalho}
-\label{sec:estrutura}
-% Fonte: plano §8. Redigir por último, quando os capítulos estiverem estáveis.
-\pendencia{Um parágrafo por capítulo, com referência cruzada (\ref{cap:metodologia} etc.).}
+% \section{Estrutura do trabalho}
+% \label{sec:estrutura}
+% Fonte: plano §8. Redigir quando os demais capítulos estiverem estáveis
+% (um parágrafo por capítulo, com \ref{cap:...}).
