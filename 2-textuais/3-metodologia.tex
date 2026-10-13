@@ -10,7 +10,7 @@
 
 O desenho experimental e a classificação das ameaças à validade seguem
 \citeonline{wohlin2024}.
-\pendencia{Visão geral: fase de solução seguida de dois benchmarks sobre as versões H e D.}
+\pendencia{Visão geral: fase de solução seguida de dois \textit{benchmarks} sobre as versões H e D.}
 
 % -----------------------------------------------------------------------------
 \section{Fase de solução}
@@ -20,7 +20,7 @@ O desenho experimental e a classificação das ameaças à validade seguem
 \pendencia{Documentação arquitetural, implementação do harness e da \versaoD.}
 
 \subsection{Documentação arquitetural}
-\pendencia{C4 e ADRs — inclusive retry e logging.}
+\pendencia{C4 e ADRs — inclusive \textit{retry} e \textit{logging}.}
 
 \subsection{Implementação do \harness}
 \pendencia{MVP de 5 componentes; interface estável (A12).}
@@ -29,7 +29,7 @@ O desenho experimental e a classificação das ameaças à validade seguem
 \pendencia{Política da versão D (A07) e critério de paridade (A19).}
 
 % -----------------------------------------------------------------------------
-\section{Benchmark 1 --- Substituibilidade}
+\section{\textit{Benchmark} 1 --- Substituibilidade}
 \label{sec:b1}
 % Fonte: plano §6.2. Ancoragem: R14 (Mo), R13 (Kaur), R12 (Issarny).
 % Pendências: A04 (provedores), A07, A08 (checklist), A09 (métrica de código),
@@ -38,7 +38,7 @@ O desenho experimental e a classificação das ameaças à validade seguem
 \subsection{Variáveis e métricas}
 \begin{table}[h!]
   \centering
-  \Caption{\label{tab:b1-metricas}Métricas do Benchmark 1}
+  \Caption{\label{tab:b1-metricas}Métricas do \textit{Benchmark} 1}
   \UFCtab{}{
     \begin{tabularx}{\textwidth}{lXl}
       \toprule
@@ -58,13 +58,13 @@ O desenho experimental e a classificação das ameaças à validade seguem
 \end{table}
 
 \subsection{Protocolo}
-\pendencia{Troca de provedor em H e D; checklist pré-registrado (A08).}
+\pendencia{Troca de provedor em H e D; \textit{checklist} pré-registrado (A08).}
 
 \subsection{Mitigação do viés do experimentador}
 \pendencia{Métricas objetivas como primárias; tempo secundário; ordem registrada.}
 
 % -----------------------------------------------------------------------------
-\section{Benchmark 2 --- Eficiência energética}
+\section{\textit{Benchmark} 2 --- Eficiência energética}
 \label{sec:b2}
 % Fonte: plano §6.3. Ancoragem: R2, R3, R4, R5, R6.
 % Pendências: A11 (RAPL), A13 (determinismo), A14 (unidade amostral),
@@ -74,10 +74,10 @@ O desenho experimental e a classificação das ameaças à validade seguem
 \pendencia{2×2: requisição simples vs.\ agêntica × H vs.\ D.}
 
 \subsection{Métricas e critério de aceitação}
-\pendencia{J/requisição, J/token, potência, latência; gating de corretude.}
+\pendencia{J/requisição, J/\textit{token}, potência, latência; \textit{gating} de corretude.}
 
 \subsection{Protocolo de telemetria e sessões}
-\pendencia{NVML a 100 ms; baseline de ociosidade; estabilização térmica; intercalação H/D.}
+\pendencia{NVML a 100 ms; \textit{baseline} de ociosidade; estabilização térmica; intercalação H/D.}
 
 \subsection{Análise estatística}
 \pendencia{Pacote definitivo após A15–A18.}

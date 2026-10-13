@@ -48,6 +48,7 @@
 | A27 | Ancorar o "mês 1" do cronograma a uma data de calendário | P2 | imediato | Todos os prazos | aberto |
 | A28 | Fazer o mapeamento responsabilidades do harness × padrões de R21 | P2 | mês 1–2 | Cap. 2; contribuição 1 | aberto |
 | A29 | Escolher o modelo local e a stack de serving do B2 (pendência §12.3) | P2 | mês 3 (stack) / mês 6 (modelo) | MVP (mês 4); Piloto | aberto |
+| A30 | Definir o critério de decisão de "compensa" (objetivo específico d) | P1 | mês 3 | Protocolo B1/B2; Cap. 3 (T25) | aberto |
 
 ## 2. Gate de abertura da redação da introdução
 
@@ -140,6 +141,7 @@ O plano diz "cronometrado por um colega, **se possível**" — sem fallback. Def
 **Origem:** análise crítica §2.2 · **P1** · **mês 3** · **Afeta:** §6.3 (protocolo de telemetria)
 NVML mede GPU; o custo **direto** do harness é trabalho de CPU (normalização, serialização, orquestração). Parte aparece indiretamente como duração maior, mas a energia da CPU do host não é medida — e o sinal de interesse (overhead H−D) vive na ordem de grandeza do termo não medido. Opções: (a) RAPL/`powercap` como métrica secundária/diagnóstica; (b) limitação declarada, com o argumento de dominância do termo de GPU.
 **Revisão 01/10/2026 — verificar viabilidade antes de decidir:** a opção (a) depende do servidor institucional. Em kernels Linux atuais, `/sys/class/powercap/intel-rapl*/energy_uj` costuma ser legível só por root (restrição adotada após a vulnerabilidade PLATYPUS, 2020), e em CPUs AMD o suporte depende do kernel. Perguntar ao administrador do servidor se há acesso, ou se ele pode liberar a leitura, antes do mês 3. Sem acesso, resta a opção (b).
+**Revisão 12/10/2026 (T06 da Introdução):** o desenho previsto é rodar a aplicação e o *harness* na máquina do autor, apontando para o modelo hospedado no servidor institucional (H100), com o relatório NVML pedido ao servidor. Então a energia de CPU da camada **não está** no servidor, e o NVML só enxerga o efeito dela na GPU (carga enviada, duração). O RAPL, se adotado, teria de ser lido na máquina do autor, não no servidor. Sem isso, a Introdução e a metodologia devem prometer só "efeito da camada sobre a energia de inferência" e tratar a energia de CPU como limitação declarada. Alternativa a avaliar: braço com servidor simulado (resposta fixa) para isolar o overhead da camada, e comparação com a energia de inferência medida no NVML (relevante também para a T10).
 **Decisão:** —
 
 #### A12 — Definir escopo da interface: modelo local é 2º ou 3º adaptador?
@@ -250,6 +252,12 @@ O plano afirma no presente que "as responsabilidades acima **são mapeadas** con
 **Origem:** §12.3 do plano (pendência sem item próprio até esta revisão) · **P2** · **stack no mês 3; modelo no mês 6** · **Afeta:** §6.1 (congelamento), §6.3; A12
 O registro foi semeado a partir das pendências do §12, mas a pendência 3 (modelo local) não tinha item, só uma menção dentro do A12. O plano adia a escolha do **modelo** para o piloto, e isso se mantém. A **stack de serving** (vLLM, Ollama, TGI…; API própria ou compatível com OpenAI) precisa ser conhecida antes, porque define o adaptador local (A12), o que "D direta" significa no B2 e o que entra no congelamento de versões (§6.1). Levantar com a administração do servidor o que já está hospedado e estável.
 **Definition of done:** stack registrada antes do contrato da interface (mês 3); modelo e versão congelados ao fim do piloto (mês 6).
+**Decisão:** —
+
+#### A30 — Definir o critério de decisão de "compensa" (objetivo específico d)
+**Origem:** revisão da Introdução v1, task T02 (12/10/2026) · **P1** · **mês 3** (antes da coleta) · **Afeta:** objetivo específico (d) da Introdução; protocolo B1/B2; Cap. 3 (task T25); A17, A18, A21
+O objetivo (d) da Introdução passou a dizer "determinar, para requisições simples e agênticas, se a redução do custo de substituição proporcionada pela camada justifica o seu custo energético, segundo um critério de decisão definido antes da coleta de dados". A Introdução promete o critério, mas ele **ainda não existe**. Definir uma regra aplicável aos dados que dê sim ou não por cenário (requisição simples; requisição agêntica), cruzando um limite de redução do custo de substituição (B1) com um limite de sobrecarga energética (B2, ramos de A17 e A18). Os dois custos estão em unidades diferentes, então a regra deve combinar limites por dimensão, e não somar nem converter. Fixar **antes** da coleta; o mesmo critério entra no Cap. 3 (T25) e precisa coincidir com o objetivo (d).
+**Definition of done:** regra de decisão registrada no plano/protocolo e na metodologia, coerente com A17, A18 e A21, e idêntica ao que o objetivo (d) promete.
 **Decisão:** —
 
 ---
