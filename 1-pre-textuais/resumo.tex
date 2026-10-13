@@ -9,17 +9,19 @@ específico. Uma alternativa é interpor uma camada arquitetural intermediária
 provedores, a execução de ferramentas, o estado, o tratamento de falhas e o
 registro de eventos. A literatura propõe arquiteturas desse tipo e discute seus
 compromissos de forma qualitativa, mas não os mede em estudo controlado. Este
-trabalho avalia experimentalmente o \textit{trade-off} entre desacoplamento e
-eficiência energética introduzido por essa camada, comparando duas versões
-funcionalmente equivalentes de uma mesma aplicação \textit{web}: uma integrada
+trabalho projeta e avalia experimentalmente essa camada, confrontando o custo de
+substituição do provedor com o seu custo energético por meio da comparação de
+duas versões funcionalmente equivalentes de uma mesma aplicação \textit{web}: uma integrada
 ao provedor por meio do \textit{harness} e outra integrada diretamente. O custo
-de substituição do provedor é quantificado por métricas comportamentais e
-estruturais do código, e o custo energético, por telemetria de \textit{hardware}
-em requisições simples e agênticas a um modelo aberto executado localmente.
+de substituição do provedor, entendido como o esforço de alteração do código
+necessário para trocar o provedor preservando o comportamento da aplicação, é
+quantificado por métricas comportamentais e estruturais do código, e o custo
+energético, por telemetria de \textit{hardware} da GPU em requisições simples e
+agênticas a um modelo aberto hospedado em servidor institucional.
 Espera-se caracterizar em que condições o desacoplamento obtido compensa o
 custo energético da camada, oferecendo evidência quantitativa para uma decisão
 arquitetural hoje tomada com base em princípios de projeto ou em alegações de
 fornecedores.
 
 % Separe as palavras-chave por ponto
-\palavraschave{Arquitetura de software. Integração de LLM. Substituibilidade. Eficiência energética. Green AI.}
+\palavraschave{Arquitetura de \textit{software}. Integração de LLM. Substituibilidade. Eficiência energética. \textit{Green AI}.}
