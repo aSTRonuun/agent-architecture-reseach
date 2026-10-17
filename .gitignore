@@ -42,3 +42,7 @@ node_modules/
 # --- Sistema / editor ---
 .DS_Store
 Thumbs.db
+
+# Saídas de compilação do Overleaf baixadas manualmente
+output/
+output-*.blg
