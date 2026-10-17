@@ -160,6 +160,60 @@
   doi       = {10.1016/j.jss.2024.112278}
 }
 
+% --- Padrões de resiliência (responsabilidade 4 do harness; R15 a R17) ---------
+% Eram referências de reserva; entraram em 17/10/2026 pela decisão D5a(i).
+% Páginas e datas conferidas no Crossref em 17/10/2026.
+
+% R15
+@inproceedings{mendonca2020,
+  author    = {Mendon{\c{c}}a, Nabor C. and Aderaldo, Carlos M. and C{\'a}mara, Javier and Garlan, David},
+  title     = {Model-Based Analysis of Microservice Resiliency Patterns},
+  booktitle = {2020 IEEE International Conference on Software Architecture (ICSA)},
+  publisher = {IEEE},
+  address   = {Piscataway},
+  year      = {2020},
+  pages     = {114--124},
+  doi       = {10.1109/icsa47634.2020.00019}
+}
+
+% R16
+@inproceedings{sedghpour2022,
+  author    = {Sedghpour, Mohammad Reza Saleh and Klein, Cristian and Tordsson, Johan},
+  title     = {An Empirical Study of Service Mesh Traffic Management Policies for Microservices},
+  booktitle = {Proceedings of the 2022 ACM/SPEC International Conference on Performance Engineering (ICPE '22)},
+  publisher = {ACM},
+  address   = {New York},
+  year      = {2022},
+  pages     = {17--27},
+  doi       = {10.1145/3489525.3511686}
+}
+
+% R17 (online em 28/08/2024; fascículo v. 55, n. 1, jan. 2025 — as notas diziam 2024;
+% ano do fascículo, no mesmo critério de R8)
+@article{aderaldo2025,
+  author    = {Aderaldo, Carlos M. and Costa, Thiago M. and Vasconcelos, Davi M. and Mendon{\c{c}}a, Nabor C. and C{\'a}mara, Javier and Garlan, David},
+  title     = {A declarative approach and benchmark tool for controlled evaluation of microservice resiliency patterns},
+  journal   = {Software: Practice and Experience},
+  volume    = {55},
+  number    = {1},
+  pages     = {170--192},
+  year      = {2025},
+  doi       = {10.1002/spe.3368}
+}
+
+% --- Registro de eventos (responsabilidade 5 do harness) -----------------------
+% Documentação técnica, NÃO revisada por pares; rotulada como tal no texto.
+% Página sem data de publicação ([s.d.]); lida em 17/10/2026. Conferir na
+% compilação se o estilo abntex2-alf aceita year = {[s.d.]}.
+
+@misc{opentelemetrylogs,
+  author        = {{OPENTELEMETRY}},
+  title         = {Logs},
+  year          = {[s.d.]},
+  url           = {https://opentelemetry.io/docs/concepts/signals/logs/},
+  urlaccessdate = {17 out. 2026}
+}
+
 % --- Uso do termo "harness" (T08) ---------------------------------------------
 % Artigo de workshop revisado por pares (EuroMLSys '26, anais ACM). Fora das 21
 % referências de consolidated_references.md; metadados conferidos no Crossref,
@@ -228,6 +282,80 @@
   year      = {2019},
   pages     = {3645--3650},
   doi       = {10.18653/v1/P19-1355}
+}
+
+% --- Estado e contexto (responsabilidade 3 do harness) -------------------------
+% Decisão do autor em 17/10/2026: usar o SagaLLM. Metadados conferidos no
+% Crossref em 17/10/2026 (v. 18, n. 12, p. 4874-4886, ago. 2025).
+
+% R9
+@article{chang2025,
+  author    = {Chang, Edward Y. and Geng, Longling},
+  title     = {{SagaLLM}: Context Management, Validation, and Transaction Guarantees for Multi-Agent {LLM} Planning},
+  journal   = {Proceedings of the VLDB Endowment},
+  volume    = {18},
+  number    = {12},
+  pages     = {4874--4886},
+  year      = {2025},
+  doi       = {10.14778/3750601.3750611}
+}
+
+% --- Busca 6 (17/10/2026): acoplamento, documentação arquitetural e ciclo de
+% ferramentas. Metadados conferidos no Crossref em 17/10/2026, exceto Yao et al.
+% (conferido na página do ICLR 2023; os anais do ICLR não têm DOI). Nenhum dos
+% textos foi lido na íntegra: o texto só atribui a eles o que consta do título e
+% do resumo.
+
+@article{stevens1974,
+  author    = {Stevens, W. P. and Myers, G. J. and Constantine, L. L.},
+  title     = {Structured Design},
+  journal   = {IBM Systems Journal},
+  volume    = {13},
+  number    = {2},
+  pages     = {115--139},
+  year      = {1974},
+  doi       = {10.1147/sj.132.0115}
+}
+
+@article{tyree2005,
+  author    = {Tyree, Jeff and Akerman, Art},
+  title     = {Architecture Decisions: Demystifying Architecture},
+  journal   = {IEEE Software},
+  volume    = {22},
+  number    = {2},
+  pages     = {19--27},
+  year      = {2005},
+  doi       = {10.1109/ms.2005.27}
+}
+
+@article{buchgeher2023,
+  author    = {Buchgeher, Georg and Sch{\"o}berl, Stefan and Geist, Verena and Dorninger, Bernhard and Haindl, Philipp and Weinreich, Rainer},
+  title     = {Using Architecture Decision Records in Open Source Projects---An {MSR} Study on {GitHub}},
+  journal   = {IEEE Access},
+  volume    = {11},
+  pages     = {63725--63740},
+  year      = {2023},
+  doi       = {10.1109/access.2023.3287654}
+}
+
+@inproceedings{mavrogiorgou2025,
+  author    = {Mavrogiorgou, Argyro and Kiourtis, Athanasios and Kyriazis, Dimosthenis and Serrano, Martin and Isaja, Mauro and Lazcano, Raquel and Soldatos, John and Troiano, Ernesto},
+  title     = {{C4} Model: a Research Guide for Designing Software Architectures},
+  booktitle = {2025 8th International Conference on Software and System Engineering (ICoSSE)},
+  publisher = {IEEE},
+  address   = {Piscataway},
+  year      = {2025},
+  pages     = {1--9},
+  doi       = {10.1109/icosse65712.2025.00009}
+}
+
+@inproceedings{yao2023,
+  author    = {Yao, Shunyu and Zhao, Jeffrey and Yu, Dian and Du, Nan and Shafran, Izhak and Narasimhan, Karthik and Cao, Yuan},
+  title     = {{ReAct}: Synergizing Reasoning and Acting in Language Models},
+  booktitle = {The Eleventh International Conference on Learning Representations (ICLR 2023)},
+  year      = {2023},
+  url       = {https://iclr.cc/virtual/2023/poster/11003},
+  urlaccessdate = {17 out. 2026}
 }
 
 % --- Relatórios (números de contexto da Introdução) -------------------------
