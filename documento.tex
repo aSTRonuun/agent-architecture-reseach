@@ -234,12 +234,14 @@
 \membrodabancaseiscentro{}
 \membrodabancaseisies{}
 
-% Entrega parcial (TCC I — Introdução): com \entregaintroducaotrue, o PDF traz
-% só os elementos já redigidos (pré-textuais, Introdução e Referências); os
-% capítulos ainda em esqueleto, as listas sem itens e os apêndices ficam de
-% fora. Trocar para \entregaintroducaofalse para compilar a monografia inteira.
-\newif\ifentregaintroducao
-\entregaintroducaotrue
+% Entrega parcial (TCC I — Introdução e Fundamentação Teórica): com
+% \entregaparcialtrue, o PDF traz só os elementos já redigidos (pré-textuais,
+% Caps. 1 e 2, listas de figuras e de quadros, siglas e Referências); os
+% capítulos ainda em esqueleto, a lista de tabelas (a única tabela está na
+% Metodologia) e os apêndices ficam de fora. Trocar para \entregaparcialfalse
+% para compilar a monografia inteira.
+\newif\ifentregaparcial
+\entregaparcialtrue
 
 \begin{document}
 
@@ -258,12 +260,12 @@
 	%\imprimirepigrafe{1-pre-textuais/epigrafe}
 	\imprimirresumo{1-pre-textuais/resumo}
 	\imprimirabstract{1-pre-textuais/abstract}
-	\ifentregaintroducao\else
 	\renewcommand*\listfigurename{Lista de Figuras} %Se você comentar esta linha o título da lista fica: LISTA DE ILUSTRAÇÕES
 	\imprimirlistadeilustracoes
+	\ifentregaparcial\else
 	\imprimirlistadetabelas
 	\fi
-	%\imprimirlistadequadros
+	\imprimirlistadequadros
 	%\imprimirlistadealgoritmos
 	%\imprimirlistadecodigosfonte
 	\imprimirlistadeabreviaturasesiglas
@@ -277,8 +279,8 @@
 	%Elementos textuais
 	\textual
 	\input{2-textuais/1-introducao}
-	\ifentregaintroducao\else
 	\input{2-textuais/2-fundamentacao-teorica}
+	\ifentregaparcial\else
 	\input{2-textuais/trabalhos-relacionados}
 	\input{2-textuais/3-metodologia}
 	\input{2-textuais/4-resultados}
@@ -288,7 +290,7 @@
 	%Elementos pós-textuais
 	\bibliography{3-pos-textuais/referencias}
 %	\imprimirglossario
-	\ifentregaintroducao\else
+	\ifentregaparcial\else
 	\imprimirapendices
 		% Adicione aqui os apendices do seu trabalho
 		\input{3-pos-textuais/apendices/apendice-a}
