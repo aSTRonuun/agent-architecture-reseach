@@ -4,6 +4,11 @@
 % Narrativa-base: pitch do plano (§11); lacuna (§2.1); problema (§3);
 % objetivos (§4, reescritos após o feedback do orientador "parece
 % metodologia": métricas e protocolo saíram dos específicos e ficam no Cap. 4).
+% Modelos (feedback do orientador, 16/10/2026: "definir quais modelos serão
+% usados na integração"): B1 = Claude Haiku 5.5 (Anthropic) + GPT-6 Luna
+% (OpenAI); B2 = Qwen3.6 27B no servidor H100. Decisões A04/A12/A29.
+% VERIFICAR antes de entregar: o ID exato do modelo da OpenAI (fontes divergem
+% entre "gpt-6-luna" e "gpt-5.6-luna") na página oficial de modelos da OpenAI.
 % Ressalva A28: enquanto aberto, NÃO afirmar que as responsabilidades do harness
 % já foram mapeadas contra R21.
 % Números de contexto (Stack Overflow, Menlo, IEA): relatórios, acesso 09/10/2026.
@@ -219,16 +224,30 @@ pré-requisitos técnicos do experimento, mas não serão avaliados. Por isso, a
 conclusão do trabalho se limita a responder se a camada compensa pelo
 desacoplamento que proporciona, e não se ela compensa de modo geral.
 
-A medição energética será feita sobre um modelo aberto hospedado em servidor
-institucional com GPU NVIDIA H100, cuja telemetria é coletada por meio da
-biblioteca NVML, e não sobre os provedores comerciais cuja substituição motiva o
-estudo. A escolha é deliberada: em modelos hospedados por terceiros o consumo da
-inferência não é observável, ao passo que em ambiente controlado é possível
-comparar, sob as mesmas condições, a energia das requisições com e sem a camada.
-Os resultados caracterizam, assim, o efeito da camada sobre a energia de
-inferência de um modelo e de um \textit{hardware} específicos, e não se estendem,
-sem ressalva, a outros modelos, outros equipamentos ou a provedores em nuvem. Esse
-limite de generalização é tratado como ameaça à validade externa na metodologia.
+Os modelos de IA integrados à aplicação são definidos desde já, para que o
+experimento seja replicável. Na avaliação do custo de substituição, a aplicação
+será integrada a dois provedores comerciais com interfaces distintas: a
+Anthropic, com o modelo Claude Haiku 5.5, e a OpenAI, com o modelo GPT-6 Luna.
+São os dois provedores de maior participação no uso corporativo de LLMs em
+meados de 2025 \cite{menlo2025}, e os modelos foram escolhidos na faixa de menor
+custo de cada um, com suporte a chamada de ferramentas, porque essa avaliação
+mede o esforço de alterar o código, e não a qualidade das respostas.
+
+A medição energética será feita sobre um único modelo aberto, o Qwen3.6 de 27
+bilhões de parâmetros, integrado às duas versões da aplicação, com e sem a
+camada, e hospedado em servidor institucional com GPU NVIDIA H100, cuja
+telemetria é coletada por meio da biblioteca NVML. Entre os modelos abertos
+hospedados no servidor, ele foi escolhido por reunir pesos abertos, suporte a
+chamada de ferramentas, necessário às requisições agênticas, e execução em uma
+única GPU, o que permite atribuir a energia medida a um único dispositivo. Os
+provedores comerciais não entram nessa medição, e a escolha é deliberada: em
+modelos hospedados por terceiros o consumo da inferência não é observável, ao
+passo que em ambiente controlado é possível comparar, sob as mesmas condições, a
+energia das requisições com e sem a camada. Os resultados caracterizam, assim, o
+efeito da camada sobre a energia de inferência de um modelo e de um
+\textit{hardware} específicos, e não se estendem, sem ressalva, a outros modelos,
+outros equipamentos ou a provedores em nuvem. Esse limite de generalização é
+tratado como ameaça à validade externa na metodologia.
 
 Por fim, o trabalho é viável no prazo de um trabalho de conclusão de curso. A
 medição energética apoia-se em protocolo de telemetria de \textit{hardware} já

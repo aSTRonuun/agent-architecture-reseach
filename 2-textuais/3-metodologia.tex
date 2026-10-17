@@ -19,6 +19,104 @@ O desenho experimental e a classificação das ameaças à validade seguem
 % versão D com paridade funcional (A19), congelamento de versões.
 \pendencia{Documentação arquitetural, implementação do harness e da \versaoD.}
 
+% Texto migrado do Cap. 2 (antiga subseção 2.1.3) em 17/10/2026, decisão do autor:
+% o detalhamento por responsabilidade é projeto da camada, não teoria. O Quadro
+% resumo (qua:harness-liu) permanece no Cap. 2. Atribuições a Liu et al. (2025) e
+% às demais fontes inalteradas; as analogias e transposições são do autor.
+\subsection{Delimitação das responsabilidades do \harness}
+\label{sec:delimitacao}
+
+Esta subseção examina, responsabilidade a responsabilidade, o que o catálogo de
+\citeonline{liu2025} cobre e o que fica a cargo de outras fontes ou de decisão do
+projeto, segundo o resumo do Quadro~\ref{qua:harness-liu}. Atende ao primeiro
+objetivo específico, que delimita as responsabilidades da camada com base em
+padrões arquiteturais publicados.
+
+\paragraph{Responsabilidade 1.} O \textit{Agent adapter} converte as mensagens do
+agente para o formato exigido por ferramentas externas e vice-versa, e o
+\textit{Prompt/response optimiser} padroniza \textit{prompts} e respostas por
+meio de modelos de texto (\textit{templates}) \cite{liu2025}. Nenhum dos dois
+trata da troca do provedor do modelo: o primeiro lida com as interfaces das
+ferramentas, e o segundo, com a estrutura dos \textit{prompts}. É, porém, a
+responsabilidade cujo efeito o experimento mede. Para ancorá-la, recorre-se à
+noção de \textit{middleware}, a camada reutilizável que absorve a heterogeneidade
+entre plataformas \cite{issarny2007}, discutida na
+Seção~\ref{sec:abstracao}. A correspondência é de propósito, e não de projeto:
+o conceito explica por que uma camada intermediária absorve a heterogeneidade,
+mas não indica como projetá-la para provedores de modelos, e essa transposição é
+do autor.
+
+\paragraph{Responsabilidade 2.} O \textit{Agent adapter} invoca e gerencia as
+interfaces das ferramentas e devolve ao modelo os resultados da execução
+\cite{liu2025}, o que cobre parte da função. O \textit{Tool/agent registry} trata
+da seleção entre muitas ferramentas e agentes, problema que pouco se coloca
+quando o conjunto de ferramentas é pequeno e conhecido de antemão, como se prevê
+neste trabalho. Já os padrões \textit{One-shot model querying} e
+\textit{Incremental model querying} descrevem quantas vezes o modelo é consultado
+para gerar um plano; relacioná-los ao ciclo de ferramentas é uma analogia do
+autor.
+
+\paragraph{Responsabilidade 3.} O \textit{Passive goal creator} recupera da
+memória o histórico de conversas, os artefatos em edição e as ferramentas usadas
+recentemente, e os anexa ao \textit{prompt} do usuário; o \textit{Incremental
+model querying} divide o contexto em vários \textit{prompts} para contornar o
+limite da janela de contexto; e o \textit{Retrieval augmented generation}
+enriquece a consulta com conhecimento externo \cite{liu2025}. Nenhum deles trata
+da gestão do estado da interação como responsabilidade de uma camada. Para o
+estado, recorre-se a \citeonline{chang2025}, cujo SagaLLM integra o padrão
+transacional \textit{Saga} a memória persistente e compensação automática, para
+tratar a perda de contexto e a ausência de reversão no planejamento multiagente.
+O escopo multiagente está fora deste trabalho, e o que se retém é a separação
+entre dois problemas: preservar contexto e estado ao longo das etapas, e
+desfazer ou compensar etapas já executadas. A segunda, por ser compensação
+semântica, não é tratada pela camada; o tratamento de falhas da
+responsabilidade 4 limita-se às de transporte e de protocolo.\pendencia{Confirmar
+com o orientador que a recuperação de falhas se limita a transporte e protocolo
+e que a compensação semântica fica explicitamente fora do escopo.}
+
+\paragraph{Responsabilidade 4.} A tolerância a falhas (\textit{fault tolerance})
+aparece no catálogo apenas como força e benefício da cooperação baseada em
+papéis, no sentido de substituir agentes indisponíveis, e a seção 5.3 cita a
+identificação e o tratamento de exceções em tempo real como trabalho em
+andamento dos autores \cite{liu2025}. A literatura de arquitetura de software
+trata o mesmo problema por outro ângulo, o de lidar com serviços remotos sujeitos
+a falha: \textit{Retry} e \textit{Circuit Breaker} são padrões de resiliência
+usados com essa finalidade em microsserviços \cite{aderaldo2025}, já analisados
+por meio de modelos \cite{mendonca2020} e avaliados experimentalmente
+\cite{sedghpour2022,aderaldo2025}. Do ponto de vista da aplicação, o provedor de
+IA é um serviço remoto, sujeito às mesmas classes de falha transitória, como
+tempo esgotado, erro de conexão e limite de uso. Transpor esses padrões das
+chamadas entre microsserviços para as chamadas a provedores de modelos é uma
+analogia do autor: as fontes não tratam de IA. Há ainda uma indicação útil para a
+questão deste trabalho: os próprios padrões de resiliência introduzem atrasos de
+invocação, e o efeito desses atrasos sobre o desempenho da aplicação ainda era
+pouco estudado \cite{aderaldo2025}.
+
+\paragraph{Responsabilidade 5.} Também não há padrão entre os 18. Ao discutir a
+integração do catálogo com padrões existentes, \citeonline{liu2025} citam padrões
+de IA responsável publicados em outra obra do mesmo grupo, entre eles o
+\textit{black box}, que coleta as entradas e saídas do agente em tempo de
+execução para servir de evidência em processos de auditoria. Esses padrões não
+integram o catálogo e não são tratados neste trabalho. Para o que se entende
+aqui por registro estruturado de eventos, adota-se a documentação do
+OpenTelemetry: um registro (\textit{log}) é um registro textual com marca de
+tempo, estruturado (formato recomendado pela documentação) ou não, com metadados
+opcionais, e o seu modelo de dados prevê campos de identificação do rastreio
+(\textit{trace}) e do segmento (\textit{span}) da requisição (\textit{TraceId} e
+\textit{SpanId}), que associam o registro à requisição em cujo processamento ele
+foi emitido \cite{opentelemetrylogs}. Trata-se de documento técnico, não revisado
+por pares, usado apenas para fixar o conceito de registro estruturado e
+correlacionado, e não para sustentar afirmação empírica.
+
+\paragraph{Risco da própria camada.} O catálogo registra, por fim, um risco que
+interessa diretamente a este trabalho. Entre as desvantagens do
+\textit{Tool/agent registry}, os autores apontam que ele pode se tornar uma
+solução de aprisionamento a fornecedor (\textit{vendor lock-in}) e um ponto único
+de falha \cite{liu2025}. O contexto é outro, o do registro de ferramentas, e não
+o da integração com provedores de modelos, mas o argumento vale para a camada
+estudada aqui: abstrair o provedor para reduzir a dependência pode criar uma
+dependência nova, na própria camada.
+
 \subsection{Documentação arquitetural}
 \pendencia{C4 e ADRs — inclusive \textit{retry} e \textit{logging}.}
 

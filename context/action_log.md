@@ -22,7 +22,7 @@
 | A01 | Corrigir nome do arquivo-fonte no cabeçalho do plano | P3 | imediato | Introdução | **fechado** |
 | A02 | Trazer `consolidated_references.md` para o repositório | P1 | imediato | Introdução | em análise |
 | A03 | Confirmar orientador e endossar o recorte B1+B2 | P1 | mês 1 | Introdução | aberto |
-| A04 | Escolher os dois provedores do B1; mock só como fallback declarado | P2 | mês 1 | — | aberto |
+| A04 | Escolher os dois provedores do B1; mock só como fallback declarado | P2 | mês 1 | — | decidido |
 | A05 | Reinstalar "permite simular falhas" nos critérios de escolha da aplicação | P2 | mês 1 | Plano B | **fechado** |
 | A06 | Confirmar autoria de R7 (SEMISH) e padronizar a citação | P3 | mês 1–2 | — | em análise |
 | A07 | Definir política de implementação da versão D | P1 | mês 3 | Protocolo B1 | aberto |
@@ -30,7 +30,7 @@
 | A09 | Decompor a métrica de alteração de código (modificados vs. adaptador) | P2 | mês 3 | Protocolo B1 | aberto |
 | A10 | Definir fallback para a métrica de tempo (sem cronometrista) | P3 | mês 3 | — | aberto |
 | A11 | Decidir medição de energia de CPU (RAPL) ou limitação declarada | P1 | mês 3 | Protocolo B2 | aberto |
-| A12 | Definir escopo da interface: modelo local é 2º ou 3º adaptador? | P2 | mês 3 | MVP (mês 4) | aberto |
+| A12 | Definir escopo da interface: modelo local é 2º ou 3º adaptador? | P2 | mês 3 | MVP (mês 4) | decidido |
 | A13 | Definir determinismo operacional + gate de contagem de tool calls | P1 | mês 3 | Protocolo B2 | aberto |
 | A14 | Pré-especificar unidade amostral por lote (M requisições) | P2 | mês 3 | Piloto (mês 6) | aberto |
 | A15 | Fechar o pacote estatístico definitivo (pendência §12.1 do plano) | P1 | mês 3 | Protocolo B2 | aberto |
@@ -42,12 +42,12 @@
 | A21 | Definir efeito mínimo de interesse prático; n por simulação no piloto | P2 | mês 3 → 6 | Piloto (mês 6) | aberto |
 | A22 | Incluir teste de sensibilidade (efeito piso) no piloto | P2 | mês 6 | Piloto (mês 6) | aberto |
 | A23 | Reformular o gate do mês 8 para taxa projetada de acesso | P2 | mês 6 | Gate (mês 8) | aberto |
-| A24 | Buscar base acadêmica formal para ADRs, C4 e ISO/IEC 25010 | P3 | antes do Cap. 2 | — | aberto |
+| A24 | Buscar base acadêmica formal para ADRs, C4 e ISO/IEC 25010 | P3 | antes do Cap. 2 | — | em análise (busca feita; ISO aberta) |
 | A25 | Escolher artigo específico do AGENT 2026, se citado nominalmente | P3 | antes do Cap. 3 | — | aberto |
 | A26 | Nota de redação: capítulos sem herdar o meta-comentário do plano | P3 | redação (11–12) | — | aberto |
 | A27 | Ancorar o "mês 1" do cronograma a uma data de calendário | P2 | imediato | Todos os prazos | aberto |
-| A28 | Fazer o mapeamento responsabilidades do harness × padrões de R21 | P2 | mês 1–2 | Cap. 2; contribuição 1 | aberto |
-| A29 | Escolher o modelo local e a stack de serving do B2 (pendência §12.3) | P2 | mês 3 (stack) / mês 6 (modelo) | MVP (mês 4); Piloto | aberto |
+| A28 | Fazer o mapeamento responsabilidades do harness × padrões de R21 | P2 | mês 1–2 | Cap. 2; contribuição 1 | em análise (D5a decidida; D5b–D5d abertas) |
+| A29 | Escolher o modelo local e a stack de serving do B2 (pendência §12.3) | P2 | mês 3 (stack) / mês 6 (modelo) | MVP (mês 4); Piloto | em análise (modelo decidido; stack aberta) |
 | A30 | Definir o critério de decisão de "compensa" (objetivo específico d) | P1 | mês 3 | Protocolo B1/B2; Cap. 3 (T25) | aberto |
 
 ## 2. Gate de abertura da redação da introdução
@@ -96,7 +96,7 @@ O `5w2h.md` já nomeia Sidarta Carvalho como orientador, mas o plano (§12) aind
 **Origem:** §12 do plano (passo 2) + análise crítica §2.1 · **P2** · **mês 1** · **Afeta:** §6.2; orçamento de API
 Escolha já prevista no plano; regra adicional da análise: APIs razoavelmente distintas (teste exigente) e o mock determinístico apenas como fallback **declarado** — se virar condição principal, registrar na validade de construto que a métrica comportamental perde força (mock é determinístico e "fácil demais").
 **Revisão 01/10/2026:** (1) o plano se contradiz — §6.2 trata o mock como recurso "se o orçamento for limitante", mas §9.3 (riscos) diz "provedor mock determinístico como **condição principal**"; ao fechar, corrigir o §9.3 para ficar coerente com a regra deste item. (2) Sequência: a escolha (mês 1) depende do orçamento máximo de API, que o plano só fixa no mês 3 (§12, passo 4) — fazer ao menos uma estimativa de custo agora. (3) Considerar A12/A29 na escolha: se um dos dois provedores for o próprio modelo local do B2, A12 se resolve sozinho (dois adaptadores em vez de três).
-**Decisão:** —
+**Decisão:** ✔ **Decidido em 16/10/2026** (feedback do orientador sobre a Introdução: "definir quais modelos serão usados na integração") — provedores do B1: **Anthropic (Claude Haiku 5.5) e OpenAI (GPT-6 Luna)**, os dois de maior participação no levantamento da Menlo (32% e 25%) e com formatos de mensagem e de *tool calling* distintos; modelos na faixa de menor custo com suporte a ferramentas, pois o B1 mede esforço de alteração de código, não qualidade de resposta. Mock determinístico segue só como fallback declarado. Aplicado em `2-textuais/1-introducao.tex` (§1.3), `resumo.tex` e `abstract.tex`. **Pendências:** (a) confirmar o ID exato do modelo da OpenAI na página oficial (fontes divergem entre `gpt-6-luna` e `gpt-5.6-luna`; além disso, a OpenAI documenta chamada de ferramentas no GPT-6 Luna com restrições na *Chat Completions API* — escolher API e fixar `reasoning_effort` no protocolo); (b) estimativa do orçamento de API; (c) corrigir o §9.3 do plano ("mock como condição principal") ao fechar. Não fechado porque o plano (congelado) ainda não foi atualizado.
 
 #### A05 — Reinstalar "permite simular falhas" nos critérios de escolha da aplicação
 **Origem:** análise crítica §2.4 · **P2** · **mês 1** · **Afeta:** §5.1 do plano
@@ -148,7 +148,7 @@ NVML mede GPU; o custo **direto** do harness é trabalho de CPU (normalização,
 **Origem:** análise crítica §2.2 · **P2** · **mês 3** · **Afeta:** §5.1 (MVP); cronograma do mês 4
 O MVP prevê "interface abstrata para dois provedores/adaptadores" (B1), mas o B2 exige que H converse com o **modelo local** — um terceiro ponto de integração, salvo se um dos provedores do B1 for o próprio modelo local. Decidir antes do contrato da interface para dimensionar o mês 4. A escolha do modelo em si permanece no piloto (§12.3 do plano).
 **Revisão 01/10/2026:** depende de A04 (se um provedor do B1 for o modelo local, o problema some) e da **stack de serving** do modelo local (A29). Se o servidor expuser API compatível com OpenAI (ex.: vLLM, Ollama), o adaptador local pode reaproveitar o de um provedor do B1, e muda o que "D direta" significa no B2 (D falaria com o servidor de inferência pelo mesmo SDK). Fechar junto com A29.
-**Decisão:** —
+**Decisão:** ✔ **Decidido em 16/10/2026** — o modelo local **não** é um dos dois provedores do B1: B1 troca entre Anthropic e OpenAI; o modelo aberto (Qwen3.6 27B) entra só no B2. O harness terá **três adaptadores** (Anthropic, OpenAI, modelo local) e o mês 4 deve ser dimensionado para isso. Consequência a registrar no protocolo: se o servidor expuser API compatível com OpenAI, a versão D do B2 pode usar o SDK da OpenAI apontado para o servidor local (definir junto com A29).
 
 #### A13 — Definir determinismo operacional + gate de contagem de tool calls
 **Origem:** análise crítica §2.2 · **P1** · **mês 3** · **Afeta:** §5.1 e §6.3
@@ -221,7 +221,7 @@ Além de tempo/requisição e estabilização térmica, o piloto deve medir se o
 #### A24 — Buscar base acadêmica formal para ADRs, C4 e ISO/IEC 25010
 **Origem:** §12.5 do plano · **P3** · **antes do Cap. 2** · **Afeta:** Cap. 2; §6.1
 Hoje ancorados apenas na prática. Não bloqueia protocolo nem introdução; fechar antes da fundamentação teórica. O arquivo de referências (§6, pendência 6) já traz um *prompt* de busca pronto para isso.
-**Decisão:** —
+**Decisão (parcial):** ✔ **Busca 6 executada em 17/10/2026** (buscas na web, metadados conferidos no Crossref). **ADRs:** Tyree e Akerman (2005, IEEE Software) e Buchgeher et al. (2023, IEEE Access, estudo de mineração do GitHub) entram no `.bib`. **C4:** Mavrogiorgou et al. (2025, IEEE ICoSSE) é a única fonte revisada por pares encontrada; a origem do modelo é prática profissional (livro), não citada. **Acoplamento:** Stevens, Myers e Constantine (1974, IBM Systems Journal). **Ciclo de ferramentas:** Yao et al. (ICLR 2023, ReAct). **Achado:** não se encontrou estudo controlado do efeito de ADRs ou do C4; por isso entram como meio de documentação, e não como objeto de avaliação (dito no texto e no comentário do Cap. 2). **ISO/IEC 25010: em aberto.** O site da ISO bloqueou a leitura (HTTP 403). Fontes secundárias indicam que a edição de 2023 renomeou portabilidade para flexibilidade, e não se confirmou onde fica a substituibilidade (*replaceability*) nessa edição. Deixado como `\pendencia` na Seção 2.2; precisa de leitura da norma. Nenhum dos textos foi lido na íntegra. Aplicado em `2-fundamentacao-teorica.tex` e `referencias.bib`. Não fecha: falta a ISO e a leitura integral dos textos.
 
 #### A25 — Escolher artigo específico do AGENT 2026, se citado nominalmente
 **Origem:** §12.4 do plano · **P3** · **antes do Cap. 3** · **Afeta:** trabalhos relacionados
@@ -246,13 +246,14 @@ O cronograma (§9.1) e todos os prazos daqui são relativos ("mês 3", "mês 8")
 **Origem:** §2 e §10 do plano (revisão de 01/10/2026) · **P2** · **mês 1–2** (revisão bibliográfica) · **Afeta:** §2 e §10 do plano; Cap. 2
 O plano afirma no presente que "as responsabilidades acima **são mapeadas** contra o catálogo de padrões de Liu et al. (R21)" (§2), e a contribuição 1 (§10) depende disso. Mas o mapeamento não aparece em nenhuma seção do plano: a tabela do §2 lista as responsabilidades sem indicar padrão algum. A fonte bibliográfica declarada no §7 confirma que ele **não foi feito** (pendência 8 do arquivo). É a principal defesa contra a crítica de que a definição de harness é *ad hoc*. Ação: abrir R21 e montar a tabela "responsabilidade do §2 → padrão(ões) do catálogo", incluindo os padrões de registro de execução que sustentam o ADR de logging.
 **Definition of done:** tabela de mapeamento no repositório, citada no §2 do plano.
-**Decisão:** —
+**Decisão (parcial):** ✔ **D5a(i) decidida em 17/10/2026**, a partir de `planning/mapeamento-harness-liu2025.md` (leitura do texto completo de R21: das 5 responsabilidades, 1 tem correspondência parcial, 2 parcial ou por analogia e 2 nenhuma). R21 fica como referência **parcial**, com as lacunas declaradas e completadas por outra fonte: responsabilidade 1 com Issarny et al. (R12, *middleware*); 4 com R15 a R17 (saem da reserva, entram no `.bib`); 5 com a documentação do OpenTelemetry (documento técnico, não revisado por pares, rotulado como exceção). Aplicado na seção do *harness* de `2-textuais/2-fundamentacao-teorica.tex` e em `referencias.bib`. **Em aberto:** (a) responsabilidade 3 (contexto e estado) segue parcial, sem complemento (candidato: R9); (b) D5b (parágrafo do Liu e objetivo (a) da Introdução), D5c (correções em R21 de `consolidated_references.md`, plano §2, §2.1, §6.1 e §10) e D5d (Quadro ou texto) não decididas; (c) graus do Quadro são julgamento do autor, a aprovar; (d) Lu et al. (2023a) e o resumo de R12 não lidos. Por isso o item não fecha.
+**Atualização de 17/10/2026 (após o parecer da skill de fundamentação):** (a) **resolvido**: R9 (SagaLLM) entra na responsabilidade 3, só para estado; metadados conferidos no Crossref (v. 18, n. 12, p. 4874-4886, 2025); o escopo multiagente do artigo é declarado fora do trabalho. (d) **D5d decidida**: o Quadro fica no Cap. 2; o detalhamento por responsabilidade migra para a Metodologia (subseção "Delimitação das responsabilidades do harness"); responsabilidades 4 e 5 ficam no mínimo no Cap. 2. Grau da responsabilidade 3 no Quadro passou a "Parcial (contexto); nenhuma (estado)". Cap. 2 ampliado de uma para seis seções (LLMs e agentes; arquitetura; abstração e *middleware*, onde *middleware* passou a morar; *harness*; energia; experimentação). **Novo ponto a confirmar com o orientador:** a recuperação de falhas se limita a transporte e protocolo, e a compensação semântica fica fora do escopo (`\pendencia` na Metodologia). Continuam em aberto: D5b, D5c, aprovação dos graus, leitura de Lu et al. (2023a) e de Issarny et al. (2007).
 
 #### A29 — Escolher o modelo local e a stack de serving do B2
 **Origem:** §12.3 do plano (pendência sem item próprio até esta revisão) · **P2** · **stack no mês 3; modelo no mês 6** · **Afeta:** §6.1 (congelamento), §6.3; A12
 O registro foi semeado a partir das pendências do §12, mas a pendência 3 (modelo local) não tinha item, só uma menção dentro do A12. O plano adia a escolha do **modelo** para o piloto, e isso se mantém. A **stack de serving** (vLLM, Ollama, TGI…; API própria ou compatível com OpenAI) precisa ser conhecida antes, porque define o adaptador local (A12), o que "D direta" significa no B2 e o que entra no congelamento de versões (§6.1). Levantar com a administração do servidor o que já está hospedado e estável.
 **Definition of done:** stack registrada antes do contrato da interface (mês 3); modelo e versão congelados ao fim do piloto (mês 6).
-**Decisão:** —
+**Decisão (parcial):** ✔ **Modelo escolhido em 16/10/2026**, antecipando o mês 6 a pedido do orientador. Hospedados no servidor: `qwen3.6:27b`, `qwen3.6:35b`, `gpt-oss:20b`, `llama3.2:3b` e `glm-5.3`. **Escolhido: `qwen3.6:27b`** (Qwen3.6 27B) — pesos abertos (Apache 2.0, segundo a página da biblioteca Ollama), suporte a ferramentas, cabe em uma única H100 e permite desligar o modo de raciocínio (`think: false`), o que reduz a variância de tokens de saída entre repetições (relevante para A13 e para J/token). Descartados: `glm-5.3` (MoE de ~750 B, exige várias GPUs, o que quebra a atribuição do NVML a um único dispositivo; licença própria); `llama3.2:3b` (inferência tão curta que o sinal do NVML tende a ficar abaixo do ruído, ver A22, e *tool calling* menos confiável para o gate de A13); `qwen3.6:35b` e `gpt-oss:20b` seguem como substitutos (gpt-oss:20b é o fallback se o piloto reprovar o gating do Qwen). Aplicado em `1-introducao.tex` (§1.3), `resumo.tex` e `abstract.tex`. **Em aberto:** a **stack de serving** (a notação `nome:tamanho` sugere Ollama, mas não está confirmado), a quantização e o *digest* do modelo para o congelamento de versões (§6.1), e a política do modo de raciocínio. O piloto (mês 6) valida a escolha: se o gating de corretude funcional falhar, trocar pelo substituto antes de congelar.
 
 #### A30 — Definir o critério de decisão de "compensa" (objetivo específico d)
 **Origem:** revisão da Introdução v1, task T02 (12/10/2026) · **P1** · **mês 3** (antes da coleta) · **Afeta:** objetivo específico (d) da Introdução; protocolo B1/B2; Cap. 3 (task T25); A17, A18, A21
