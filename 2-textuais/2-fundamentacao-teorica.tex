@@ -9,6 +9,7 @@
 %   2.4 O harness: definição e padrões           (seção já redigida, condensada)
 %   2.5 Energia em inferência (Green AI)
 %   2.6 Experimentação controlada
+%   2.7 Síntese do capítulo (Quadro conceito -> uso -> objetivo)
 % Decisões de 17/10/2026: busca 6 executada (ADRs, C4, ISO/IEC 25010); SagaLLM (R9)
 % usado na responsabilidade 3; detalhamento por responsabilidade (antiga 2.1.3)
 % migrado para a Metodologia (Seção "Delimitação das responsabilidades do
@@ -28,12 +29,29 @@
 % al. (2023), Chang e Geng (2025) — o texto só lhes atribui o que consta do
 % título, do resumo ou das notas verificadas do projeto. Lu et al. (2023a)
 % aparece só como citado por Liu et al. (2025, seção 5.3), sem entrada no .bib.
+% Pendências do capítulo resolvidas em 17/10/2026 (verificação na web):
+%   - LLM: Chang et al. (2024, ACM TIST), seção 2.1 lida (versão arXiv v9);
+%     modelo de fundação: Liu et al. (2025), seção 1 (texto completo no repo).
+%   - Chamada de ferramentas: documentação da Anthropic e da OpenAI (técnicas,
+%     rotuladas no texto).
+%   - ISO/IEC 25010:2023: norma não lida (ISO bloqueia, HTTP 403); estrutura
+%     conferida em duas fontes secundárias concordantes (ver .bib).
+%   - Issarny et al. (2007): definição conferida no RESUMO (Semantic Scholar /
+%     HAL inria-00415919); corpo do texto não lido.
+%   - Rafique e Bindschaedler (2026): as quatro funções constam do resumo
+%     ("assembles prompts, mediates tools, and observes lifecycle events") e a
+%     mediação do estado, da seção 1 (versão arXiv 2604.10352v1).
+%   - NVML: documentação da NVIDIA (unidades mW e mJ conferidas na página
+%     Device Queries).
+%   - Contagem "14 dos 18" padrões com Overhead (+1 com Maintenance overhead,
+%     o Prompt/response optimiser) conferida no texto completo de Liu et al.
+% Referências à Metodologia escritas por extenso (sem \ref), porque a entrega
+% parcial não compila o Cap. de Metodologia.
 % Busca 6: não se encontrou estudo controlado do efeito de ADRs ou do C4; a
 % evidência é descritiva ou de mineração de repositórios. Por isso as duas
 % práticas entram como meio de documentação, não como objeto de avaliação.
-% Figuras sugeridas (não produzidas): (a) diagrama em camadas Aplicação ->
-% harness -> provedores, com as cinco responsabilidades, derivável do C4 de
-% contexto; (b) quadro "conceito -> objetivo -> uso no experimento".
+% Figura (a) produzida em TikZ (fig:harness-camadas, Seção 2.4). Sugestão ainda
+% não produzida: quadro "conceito -> objetivo -> uso no experimento".
 % =============================================================================
 \chapter{Fundamentação Teórica}
 \label{cap:fundamentacao}
@@ -43,19 +61,27 @@ trabalho. Parte do objeto que a aplicação consome, o modelo de linguagem usado
 como agente (Seção~\ref{sec:llm-agentes}); passa pelos conceitos de arquitetura
 que dão sentido ao custo de substituição do provedor
 (Seções~\ref{sec:arquitetura} e~\ref{sec:abstracao}); define a camada estudada,
-o \harness{} (Seção~\ref{sec:harness}); e fecha com os dois fundamentos do
+o \harness{} (Seção~\ref{sec:harness}); apresenta os dois fundamentos do
 experimento, a medição de energia em inferência (Seção~\ref{sec:energia}) e a
-experimentação controlada (Seção~\ref{sec:experimentacao}).
+experimentação controlada (Seção~\ref{sec:experimentacao}); e fecha com uma
+síntese que liga cada conceito ao seu uso no trabalho
+(Seção~\ref{sec:fundamentacao-sintese}).
 
 % -----------------------------------------------------------------------------
 \section{Modelos de linguagem, agentes e chamada de ferramentas}
 \label{sec:llm-agentes}
 
-Um modelo de linguagem de grande escala gera texto a partir de uma entrada
-textual, o \textit{prompt}. Usado isoladamente, ele responde a uma pergunta por
-vez; passa a ser componente de uma aplicação quando é consultado por programa,
-por meio da interface de um provedor.\pendencia{REFERÊNCIA NECESSÁRIA: definição
-de LLM e de modelo de fundação.}
+Os modelos de linguagem de grande escala (LLMs) são modelos de linguagem com
+número massivo de parâmetros e grande capacidade de aprendizado, construídos
+sobre o módulo de autoatenção da arquitetura \textit{Transformer}
+\cite{chang2024}. Uma característica central desses modelos é a aprendizagem em
+contexto: o modelo gera texto a partir do contexto que recebe, e o usuário o
+orienta escrevendo esse texto de entrada, o \textit{prompt} \cite{chang2024}.
+Os LLMs integram a classe mais ampla dos modelos de fundação
+(\textit{foundation models}), que \citeonline{liu2025} descrevem como a base
+técnica das tecnologias de IA generativa. Usado isoladamente, o modelo responde
+a uma entrada por vez; passa a ser componente de uma aplicação quando é
+consultado por programa, por meio da API de um provedor.
 
 O termo \textit{agente} tem mais de um uso na literatura. \citeonline{liu2025}
 tratam como agente a IA que assume papel ativo para atingir objetivos do
@@ -65,17 +91,25 @@ da \textbf{IA agêntica}, formada por sistemas multiagente com planejamento e
 coordenação autônoma. Adota-se aqui o primeiro uso: o objeto é o agente de IA
 que atua sobre uma tarefa, e não o sistema multiagente, que está fora do escopo.
 
-O que torna um modelo capaz de agir é a chamada de ferramentas. O modelo não
-executa a ferramenta: ele devolve uma solicitação de chamada, a aplicação a
-executa, envia o resultado de volta, e o modelo prossegue, podendo repetir o
-ciclo várias vezes até concluir.\pendencia{REFERÊNCIA NECESSÁRIA: documentação
-de chamada de ferramentas dos provedores (Anthropic e OpenAI); documento
-técnico, a rotular como não revisado por pares.} A intercalação de etapas de
-raciocínio do modelo com ações sobre fontes externas foi proposta por
-\citeonline{yao2023}. Quanto à interface entre agente e ferramenta,
-\citeonline{zhu2026} comparam o protocolo \textit{Model Context Protocol} (MCP)
-e o protocolo agente-agente A2A; este último trata de sistemas multiagente e,
-portanto, também fica de fora.
+O que torna um modelo capaz de agir é a chamada de ferramentas. A intercalação
+de etapas de raciocínio do modelo com ações sobre fontes externas foi proposta
+por \citeonline{yao2023}, e os provedores comerciais a oferecem hoje como recurso
+das suas APIs. Segundo a documentação dos dois provedores usados neste trabalho,
+o modelo não executa as ferramentas definidas pela aplicação: ele devolve uma
+solicitação de chamada estruturada, com o nome da ferramenta e os argumentos; a
+aplicação executa a operação e envia o resultado em uma nova requisição; e o
+modelo então responde ou solicita novas chamadas
+\cite{anthropictools,openaifunctions}. O ciclo pode, portanto, repetir-se várias
+vezes até a resposta final. O formato dessas mensagens é próprio de cada
+provedor: na API da Anthropic, a solicitação chega em blocos
+\texttt{tool\_use} e o resultado volta em blocos \texttt{tool\_result}
+\cite{anthropictools}, enquanto a OpenAI estrutura o mesmo ciclo em torno de
+chamadas de função (\textit{function calling}) \cite{openaifunctions}. As duas
+fontes são documentos técnicos, não revisados por pares, usados apenas para
+descrever o mecanismo. Quanto à interface entre agente e ferramenta,
+\citeonline{zhu2026} comparam o protocolo \textit{Model Context
+Protocol} (MCP)\glsadd{MCP} e o protocolo agente-agente A2A\glsadd{A2A}; este
+último trata de sistemas multiagente e, portanto, também fica de fora.
 
 Dessa descrição decorre a distinção que o experimento usa. Chama-se aqui
 \textbf{requisição simples} a consulta ao modelo sem ferramentas, e
@@ -90,17 +124,22 @@ o que afeta o custo de cada requisição (Seção~\ref{sec:energia}).
 \section{Arquitetura de software: modificabilidade, acoplamento e dependência de fornecedor}
 \label{sec:arquitetura}
 
-\subsection{Modificabilidade, acoplamento e \textit{vendor lock-in}}
+\subsection{Conceitos e definição adotada}
 \label{subsec:arq-conceitos}
 
 \citeonline{parnas1972} propôs que as decisões de projeto com maior
 probabilidade de mudar fossem encapsuladas em módulos que as escondessem do
 restante do sistema. A modificabilidade é hoje tratada como atributo de
-qualidade arquitetural a ser projetado deliberadamente \cite{bass2021}.
-\pendencia{Avaliar a norma ISO/IEC 25010 como base normativa para
-modificabilidade e portabilidade. Não lida; a edição de 2023 reorganizou as
-características (a portabilidade passou a ser chamada de flexibilidade), então
-conferir a edição e os termos no texto da norma antes de citar.}
+qualidade arquitetural a ser projetado deliberadamente \cite{bass2021}. No
+modelo de qualidade de produto da norma ISO/IEC 25010, em sua edição de 2023, a
+modificabilidade é uma subcaracterística da manutenibilidade, e a
+substituibilidade (\textit{replaceability}), o grau em que um produto pode
+substituir outro com o mesmo propósito no mesmo ambiente, é uma
+subcaracterística da flexibilidade, nome que essa edição deu à antiga
+portabilidade \cite{iso25010}. Os dois termos situam as duas faces do problema
+deste trabalho: a substituibilidade é propriedade do provedor, que pode ou não
+ser trocado por outro, e a modificabilidade é propriedade da aplicação, que
+precisa ser alterada para que a troca aconteça.
 O conceito que mede o quanto uma mudança se propaga é o de acoplamento, o grau
 de dependência entre módulos, que remonta a \citeonline{stevens1974}. Neste
 trabalho, o código de negócio que importa o SDK do provedor e chama o modelo
@@ -118,7 +157,8 @@ nuvens interconectadas. \citeonline{mo2023} comparam empiricamente funções
 nativas do provedor, medindo a portabilidade e métricas de estrutura e qualidade
 de código. Esse último estudo é o precedente mais próximo do desenho adotado
 aqui, e a sua limitação de construto, o uso de métricas de código como
-\textit{proxy} do esforço de troca, é discutida na Seção~\ref{sec:ameacas}.
+\textit{proxy} do esforço de troca, também se aplica a este trabalho e é tratada como ameaça
+à validade de construto na Metodologia.
 
 O trabalho adota como definição a de \textbf{custo de substituição do
 provedor} dada na Seção~\ref{sec:problema}: o esforço de alteração do código
@@ -130,7 +170,8 @@ mensurável.
 \label{subsec:arq-documentacao}
 
 A fase de solução do trabalho é documentada por registros de decisão
-arquitetural (\textit{Architecture Decision Records}, ADRs) e pelo modelo C4.
+arquitetural (\textit{Architecture Decision Records}, ADRs)\glsadd{ADR} e pelo
+modelo C4.
 \citeonline{tyree2005} tratam a decisão arquitetural como objeto de
 documentação própria e propõem uma estrutura para registrá-la. Em estudo de
 mineração de repositórios do GitHub, \citeonline{buchgeher2023} verificaram que
@@ -155,8 +196,10 @@ Uma camada de abstração interpõe, entre o código que consome um serviço e o
 serviço em si, uma interface própria, de modo que o consumidor passa a depender
 dessa interface e não das particularidades de cada fornecedor. O
 \textit{middleware} é a forma consolidada dessa ideia: \citeonline{issarny2007}
-o definem como a camada de \textit{software} que oferece soluções reutilizáveis
-para a heterogeneidade, a interoperabilidade, a segurança e a confiabilidade.
+o definem como a camada de \textit{software} situada entre o sistema operacional
+em rede e a aplicação, que oferece soluções reutilizáveis e bem conhecidas para
+problemas recorrentes, como heterogeneidade, interoperabilidade, segurança e
+confiabilidade (\textit{dependability}).
 A heterogeneidade em jogo neste trabalho é a das convenções de cada provedor de
 modelos, que definem formatos próprios de mensagens, de declaração e chamada de
 ferramentas, de erros e de limites de uso (Seção~\ref{sec:contexto}).
@@ -172,16 +215,15 @@ integração direta.
 A abstração, porém, tem preço. Toda camada acrescenta indireção a cada
 requisição, e o acoplamento ao provedor pode ser trocado por acoplamento à
 interface da própria camada, risco que o catálogo de \citeonline{liu2025}
-registra para o \textit{Tool/agent registry} (Seção~\ref{sec:delimitacao}).
-Em leitura própria do catálogo, 14 dos 18 padrões listam sobrecarga
-(\textit{overhead}) entre as desvantagens, e nenhum a quantifica. Esse custo da
-indireção é o que a hipótese energética deste trabalho coloca à prova, e o
-benefício da abstração, o que o custo de substituição mede. O conceito de
-\textit{middleware} explica por que uma camada intermediária absorve a
-heterogeneidade, mas não indica como projetá-la para provedores de modelos; essa
-transposição é do autor. \pendencia{Issarny et al. (2007) não foi lido na
-íntegra; a formulação segue a das notas do projeto. Reverificar a definição de
-\textit{middleware} no texto.}
+registra para o \textit{Tool/agent registry}, que pode tornar-se ele próprio uma
+solução de aprisionamento a fornecedor e um ponto único de falha. Em leitura
+própria do catálogo, 14 dos 18 padrões listam a sobrecarga (\textit{overhead})
+entre as desvantagens, e um décimo quinto, a sobrecarga de manutenção; nenhum a
+quantifica. Esse custo da indireção é o que a hipótese energética deste trabalho
+coloca à prova, e o benefício da abstração, o que o custo de substituição mede.
+O conceito de \textit{middleware} explica por que uma camada intermediária
+absorve a heterogeneidade, mas não indica como projetá-la para provedores de
+modelos; essa transposição é do autor.
 
 % -----------------------------------------------------------------------------
 \section{O \textit{harness}: definição adotada e padrões arquiteturais}
@@ -194,9 +236,10 @@ O termo \harness{} é recente na literatura sobre agentes de IA e não tem
 definição canônica. \citeonline{rafique2026} o empregam para a camada de
 \textit{software} que envolve o modelo e se responsabiliza por montar o contexto
 de cada chamada, mediar a execução de ferramentas, gerenciar o estado e observar
-os eventos do ciclo de vida do agente.\pendencia{Confirmar, no texto integral de
-Rafique e Bindschaedler (2026), que as quatro funções são descritas pelos
-autores; o artigo trata de um sistema específico (gerência de memória virtual).}
+os eventos do ciclo de vida do agente, sendo o único componente que faz a
+mediação entre o modelo e o seu estado. O objeto do artigo, porém, é um sistema
+específico, uma camada de memória virtual para o estado do agente, e não a
+definição do termo.
 A definição adotada neste trabalho parte
 desse uso e lhe acrescenta uma posição arquitetural explícita: o \harness{} é a
 \textbf{camada arquitetural intermediária entre a aplicação \textit{web} e o
@@ -206,7 +249,50 @@ provedores. O fluxo de uma requisição passa, portanto, da aplicação ao
 \harness{} e deste ao provedor. A camada não implementa regras de negócio, não
 substitui a interface com o usuário e não treina modelos. Em termos da
 Seção~\ref{sec:abstracao}, é um \textit{middleware} aplicado aos provedores de
-modelos.
+modelos. A Figura~\ref{fig:harness-camadas} contrasta as duas formas de
+integração comparadas no experimento: na integração direta, o código de negócio
+depende do SDK do provedor em cada ponto de chamada; com o \harness{}, depende
+apenas da interface da camada, e a troca de provedor deveria ficar confinada a
+ela, o que o experimento verifica.
+
+\begin{figure}[h!]
+  \centering
+  \Caption{\label{fig:harness-camadas}Integração direta ao provedor e integração
+  por meio do \harness{}}
+  \UFCfig{}{
+    \begin{tikzpicture}[
+        font=\small,
+        caixa/.style={draw, rectangle, align=center, minimum width=3.6cm,
+                      minimum height=0.9cm},
+        seta/.style={-{Stealth[length=2mm]}},
+        node distance=0.7cm]
+      % (a) integração direta
+      \node[font=\small\bfseries] (ta) {(a) Integração direta};
+      \node[caixa, below=0.4cm of ta] (app1) {Código de negócio\\(vários pontos de chamada)};
+      \node[caixa, below=of app1] (sdk1) {SDK do provedor};
+      \node[caixa, below=of sdk1] (prov1) {Provedor de IA};
+      \draw[seta] (app1) -- (sdk1);
+      \draw[seta] (sdk1) -- (prov1);
+      % (b) integração com harness
+      \node[font=\small\bfseries, right=3.4cm of ta] (tb) {(b) Integração com \harness{}};
+      \node[caixa, below=0.4cm of tb] (app2) {Código de negócio};
+      \node[caixa, below=of app2, text width=4.6cm, font=\footnotesize] (h)
+        {\textbf{Camada de \harness{}}\\
+         (1) abstração da comunicação\\
+         (2) orquestração e ferramentas\\
+         (3) contexto e estado\\
+         (4) tratamento de falhas\\
+         (5) registro de eventos};
+      \node[caixa, below=of h, minimum width=2cm, xshift=-1.3cm] (pa) {Provedor A};
+      \node[caixa, below=of h, minimum width=2cm, xshift=1.3cm] (pb) {Provedor B};
+      \draw[seta] (app2) -- node[right, font=\footnotesize] {interface da camada} (h);
+      \draw[seta] (pa.north |- h.south) -- (pa.north);
+      \draw[seta] (pb.north |- h.south) -- (pb.north);
+    \end{tikzpicture}
+  }{
+    \Fonte{Elaborado pelo autor}
+  }
+\end{figure}
 
 Atribuem-se à camada cinco responsabilidades: (1) abstração e padronização da
 comunicação com os provedores; (2) orquestração de chamadas e execução
@@ -301,8 +387,7 @@ um padrão do catálogo; a primeira corresponde por analogia, a terceira em part
 padrões. A razão está no escopo do catálogo: o seu objeto é o agente que
 persegue objetivos e gera planos, e não a camada que o liga ao provedor do
 modelo. O exame de cada correspondência, com os padrões e as fontes de
-complemento, pertence ao projeto da camada e consta na
-Seção~\ref{sec:delimitacao}.
+complemento, pertence ao projeto da camada e é detalhado na Metodologia.
 
 Duas lacunas pedem fontes próprias. Na responsabilidade 4, o \textit{Retry} (nova
 tentativa após falha transitória) e o \textit{Circuit Breaker} (interrupção
@@ -369,9 +454,17 @@ que estimativas baseadas em contagem de operações de ponto flutuante
 subestimam o consumo real e que otimizações bem aplicadas reduzem a energia total
 em até 73\%, o que mostra que o consumo depende da pilha de \textit{software}, e
 não somente do modelo. Por isso o trabalho mede a energia da GPU por telemetria
-do \textit{hardware}, com a biblioteca NVML, no protocolo já empregado pelo autor
-\cite{barros2026}.\pendencia{REFERÊNCIA NECESSÁRIA: documentação da NVML
-(documento técnico da fabricante, a rotular como não revisado por pares).}
+do \textit{hardware}, no protocolo já empregado pelo autor \cite{barros2026}. A
+telemetria é lida pela NVIDIA Management Library (NVML)\glsadd{NVML}, API em C
+da fabricante para monitorar e gerenciar suas GPUs, que expõe as duas grandezas
+definidas acima: a potência consumida pela GPU e pelos seus circuitos
+associados, em miliwatts, e a energia total consumida desde o último
+carregamento do \textit{driver}, em milijoules \cite{nvml}. A energia de uma
+requisição pode, assim, ser obtida pela diferença entre duas leituras do
+contador ou pela integração no tempo das leituras de potência; a escolha entre
+as duas e a frequência de amostragem são detalhadas na Metodologia. A documentação da NVML é um documento técnico da
+fabricante, não revisado por pares, usado para descrever o instrumento de
+medição.
 
 A unidade de medida é a requisição completa, e não a chamada isolada ao modelo.
 \citeonline{ifath2026} caracterizam os compromissos entre desempenho e energia em
@@ -392,15 +485,80 @@ demais condições sob controle e observa o efeito sobre variáveis dependentes.
 Neste trabalho, a variável independente é a forma de integração com o provedor,
 com ou sem a camada de \harness{}, aplicada a duas versões funcionalmente
 equivalentes de uma mesma aplicação; as variáveis dependentes são o custo de
-substituição do provedor e o custo energético, medidos nos \textit{benchmarks}
-descritos no Capítulo~\ref{cap:metodologia}. A equivalência funcional é o que
+substituição do provedor e o custo energético, medidos em dois
+\textit{benchmarks} descritos na Metodologia. A equivalência funcional é o que
 permite atribuir a diferença observada à camada, e não a outra causa.
 
 Os mesmos autores classificam as ameaças à validade em quatro tipos: interna,
-externa, de construto e de conclusão, taxonomia que estrutura a
-Seção~\ref{sec:ameacas}. Duas decisões do desenho dependem desse referencial: o
+externa, de construto e de conclusão, taxonomia que estrutura a análise de
+ameaças à validade na Metodologia. Duas decisões do desenho dependem desse referencial: o
 uso de métricas de estrutura de código como medida do custo de substituição, com
 precedente em \citeonline{mo2023}, e o critério de decisão final, definido antes
 da coleta de dados, para que a conclusão não seja ajustada aos resultados
 (Seção~\ref{subsec:objetivos-especificos}). A escolha dessas
 medidas e dos procedimentos estatísticos é detalhada na Metodologia.
+
+% -----------------------------------------------------------------------------
+% Síntese: o quadro deriva só do próprio capítulo e dos objetivos da Introdução;
+% não traz dado novo.
+\section{Síntese do capítulo}
+\label{sec:fundamentacao-sintese}
+
+Os conceitos deste capítulo se encadeiam em torno de uma mesma decisão
+arquitetural. O ciclo de ferramentas dos agentes (Seção~\ref{sec:llm-agentes})
+aumenta a quantidade de código que depende das convenções de um provedor; o
+acoplamento resultante é o que a modificabilidade e o custo de substituição
+medem (Seção~\ref{sec:arquitetura}); a camada de abstração, na forma de
+\textit{middleware}, é a resposta arquitetural a esse acoplamento
+(Seção~\ref{sec:abstracao}), e o \harness{} é a sua aplicação aos provedores de
+modelos (Seção~\ref{sec:harness}); a indireção que a camada introduz é o que a
+medição de energia coloca à prova (Seção~\ref{sec:energia}); e a experimentação
+controlada é o que permite atribuir à camada, e não a outra causa, as diferenças
+observadas (Seção~\ref{sec:experimentacao}). O Quadro~\ref{qua:conceitos-uso}
+resume o papel de cada conceito no trabalho.
+
+\begin{quadro}[h!]
+  \centering
+  \Caption{\label{qua:conceitos-uso}Conceitos da fundamentação e o seu uso no
+  trabalho}
+  \UFCqua{}{
+    \small
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.2cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{2.4cm}|}
+      \hline
+      \textbf{Conceito} & \textbf{Uso no trabalho} & \textbf{Objetivo específico} \\
+      \hline
+      LLM, agente e chamada de ferramentas (Seção~\ref{sec:llm-agentes})
+        & Distinção entre requisição simples e agêntica, que forma um dos
+          fatores da medição de energia
+        & (d), (e) \\
+      \hline
+      Modificabilidade, acoplamento e substituibilidade (Seção~\ref{subsec:arq-conceitos})
+        & Definição e métricas do custo de substituição do provedor
+        & (c), (e) \\
+      \hline
+      ADRs e modelo C4 (Seção~\ref{subsec:arq-documentacao})
+        & Documentação das decisões e da arquitetura da camada
+        & (a) \\
+      \hline
+      Camada de abstração e \textit{middleware} (Seção~\ref{sec:abstracao})
+        & Fundamento da responsabilidade 1 e da versão com a camada
+        & (a), (b) \\
+      \hline
+      \harness{} e catálogo de padrões (Seção~\ref{sec:harness})
+        & Definição da camada e delimitação das suas responsabilidades
+        & (a) \\
+      \hline
+      Energia, potência e telemetria por NVML (Seção~\ref{sec:energia})
+        & Grandezas e instrumento da medição do custo energético
+        & (d), (e) \\
+      \hline
+      Experimentação controlada (Seção~\ref{sec:experimentacao})
+        & Comparação entre as duas versões, ameaças à validade e critério de
+          decisão definido antes da coleta
+        & (b), (e) \\
+      \hline
+    \end{tabularx}
+  }{
+    \Fonte{Elaborado pelo autor}
+  }
+\end{quadro}

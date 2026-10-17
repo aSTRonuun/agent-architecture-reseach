@@ -7,10 +7,10 @@
 % Modelos (feedback do orientador, 16/10/2026: "definir quais modelos serão
 % usados na integração"): B1 = Claude Haiku 5.5 (Anthropic) + GPT-6 Luna
 % (OpenAI); B2 = Qwen3.6 27B no servidor H100. Decisões A04/A12/A29.
-% VERIFICAR antes de entregar: o ID exato do modelo da OpenAI (fontes divergem
-% entre "gpt-6-luna" e "gpt-5.6-luna") na página oficial de modelos da OpenAI.
-% Ressalva A28: enquanto aberto, NÃO afirmar que as responsabilidades do harness
-% já foram mapeadas contra R21.
+% ID do modelo da OpenAI conferido em 17/10/2026 na página oficial de modelos
+% (developers.openai.com/api/docs/models): "gpt-6-luna", com suporte a funções.
+% Ressalva A28 (D5a(i)): Liu et al. é referência PARCIAL; o parágrafo do harness
+% diz "dialogam, em parte" e remete ao Cap. 2. D5b segue com o autor.
 % Números de contexto (Stack Overflow, Menlo, IEA): relatórios, acesso 09/10/2026.
 % =============================================================================
 \chapter{Introdução}
@@ -91,10 +91,11 @@ acessa diretamente os SDKs dos provedores. Atribuem-se a essa camada a
 padronização da comunicação com os provedores, a orquestração de chamadas e a
 execução controlada de ferramentas, o gerenciamento de contexto e estado, o
 tratamento de falhas e o registro estruturado de eventos; ela não implementa
-regras de negócio nem treina modelos. Essas responsabilidades dialogam com o
-catálogo de padrões arquiteturais para agentes baseados em modelos de fundação
-proposto por \citeonline{liu2025}, que serve de referência para o projeto da
-camada.
+regras de negócio nem treina modelos. Essas responsabilidades dialogam, em
+parte, com o catálogo de padrões arquiteturais para agentes baseados em modelos
+de fundação proposto por \citeonline{liu2025}; o
+Capítulo~\ref{cap:fundamentacao} mostra até onde esse catálogo as sustenta e
+que outras fontes cobrem o que ele não cobre.
 
 Essa camada, contudo, pode não ser gratuita. Cada nível de indireção acrescenta
 trabalho a toda requisição --- normalização de mensagens, serialização,
@@ -136,7 +137,8 @@ avaliação dessa decisão. Há razão para esperar que o efeito direto seja peq
 em uma requisição isolada. Tomando como referência os 0,047~kWh por mil
 inferências de geração de texto citados acima \cite{luccioni2024} (cerca de
 170~J por requisição) e supondo, como premissa do autor, que o trabalho próprio
-da camada ocupe a CPU do servidor por até 10~ms a cerca de 100~W
+da camada ocupe a unidade central de processamento
+(CPU)\glsadd{CPU} do servidor por até 10~ms a cerca de 100~W
 (aproximadamente 1~J), o acréscimo direto seria inferior a 1\% da energia da
 requisição. Em fluxos agênticos o efeito pode ser maior, pois a camada conduz o
 ciclo de ferramentas e pode alterar o número de chamadas e o tamanho do contexto
