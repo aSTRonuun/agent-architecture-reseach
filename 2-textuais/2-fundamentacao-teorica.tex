@@ -45,11 +45,32 @@
 %     Device Queries).
 %   - Contagem "14 dos 18" padrões com Overhead (+1 com Maintenance overhead,
 %     o Prompt/response optimiser) conferida no texto completo de Liu et al.
-% Referências à Metodologia escritas por extenso (sem \ref), porque a entrega
-% parcial não compila o Cap. de Metodologia.
+% Remissão à Metodologia: uma só, na abertura do capítulo, condicionada a
+% \ifentregaparcial (a entrega parcial não compila o Cap. de Metodologia; sem
+% ela, o \ref sairia como "??"). T05 (21/10/2026): as ressalvas sobre documentos
+% técnicos e definições do autor também aparecem só na abertura.
 % Busca 6: não se encontrou estudo controlado do efeito de ADRs ou do C4; a
 % evidência é descritiva ou de mineração de repositórios. Por isso as duas
 % práticas entram como meio de documentação, não como objeto de avaliação.
+% T04 (21/10/2026): trechos que repetiam a Introdução foram reescritos aqui
+% (mecanismo e uso no experimento) e condensados na Introdução. Afirmações novas
+% a CONFERIR no texto das fontes (só existência/resumo constam do projeto):
+%   - Parnas (1972): ocultação de informação, módulo esconde decisão provável de mudar;
+%   - Bass et al. (2021): modificabilidade como facilidade de mudar o sistema;
+%   - Sculley et al. (2015): glue code = código para levar dados para dentro e
+%     para fora de pacotes de uso geral; custo de longo prazo = congelar o
+%     sistema nas particularidades do pacote;
+%   - Schwartz et al. (2020): FPO como indicador proposto;
+%   - Fernández et al. (2025): lista de otimizações (decodificação, frameworks,
+%     paralelismo) e "utilização teórica da GPU" (esta consta do resumo).
+% T08/T09 (21/10/2026): 2.3, §1 ancorada em Parnas (1972), conferido numa cópia
+% do texto (math.pku.edu.cn; o original na ACM bloqueou, HTTP 403): módulo cuja
+% "interface or definition was chosen to reveal as little as possible about its
+% inner workings" e que esconde uma decisão de projeto dos demais. C4: fonte
+% primária = site do criador (c4model.com, acesso 21/10/2026), que nomeia os
+% quatro diagramas (system context, container, component, code); sem artigo
+% revisado por pares do criador. Livro de Brown (O'Reilly, 2026) NÃO citado: ISBN
+% e data divergem entre as páginas da editora e dos varejistas.
 % Figura (a) produzida em TikZ (fig:harness-camadas, Seção 2.4). Sugestão ainda
 % não produzida: quadro "conceito -> objetivo -> uso no experimento".
 % =============================================================================
@@ -66,6 +87,18 @@ experimento, a medição de energia em inferência (Seção~\ref{sec:energia}) e
 experimentação controlada (Seção~\ref{sec:experimentacao}); e fecha com uma
 síntese que liga cada conceito ao seu uso no trabalho
 (Seção~\ref{sec:fundamentacao-sintese}).
+
+Duas convenções valem para todo o capítulo. A primeira trata das fontes: os
+documentos técnicos, isto é, a documentação da Anthropic, da OpenAI, da NVIDIA e
+do OpenTelemetry e o \textit{site} do modelo C4, não são revisados por pares e
+servem só para descrever mecanismos, instrumentos e notações, nunca para
+sustentar afirmação empírica. A segunda
+trata das definições: as distinções e classificações operacionais, como a de
+requisição simples e agêntica, a lista de responsabilidades do \harness{} e a
+sua correspondência com a literatura, são decisões do autor, e não resultados
+da literatura. O detalhamento de protocolo, com instrumentos, métricas e
+procedimentos estatísticos, fica para
+\ifentregaparcial a Metodologia\else o Capítulo~\ref{cap:metodologia}\fi.
 
 % -----------------------------------------------------------------------------
 \section{Modelos de linguagem, agentes e chamada de ferramentas}
@@ -104,9 +137,7 @@ vezes até a resposta final. O formato dessas mensagens é próprio de cada
 provedor: na API da Anthropic, a solicitação chega em blocos
 \texttt{tool\_use} e o resultado volta em blocos \texttt{tool\_result}
 \cite{anthropictools}, enquanto a OpenAI estrutura o mesmo ciclo em torno de
-chamadas de função (\textit{function calling}) \cite{openaifunctions}. As duas
-fontes são documentos técnicos, não revisados por pares, usados apenas para
-descrever o mecanismo. Quanto à interface entre agente e ferramenta,
+chamadas de função (\textit{function calling}) \cite{openaifunctions}. Quanto à interface entre agente e ferramenta,
 \citeonline{zhu2026} comparam o protocolo \textit{Model Context
 Protocol} (MCP)\glsadd{MCP} e o protocolo agente-agente A2A\glsadd{A2A}; este
 último trata de sistemas multiagente e, portanto, também fica de fora.
@@ -114,8 +145,7 @@ Protocol} (MCP)\glsadd{MCP} e o protocolo agente-agente A2A\glsadd{A2A}; este
 Dessa descrição decorre a distinção que o experimento usa. Chama-se aqui
 \textbf{requisição simples} a consulta ao modelo sem ferramentas, e
 \textbf{requisição agêntica} a que envolve o ciclo de ferramentas, com várias
-idas e vindas entre aplicação e modelo. É uma definição operacional do autor,
-detalhada na Metodologia. A diferença importa por duas razões: o ciclo de
+idas e vindas entre aplicação e modelo. A diferença importa por duas razões: o ciclo de
 ferramentas é parte do trabalho que uma camada intermediária pode orquestrar, e
 a quantidade de chamadas e o tamanho do contexto crescem a cada volta do ciclo,
 o que afeta o custo de cada requisição (Seção~\ref{sec:energia}).
@@ -127,11 +157,14 @@ o que afeta o custo de cada requisição (Seção~\ref{sec:energia}).
 \subsection{Conceitos e definição adotada}
 \label{subsec:arq-conceitos}
 
-\citeonline{parnas1972} propôs que as decisões de projeto com maior
-probabilidade de mudar fossem encapsuladas em módulos que as escondessem do
-restante do sistema. A modificabilidade é hoje tratada como atributo de
-qualidade arquitetural a ser projetado deliberadamente \cite{bass2021}. No
-modelo de qualidade de produto da norma ISO/IEC 25010, em sua edição de 2023, a
+O ponto de partida é o princípio de ocultação de informação de
+\citeonline{parnas1972}: cada módulo esconde uma decisão de projeto, escolhida
+por ser provável que mude, de modo que a mudança fique confinada a ele. Aplicado
+ao problema deste trabalho, a decisão a esconder é a escolha do provedor de
+modelos, e um módulo que a esconda faz da troca uma alteração local.
+\citeonline{bass2021} tratam a facilidade de mudar o sistema como o atributo de
+qualidade da modificabilidade, que cabe ao arquiteto projetar, e não esperar
+como efeito colateral. No modelo de qualidade de produto da norma ISO/IEC 25010, em sua edição de 2023, a
 modificabilidade é uma subcaracterística da manutenibilidade, e a
 substituibilidade (\textit{replaceability}), o grau em que um produto pode
 substituir outro com o mesmo propósito no mesmo ambiente, é uma
@@ -144,9 +177,12 @@ O conceito que mede o quanto uma mudança se propaga é o de acoplamento, o grau
 de dependência entre módulos, que remonta a \citeonline{stevens1974}. Neste
 trabalho, o código de negócio que importa o SDK do provedor e chama o modelo
 diretamente está acoplado a esse provedor, e cada ponto de dependência direta é
-um lugar a alterar numa troca. É o mesmo mecanismo que \citeonline{sculley2015}
-descrevem como dívida técnica: o \textit{glue code} que adapta o sistema à API
-de um pacote específico o prende às particularidades desse pacote.
+um lugar a alterar numa troca. A literatura sobre dívida técnica em
+aprendizado de máquina dá nome a esse código: \citeonline{sculley2015} chamam de
+\textit{glue code} o código escrito para levar dados para dentro e para fora de
+pacotes de uso geral, e apontam o seu custo de longo prazo, o de congelar o
+sistema nas particularidades do pacote escolhido. O SDK de um provedor é um
+desses pacotes, e o código de negócio que o chama é a cola.
 
 A dependência de um único fornecedor (\textit{vendor lock-in}) é a forma
 organizacional desse acoplamento: trocar de fornecedor custa tanto que a troca
@@ -157,14 +193,16 @@ nuvens interconectadas. \citeonline{mo2023} comparam empiricamente funções
 nativas do provedor, medindo a portabilidade e métricas de estrutura e qualidade
 de código. Esse último estudo é o precedente mais próximo do desenho adotado
 aqui, e a sua limitação de construto, o uso de métricas de código como
-\textit{proxy} do esforço de troca, também se aplica a este trabalho e é tratada como ameaça
-à validade de construto na Metodologia.
+\textit{proxy} do esforço de troca, também se aplica a este trabalho, como ameaça
+à validade de construto.
 
-O trabalho adota como definição a de \textbf{custo de substituição do
-provedor} dada na Seção~\ref{sec:problema}: o esforço de alteração do código
-necessário para trocar o provedor preservando o comportamento da aplicação. É a
-quantidade que a modificabilidade e o acoplamento, nos termos acima, tornam
-mensurável.
+Os conceitos acima são o que torna mensurável o \textbf{custo de substituição
+do provedor} definido na Seção~\ref{sec:problema}. A extensão do código
+alterado expressa a modificabilidade, isto é, quanto da aplicação precisa mudar;
+o número de pontos de dependência direta ao SDK expressa o acoplamento, isto é,
+em quantos lugares a mudança se propaga; e os casos de uso que continuam
+funcionando após a troca indicam se o comportamento da aplicação foi
+preservado.
 
 \subsection{Documentação arquitetural: ADRs e modelo C4}
 \label{subsec:arq-documentacao}
@@ -176,9 +214,11 @@ modelo C4.
 documentação própria e propõem uma estrutura para registrá-la. Em estudo de
 mineração de repositórios do GitHub, \citeonline{buchgeher2023} verificaram que
 a adoção de ADRs ainda é baixa, embora crescente, e que a maioria dos
-repositórios usa o mesmo modelo de registro. O modelo C4 descreve a arquitetura
-em quatro níveis, de contexto, contêineres, componentes e código
-\cite{mavrogiorgou2025}. Neste trabalho, o diagrama de contêineres é o que
+repositórios usa o mesmo modelo de registro. O modelo C4, criado por
+\citeonline{brown-c4}, descreve a arquitetura em quatro tipos de diagrama: de
+contexto do sistema, de contêineres, de componentes e de código.
+\citeonline{mavrogiorgou2025} o apresentam em um guia de pesquisa para o projeto
+de arquiteturas. Neste trabalho, o diagrama de contêineres é o que
 mostra a posição do \harness{} entre a aplicação e os provedores, e os ADRs
 registram as decisões de projeto da camada, entre elas as de recuperação de
 falhas e de registro de eventos.
@@ -192,25 +232,31 @@ meio de documentação do projeto, e não como objeto de avaliação.
 \section{Camadas de abstração e \textit{middleware}}
 \label{sec:abstracao}
 
-Uma camada de abstração interpõe, entre o código que consome um serviço e o
-serviço em si, uma interface própria, de modo que o consumidor passa a depender
-dessa interface e não das particularidades de cada fornecedor. O
+Uma camada de abstração aplica ao acesso a um serviço o princípio de ocultação
+de informação (Seção~\ref{subsec:arq-conceitos}): interpõe, entre o código que
+consome o serviço e o serviço em si, uma interface própria, definida para
+revelar o mínimo sobre o funcionamento interno \cite{parnas1972}, de modo que o
+consumidor passa a depender dessa interface e não das particularidades de cada
+fornecedor. O
 \textit{middleware} é a forma consolidada dessa ideia: \citeonline{issarny2007}
 o definem como a camada de \textit{software} situada entre o sistema operacional
 em rede e a aplicação, que oferece soluções reutilizáveis e bem conhecidas para
 problemas recorrentes, como heterogeneidade, interoperabilidade, segurança e
 confiabilidade (\textit{dependability}).
-A heterogeneidade em jogo neste trabalho é a das convenções de cada provedor de
-modelos, que definem formatos próprios de mensagens, de declaração e chamada de
-ferramentas, de erros e de limites de uso (Seção~\ref{sec:contexto}).
+A heterogeneidade em jogo neste trabalho é a que separa os provedores de
+modelos, cada um com suas convenções para mensagens, ferramentas, erros e
+limites de uso (Seção~\ref{sec:contexto}). Os formatos descritos na
+Seção~\ref{sec:llm-agentes}, com blocos \texttt{tool\_use} e
+\texttt{tool\_result} de um lado e chamadas de função do outro, são um exemplo
+concreto: o mesmo ciclo de ferramentas, expresso em dois vocabulários.
 
-A mesma estratégia aparece em outros pontos da literatura citada. Mitigar o
-\textit{lock-in} por meio de uma camada intermediária é problema consolidado
-de arquitetura fora da IA \cite{kaur2017,mo2023}. No domínio dos agentes,
-\citeonline{kandogan2025} propõem uma arquitetura de referência para IA composta
-com registros de agentes e de dados que abstraem provedores e APIs
-proprietárias, ilustrada por um caso de uso e sem comparação controlada com uma
-integração direta.
+A mesma estratégia reaparece nos trabalhos da seção anterior, em que uma camada
+intermediária, a biblioteca de abstração no caso de \citeonline{mo2023}, é o
+meio de reduzir a dependência do fornecedor \cite{kaur2017}. No domínio dos
+agentes, o papel de intermediário cabe aos registros de agentes e de dados da
+arquitetura de referência de \citeonline{kandogan2025}, que abstraem provedores
+e APIs proprietárias: o consumidor se relaciona com o registro, e não com cada
+provedor.
 
 A abstração, porém, tem preço. Toda camada acrescenta indireção a cada
 requisição, e o acoplamento ao provedor pode ser trocado por acoplamento à
@@ -223,7 +269,7 @@ quantifica. Esse custo da indireção é o que a hipótese energética deste tra
 coloca à prova, e o benefício da abstração, o que o custo de substituição mede.
 O conceito de \textit{middleware} explica por que uma camada intermediária
 absorve a heterogeneidade, mas não indica como projetá-la para provedores de
-modelos; essa transposição é do autor.
+modelos, o que cabe ao projeto da camada.
 
 % -----------------------------------------------------------------------------
 \section{O \textit{harness}: definição adotada e padrões arquiteturais}
@@ -240,14 +286,13 @@ os eventos do ciclo de vida do agente, sendo o único componente que faz a
 mediação entre o modelo e o seu estado. O objeto do artigo, porém, é um sistema
 específico, uma camada de memória virtual para o estado do agente, e não a
 definição do termo.
-A definição adotada neste trabalho parte
-desse uso e lhe acrescenta uma posição arquitetural explícita: o \harness{} é a
-\textbf{camada arquitetural intermediária entre a aplicação \textit{web} e o
-provedor de IA}, que abstrai e centraliza as interações da aplicação com modelos
-e agentes, de modo que a aplicação não acessa diretamente os SDKs dos
-provedores. O fluxo de uma requisição passa, portanto, da aplicação ao
-\harness{} e deste ao provedor. A camada não implementa regras de negócio, não
-substitui a interface com o usuário e não treina modelos. Em termos da
+A definição operacional enunciada na
+Seção~\ref{sec:contexto} parte desse uso e lhe acrescenta uma posição
+arquitetural: entre a aplicação e o provedor, de modo que o código de negócio
+deixa de importar o SDK. O fluxo de uma requisição passa, assim, da aplicação ao
+\harness{} e deste ao provedor, e fica fora da camada o que não é integração com
+o modelo: as regras de negócio, a interface com o usuário e o treinamento de
+modelos. Em termos da
 Seção~\ref{sec:abstracao}, é um \textit{middleware} aplicado aos provedores de
 modelos. A Figura~\ref{fig:harness-camadas} contrasta as duas formas de
 integração comparadas no experimento: na integração direta, o código de negócio
@@ -298,8 +343,8 @@ Atribuem-se à camada cinco responsabilidades: (1) abstração e padronização 
 comunicação com os provedores; (2) orquestração de chamadas e execução
 controlada de ferramentas; (3) gerenciamento de contexto e estado da interação;
 (4) tratamento e recuperação de falhas; e (5) registro estruturado de eventos e
-auditoria. Essa lista é uma definição operacional do autor, e não um resultado
-da literatura. Por isso, as subseções seguintes a confrontam com publicações:
+auditoria. Como a lista não vem da literatura, as subseções seguintes a
+confrontam com publicações:
 apresentam o catálogo de padrões de \citeonline{liu2025} e verificam,
 responsabilidade a responsabilidade, o quanto ele a sustenta e que outra fonte
 cobre o que ele não cobre.
@@ -336,8 +381,7 @@ padrão foi aplicado nelas, e não que elas o entregam com qualidade comprovada.
 Classifica-se a correspondência entre cada responsabilidade e o catálogo em três
 graus: \textit{parcial}, quando um padrão cobre parte da função; \textit{analogia},
 quando a função é semelhante, mas o objeto é diferente; e \textit{nenhuma},
-quando o catálogo não traz padrão aplicável. A classificação é um julgamento do
-autor. O Quadro~\ref{qua:harness-liu} resume o resultado e indica, nas lacunas, a
+quando o catálogo não traz padrão aplicável. O Quadro~\ref{qua:harness-liu} resume o resultado e indica, nas lacunas, a
 fonte que as complementa.
 
 \begin{quadro}[h!]
@@ -387,7 +431,7 @@ um padrão do catálogo; a primeira corresponde por analogia, a terceira em part
 padrões. A razão está no escopo do catálogo: o seu objeto é o agente que
 persegue objetivos e gera planos, e não a camada que o liga ao provedor do
 modelo. O exame de cada correspondência, com os padrões e as fontes de
-complemento, pertence ao projeto da camada e é detalhado na Metodologia.
+complemento, pertence ao projeto da camada.
 
 Duas lacunas pedem fontes próprias. Na responsabilidade 4, o \textit{Retry} (nova
 tentativa após falha transitória) e o \textit{Circuit Breaker} (interrupção
@@ -397,15 +441,14 @@ de modelos \cite{mendonca2020}. Na responsabilidade 5, adota-se a documentação
 do OpenTelemetry, projeto de padronização de telemetria, segundo a qual o
 registro (\textit{log}) estruturado pode carregar o identificador do rastreio e
 do segmento da requisição (\textit{TraceId} e \textit{SpanId}), que o associam à
-requisição em cujo processamento foi emitido \cite{opentelemetrylogs}. Trata-se de documento técnico, não
-revisado por pares, usado apenas para fixar o conceito, e não para sustentar
-afirmação empírica.
+requisição em cujo processamento foi emitido \cite{opentelemetrylogs}. Essa
+fonte fixa o conceito, e não sustenta afirmação empírica.
 
 \subsection{Síntese e relação com o trabalho}
 \label{subsec:harness-sintese}
 
-A definição de \harness{} adotada é operacional e de responsabilidade do autor, e
-a literatura a sustenta em parte e por fontes diferentes. O catálogo de
+A literatura sustenta a definição de \harness{} adotada em parte e por fontes
+diferentes. O catálogo de
 \citeonline{liu2025} fundamenta, com as ressalvas indicadas, a responsabilidade
 2 e o contexto da 3; a responsabilidade 1 apoia-se no conceito de
 \textit{middleware} (Seção~\ref{sec:abstracao}); o estado, na 3, em
@@ -419,22 +462,23 @@ O catálogo é qualitativo, e os seus autores reconhecem que benefícios e
 desvantagens dos padrões ainda exigem quantificação \cite{liu2025}. É esse espaço
 que o presente trabalho ocupa, ao medir dois efeitos da camada: o custo de
 substituição do provedor, associado à responsabilidade 1, e o custo energético da
-camada, incluindo a orquestração de ferramentas da responsabilidade 2. As demais
-responsabilidades são implementadas por serem pré-requisitos técnicos do
-experimento e não são avaliadas (Seção~\ref{sec:justificativa}).
+camada, incluindo a orquestração de ferramentas da responsabilidade 2. As
+responsabilidades 3, 4 e 5 são implementadas porque o experimento as exige, e
+ficam fora da avaliação (Seção~\ref{sec:justificativa}).
 
 % -----------------------------------------------------------------------------
 \section{Energia em inferência de modelos de linguagem}
 \label{sec:energia}
 
-A área de \textit{Green AI} propõe tratar a eficiência energética como critério
-de avaliação ao lado da acurácia \cite{schwartz2020}, depois que
-\citeonline{strubell2019} chamaram atenção para o custo energético e ambiental do
-treinamento de modelos de linguagem. A inferência, que se repete a cada
-requisição, é o foco deste trabalho. Entre as arquiteturas, as generativas de
-propósito geral consomem muito mais energia que sistemas específicos: o
-consumo da geração de texto, medido por \citeonline{luccioni2024}, é mais de
-vinte vezes o da classificação de texto (valores na
+A área de \textit{Green AI} nasce de uma crítica à avaliação de modelos apenas
+pela acurácia: \citeonline{schwartz2020} defendem que o custo computacional seja
+relatado ao lado dela e propõem, como indicador, o número de operações de ponto
+flutuante (\textit{floating point operations}, FPO). Esse alerta tem como
+antecedente a estimativa do custo energético e ambiental do treinamento de
+modelos de linguagem feita por \citeonline{strubell2019}. Este trabalho se
+concentra na inferência, fase em que o custo se repete a cada requisição.
+\citeonline{luccioni2024} medem o consumo por tarefa e mostram que gerar texto
+custa mais de uma ordem de grandeza acima de classificá-lo (valores na
 Seção~\ref{sec:contexto}).
 
 Duas grandezas precisam ser distinguidas. A \textbf{potência} é a taxa
@@ -442,18 +486,23 @@ instantânea de consumo, em watts; a \textbf{energia} é a potência integrada n
 tempo, em joules. Uma requisição pode consumir mais energia por durar mais, com
 a mesma potência, ou por exigir mais potência no mesmo intervalo. Chamam-se aqui,
 respectivamente, de componente \textbf{extensional} e componente
-\textbf{intensivo} do custo; a distinção operacional entre os dois, feita por
-meio da potência média e da duração relatadas em separado, é do autor.
-\citeonline{vellaisamy2026} decompõem a sobrecarga de orquestração executada no
-processador hospedeiro, separando-a do trabalho executado no dispositivo, o que oferece um precedente
-para decompor o custo de uma camada de \textit{software}, e não somente somá-lo.
+\textbf{intensivo} do custo; na prática, a distinção se faz relatando em
+separado a potência média e a duração.
 
-Medir é necessário porque a estimativa pode errar o consumo real.
-\citeonline{fernandez2025} verificaram
-que estimativas baseadas em contagem de operações de ponto flutuante
-subestimam o consumo real e que otimizações bem aplicadas reduzem a energia total
-em até 73\%, o que mostra que o consumo depende da pilha de \textit{software}, e
-não somente do modelo. Por isso o trabalho mede a energia da GPU por telemetria
+Há precedente para decompor o custo de uma camada de \textit{software}, e não
+somente somá-lo: \citeonline{vellaisamy2026} separam o que o processador
+hospedeiro gasta em orquestração do que o dispositivo gasta na computação do
+modelo, e é esse recorte que se aplica aqui ao acréscimo da camada.
+
+Medir é necessário porque o indicador defendido na origem da área, a contagem de
+operações, é uma estimativa. \citeonline{fernandez2025} compararam estimativas
+baseadas em operações de ponto flutuante e em utilização teórica da GPU com a
+medição da inferência e concluíram que elas subestimam o consumo real. Ao
+avaliar otimizações de inferência, como estratégias de decodificação,
+\textit{frameworks} de execução e paralelismo, observaram reduções de até 73\%
+na energia total. A consequência para o desenho é que a energia de uma
+requisição depende da pilha que a executa, e não só do modelo, de modo que a
+pilha precisa ser fixada e a energia, medida. Por isso o trabalho mede a energia da GPU por telemetria
 do \textit{hardware}, no protocolo já empregado pelo autor \cite{barros2026}. A
 telemetria é lida pela NVIDIA Management Library (NVML)\glsadd{NVML}, API em C
 da fabricante para monitorar e gerenciar suas GPUs, que expõe as duas grandezas
@@ -462,18 +511,19 @@ associados, em miliwatts, e a energia total consumida desde o último
 carregamento do \textit{driver}, em milijoules \cite{nvml}. A energia de uma
 requisição pode, assim, ser obtida pela diferença entre duas leituras do
 contador ou pela integração no tempo das leituras de potência; a escolha entre
-as duas e a frequência de amostragem são detalhadas na Metodologia. A documentação da NVML é um documento técnico da
-fabricante, não revisado por pares, usado para descrever o instrumento de
-medição.
+as duas e a frequência de amostragem são decisões de protocolo.
 
-A unidade de medida é a requisição completa, e não a chamada isolada ao modelo.
-\citeonline{ifath2026} caracterizam os compromissos entre desempenho e energia em
-fluxos de múltiplas requisições, entre eles o agêntico, o mesmo padrão de uso que
-uma camada de \harness{} orquestra; o registro, porém, é um resumo estendido, e
-não sustenta sozinho afirmação central. Quanto ao alcance, essas medições tratam
-da pilha que executa a inferência. Estendê-las a uma camada de aplicação
-interposta entre o código de negócio e o provedor é uma analogia, e a relevância
-energética da camada permanece uma hipótese a testar (Seção~\ref{sec:contexto}).
+A unidade de medida é a requisição completa, e não a chamada isolada ao modelo,
+porque o fluxo agêntico encadeia várias chamadas e o custo de cada uma depende do
+que o ciclo anterior produziu (Seção~\ref{sec:llm-agentes}).
+\citeonline{ifath2026} caracterizam compromissos entre desempenho e energia em
+fluxos de múltiplas requisições, entre eles o agêntico; o registro, porém, é um
+resumo estendido, e não sustenta sozinho afirmação central. Essas medições dizem
+respeito à pilha que executa a inferência. Como a camada estudada fica fora
+dela, o experimento precisa isolar o seu efeito: mesma tarefa, mesmo modelo e
+mesmo equipamento, com e sem a camada (Seção~\ref{sec:experimentacao}). Só a
+comparação controlada, e não a extrapolação dos estudos citados, pode dizer se
+há acréscimo de energia.
 
 % -----------------------------------------------------------------------------
 \section{Experimentação controlada em Engenharia de Software}
@@ -486,17 +536,16 @@ Neste trabalho, a variável independente é a forma de integração com o proved
 com ou sem a camada de \harness{}, aplicada a duas versões funcionalmente
 equivalentes de uma mesma aplicação; as variáveis dependentes são o custo de
 substituição do provedor e o custo energético, medidos em dois
-\textit{benchmarks} descritos na Metodologia. A equivalência funcional é o que
+\textit{benchmarks}, um para cada custo. A equivalência funcional é o que
 permite atribuir a diferença observada à camada, e não a outra causa.
 
 Os mesmos autores classificam as ameaças à validade em quatro tipos: interna,
-externa, de construto e de conclusão, taxonomia que estrutura a análise de
-ameaças à validade na Metodologia. Duas decisões do desenho dependem desse referencial: o
+externa, de construto e de conclusão, taxonomia que o trabalho adota para analisar as
+ameaças à validade. Duas decisões do desenho dependem desse referencial: o
 uso de métricas de estrutura de código como medida do custo de substituição, com
 precedente em \citeonline{mo2023}, e o critério de decisão final, definido antes
 da coleta de dados, para que a conclusão não seja ajustada aos resultados
-(Seção~\ref{subsec:objetivos-especificos}). A escolha dessas
-medidas e dos procedimentos estatísticos é detalhada na Metodologia.
+(Seção~\ref{subsec:objetivos-especificos}).
 
 % -----------------------------------------------------------------------------
 % Síntese: o quadro deriva só do próprio capítulo e dos objetivos da Introdução;
