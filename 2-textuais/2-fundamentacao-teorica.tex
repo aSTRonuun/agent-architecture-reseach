@@ -1,5 +1,10 @@
 % =============================================================================
-% Capítulo 2 — Fundamentação Teórica   (peso: médio)
+% Capítulo 3 — Fundamentação Teórica   (peso: médio)
+% 02/11/2026: o capítulo passou a vir depois de Trabalhos Relacionados. Saíram
+% daqui, por serem comparação e não conceito: Mo et al. (2023) como precedente
+% (2.2), o parágrafo de Mo e Kandogan et al. (2025) na 2.3, o "é esse espaço
+% que o trabalho ocupa" do Liu (2.4.4) e o limite dos estudos de energia
+% (Ifath; 2.5). Mo continua na 2.6 só como precedente de método.
 % Fonte: plano §8. Arquitetura (estilos, ADRs, C4, atributos de qualidade); harness como middleware (R12, R21); terminologia agêntica (R8); Green AI (R2, R3, R5).
 % -----------------------------------------------------------------------------
 % Estrutura (decisões do autor, 17/10/2026):
@@ -188,13 +193,9 @@ A dependência de um único fornecedor (\textit{vendor lock-in}) é a forma
 organizacional desse acoplamento: trocar de fornecedor custa tanto que a troca
 deixa de ser uma opção real. \citeonline{kaur2017} revisam abordagens de
 interoperabilidade e portabilidade propostas para reduzir essa dependência em
-nuvens interconectadas. \citeonline{mo2023} comparam empiricamente funções
-\textit{serverless} escritas sobre uma biblioteca de abstração e sobre as APIs
-nativas do provedor, medindo a portabilidade e métricas de estrutura e qualidade
-de código. Esse último estudo é o precedente mais próximo do desenho adotado
-aqui, e a sua limitação de construto, o uso de métricas de código como
-\textit{proxy} do esforço de troca, também se aplica a este trabalho, como ameaça
-à validade de construto.
+nuvens interconectadas. Os trabalhos que avaliam camadas de abstração contra
+essa dependência, dentro e fora do domínio da IA, são comparados com a proposta
+no Capítulo~\ref{cap:trabalhos-relacionados}.
 
 Os conceitos acima são o que torna mensurável o \textbf{custo de substituição
 do provedor} definido na Seção~\ref{sec:problema}. A extensão do código
@@ -249,14 +250,6 @@ limites de uso (Seção~\ref{sec:contexto}). Os formatos descritos na
 Seção~\ref{sec:llm-agentes}, com blocos \texttt{tool\_use} e
 \texttt{tool\_result} de um lado e chamadas de função do outro, são um exemplo
 concreto: o mesmo ciclo de ferramentas, expresso em dois vocabulários.
-
-A mesma estratégia reaparece nos trabalhos da seção anterior, em que uma camada
-intermediária, a biblioteca de abstração no caso de \citeonline{mo2023}, é o
-meio de reduzir a dependência do fornecedor \cite{kaur2017}. No domínio dos
-agentes, o papel de intermediário cabe aos registros de agentes e de dados da
-arquitetura de referência de \citeonline{kandogan2025}, que abstraem provedores
-e APIs proprietárias: o consumidor se relaciona com o registro, e não com cada
-provedor.
 
 A abstração, porém, tem preço. Toda camada acrescenta indireção a cada
 requisição, e o acoplamento ao provedor pode ser trocado por acoplamento à
@@ -459,11 +452,10 @@ de telemetria \cite{opentelemetrylogs}. Nenhuma fonte, isoladamente, sustenta a
 definição inteira, e as correspondências por analogia são hipóteses de projeto, e
 não resultados.
 
-O catálogo é qualitativo, e os seus autores reconhecem que benefícios e
-desvantagens dos padrões ainda exigem quantificação \cite{liu2025}. É esse espaço
-que o presente trabalho ocupa, ao medir dois efeitos da camada: o custo de
-substituição do provedor, associado à responsabilidade 1, e o custo energético da
-camada, incluindo a orquestração de ferramentas da responsabilidade 2. As
+Das cinco responsabilidades, duas se ligam aos efeitos medidos no experimento:
+o custo de substituição do provedor, associado à responsabilidade 1, e o custo
+energético da camada, que inclui a orquestração de ferramentas da
+responsabilidade 2. As
 responsabilidades 3, 4 e 5 são implementadas porque o experimento as exige, e
 ficam fora da avaliação (Seção~\ref{sec:justificativa}).
 
@@ -516,15 +508,10 @@ as duas e a frequência de amostragem são decisões de protocolo.
 
 A unidade de medida é a requisição completa, e não a chamada isolada ao modelo,
 porque o fluxo agêntico encadeia várias chamadas e o custo de cada uma depende do
-que o ciclo anterior produziu (Seção~\ref{sec:llm-agentes}).
-\citeonline{ifath2026} caracterizam compromissos entre desempenho e energia em
-fluxos de múltiplas requisições, entre eles o agêntico; o registro, porém, é um
-resumo estendido, e não sustenta sozinho afirmação central. Essas medições dizem
-respeito à pilha que executa a inferência. Como a camada estudada fica fora
-dela, o experimento precisa isolar o seu efeito: mesma tarefa, mesmo modelo e
-mesmo equipamento, com e sem a camada (Seção~\ref{sec:experimentacao}). Só a
-comparação controlada, e não a extrapolação dos estudos citados, pode dizer se
-há acréscimo de energia.
+que o ciclo anterior produziu (Seção~\ref{sec:llm-agentes}). Como a camada
+estudada fica fora da pilha de inferência, o experimento precisa isolar o seu
+efeito: mesma tarefa, mesmo modelo e mesmo equipamento, com e sem a camada
+(Seção~\ref{sec:experimentacao}).
 
 % -----------------------------------------------------------------------------
 \section{Experimentação controlada em Engenharia de Software}

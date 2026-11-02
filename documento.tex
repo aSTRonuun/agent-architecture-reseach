@@ -234,9 +234,10 @@
 \membrodabancaseiscentro{}
 \membrodabancaseisies{}
 
-% Entrega parcial (TCC I — Introdução e Fundamentação Teórica): com
-% \entregaparcialtrue, o PDF traz só os elementos já redigidos (pré-textuais,
-% Caps. 1 e 2, listas de figuras e de quadros, siglas e Referências); os
+% Entrega parcial (TCC I — Introdução, Trabalhos Relacionados e Fundamentação
+% Teórica): com \entregaparcialtrue, o PDF traz só os elementos já redigidos
+% (pré-textuais, Caps. 1 a 3, listas de figuras e de quadros, siglas e
+% Referências); os
 % capítulos ainda em esqueleto, a lista de tabelas (a única tabela está na
 % Metodologia) e os apêndices ficam de fora. Trocar para \entregaparcialfalse
 % para compilar a monografia inteira.
@@ -279,9 +280,9 @@
 	%Elementos textuais
 	\textual
 	\input{2-textuais/1-introducao}
+	\input{2-textuais/trabalhos-relacionados}
 	\input{2-textuais/2-fundamentacao-teorica}
 	\ifentregaparcial\else
-	\input{2-textuais/trabalhos-relacionados}
 	\input{2-textuais/3-metodologia}
 	\input{2-textuais/4-resultados}
 	\input{2-textuais/5-conclusao}
