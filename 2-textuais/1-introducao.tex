@@ -111,9 +111,8 @@ desempenho e energia já foram caracterizados em fluxos agênticos de múltiplas
 requisições \cite{ifath2026}, o padrão de uso que uma camada de \harness{}
 orquestra.
 
-Esses estudos, porém, tratam da pilha que executa a inferência, e não de uma
-camada de aplicação interposta entre o código de negócio e o provedor; estender
-seus resultados a essa camada é uma analogia, e não um achado. A relevância
+Estender esses resultados a uma camada de aplicação interposta entre o código
+de negócio e o provedor é uma analogia, e não um achado. A relevância
 energética da camada é, portanto, uma \textbf{hipótese}: a de que uma decisão
 puramente arquitetural, como acrescentar uma camada entre a aplicação e o
 modelo, pode ter consequências energéticas mensuráveis, que raramente entram na
@@ -133,23 +132,18 @@ não um resultado.
 \label{sec:problema}
 
 A literatura já propõe arquiteturas para integrar modelos e agentes a sistemas
-de \textit{software} e discute os compromissos envolvidos. O catálogo de
-\citeonline{liu2025} descreve, para cada padrão, contexto, forças e
-\textit{trade-offs}, mas o faz qualitativamente, a partir de revisão de
-literatura. \citeonline{kandogan2025} propõem uma arquitetura de referência
-para IA composta, com registros de agentes e de dados que abstraem provedores e
-APIs proprietárias, ilustrada por um caso de uso, sem comparação controlada com
-uma integração direta. \citeonline{zhu2026}, ao comparar
-\textit{frameworks} de orquestração de agentes baseados em LLMs, distinguem os
-achados reportados pelos próprios fornecedores dos sustentados por avaliação
-revisada por pares, o que indica que parte das alegações sobre esses
-\textit{frameworks} não tem esse respaldo.
+de \textit{software} e discute os compromissos envolvidos
+\cite{liu2025,kandogan2025,zhu2026}, de forma qualitativa ou ilustrativa e
+sem comparação controlada com uma integração direta. O
+Capítulo~\ref{cap:trabalhos-relacionados} compara esses trabalhos com a
+proposta.
 
 A lacuna, portanto, não está na ausência de discussão sobre os
 \textit{trade-offs} dessa camada, mas na ausência de \textbf{medição
-controlada} deles: nas buscas feitas na ACM Digital Library, no IEEE Xplore e
-na Biblioteca Digital da SBC, entre publicações de 2023 a 2026
-(Capítulo~\ref{cap:trabalhos-relacionados}), não foram encontrados estudos que
+controlada} deles: nas buscas descritas no
+Capítulo~\ref{cap:trabalhos-relacionados} e registradas no
+Apêndice~\ref{ap:busca}, entre publicações de 2023 a 2026, não foram
+encontrados estudos que
 comparem, sob as mesmas condições, uma aplicação com e sem a camada de
 integração, quantificando ao
 mesmo tempo o benefício mais alegado da camada --- a facilidade de trocar de

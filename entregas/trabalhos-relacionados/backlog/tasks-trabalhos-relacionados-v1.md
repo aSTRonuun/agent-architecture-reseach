@@ -2,6 +2,32 @@
 Origem: `revision/revisao-trabalhos-relacionados-v1.md` (1ª revisão, somente Trabalhos Relacionados), nota estimada 0,75/1,0 no escopo avaliado | Parecer: apto, com duas ressalvas de coerência (T05, T06)
 Total: 17 tasks (0 críticas, 0 altas, 1 média, 16 baixas) | Pontos recuperáveis: 0,25
 
+## Status da execução (02/11/2026, sem o autor presente)
+
+Nada foi compilado: não há LaTeX na máquina. As edições passaram só por conferência estática (chaves, `\ref`, chaves do `.bib`). Compilar no Overleaf e conferir o quadro (T13) e o novo apêndice.
+
+| ID | Status | O que foi feito / o que falta |
+|---|---|---|
+| T01 | Parcial | Lidos na versão arXiv: Kandogan et al. (negativas confirmadas) e Tripathy et al. Matinpour et al. e Morais et al.: só o resumo (ACM DL bloqueia download automático). Negativas sobre Morais reformuladas como "o resumo não relata". **Falta:** ler o texto integral de Morais e Matinpour pelo Portal CAPES e confirmar ou desfazer a reformulação. Cabeçalho do `.tex` atualizado. |
+| T02 | Feita | Novo `3-pos-textuais/apendices/apendice-busca.tex` (rótulo `ap:busca`), incluído também na entrega parcial em `documento.tex`; parágrafo de abertura remete a ele. O número de triados por etapa não estava registrado e consta como tal; as buscas complementares (OpenAlex, Crossref, web, SBC) não têm strings registradas. |
+| T03 | Feita | Cap. 2 e Introdução citam as mesmas bases; SBC como busca por evento, com os eventos nomeados. |
+| T04 | Feita | Parágrafo de Mo et al. traz 42 estudantes e biblioteca pronta, com o que a proposta perde e ganha em cada uma; síntese e quadro ajustados. |
+| T05 | **Pendente (decisão)** | Depende do A11 (Fund. T01: medir CPU ou restringir ao efeito indireto). |
+| T06 | Feita | Xiao et al. oferecem tabela de compromissos e recomendação de avaliar a carga, mas não um critério de decisão; o capítulo diz que o critério do objetivo (e) é contribuição própria. **Falta:** a Fund. T02 fundamentar esse critério. |
+| T07 | Feita | Fundamentação agora diz que Vellaisamy et al. decompõem tempo, transposto aqui para energia. |
+| T08 | Feita | `Mo, Di`. |
+| T09 | Feita | Lin et al.: dez gateways confirmados. Matinpour et al.: 3–15% e 2–4% confirmados no resumo. Xiao et al.: a nuance não constava; trocada por "três prejudicaram, uma favoreceu, duas não alteraram" (e retirado o exemplo de duplicação e acoplamento, não confirmado). |
+| T10 | Feita | Prenomes completos pelo Crossref (Vellaisamy, Ifath, Kandogan). |
+| T11 | **Pendente (decisão)** | Depende da T05. |
+| T12 | Feita | A frase "revisam abordagens…" fica só na Fundamentação; o Cap. 2 só compara. |
+| T13 | Feita, sem compilar | Coluna dividida em "Esforço de troca medido" e "Manutenibilidade medida"; só Mo et al. e a proposta têm "Sim" em esforço de troca. Quadro com 7 colunas e 21 linhas em `[h!]`: conferir a paginação e, se quebrar mal, usar `longtable` (o pacote não está carregado no preâmbulo). A célula "Não (resumo)" de Morais et al. e a coluna "Qualitativo" (Liu, Bucaioni, Zhu, Kaur) são julgamento meu: revisar. |
+| T14 | Feita | Extensão a LLMs marcada como analogia. |
+| T15 | Feita | "do qual o autor é coautor". |
+| T16 | Feita | Intro: 1º parágrafo de 1.2 reduzido a duas frases com remissão ao Cap. 2; 1.1 sem repetir a diferença de objeto; lacuna remete ao Cap. 2 e ao Apêndice. |
+| T17 | Feita | Definição ou remissão na 1ª ocorrência de táticas arquiteturais (com `bass2021`), requisição agêntica e NVML. |
+
+Também incorporado: Tripathy et al. com taxas de resolução de 4% e 0% (item "Fora da revisão").
+
 ## Visão geral
 
 | ID | Título | Tipo | Severidade | Pontos | Esforço | Depende de |

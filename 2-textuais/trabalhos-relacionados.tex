@@ -48,7 +48,16 @@
 % Metadados dos trabalhos novos conferidos no Crossref em 02/11/2026.
 % Lidos: resumos de todos os trabalhos novos (Feitosa et al. e Mo et al. pelo
 % Portal CAPES); texto da versão arXiv de Bucaioni et al. (2501.12904v1).
-% NÃO lidos na íntegra: Kandogan et al. (notas do projeto + resumo).
+% Atualização de 02/11/2026 (tasks T01, T06, T09 da revisão v1):
+%  - lidos na versão arXiv: Kandogan et al. (2504.08148v1: sem comparação com
+%    integração direta, sem esforço de troca, sem custo medido); Tripathy et
+%    al. (2512.09543: razão 9,4x e taxas de resolução de 4% e 0%); Xiao et al.
+%    (2501.14402: resultados e discussão); Lin et al. (2604.21083: dez gateways);
+%  - lido só o resumo (OpenAlex): Matinpour et al. (números de latência e
+%    energia conferidos no resumo); Morais et al. (negativas reformuladas como
+%    "o resumo não relata"). Os dois estão no Portal CAPES (ACM DL): ler o texto
+%    integral antes de confirmar ou desfazer a reformulação.
+% NÃO lidos na íntegra: Morais et al. e Matinpour et al.
 % Triados e não usados: preprints sem venue (arXiv 2609.31288, "When the
 % Model Retires"; arXiv 2606.10702, "Watts and Debts", registered report);
 % ArcAssist-Web (WebMedia 2026, IA no apoio à decisão arquitetural);
@@ -63,14 +72,18 @@
 Este capítulo compara a proposta com os trabalhos que compartilham a sua
 motivação, o seu objeto ou o seu método. Os trabalhos foram identificados em
 buscas na ACM Digital Library e no IEEE Xplore, acessados pelo Portal de
-Periódicos CAPES, complementadas pelas bases abertas OpenAlex e Crossref e pela
-Biblioteca Digital da Sociedade Brasileira de Computação (SBC OpenLib), em
-novembro de 2026. As buscas cobriram publicações de 2023 a 2026 e combinaram
-termos de três grupos: camadas de integração com modelos de linguagem
-(\textit{abstraction layer}, \textit{middleware}, \textit{gateway},
+Periódicos CAPES, complementadas pelas bases abertas OpenAlex e Crossref e por
+buscas por evento na Biblioteca Digital da Sociedade Brasileira de Computação
+(SBC OpenLib), em novembro de 2026. As buscas cobriram publicações de 2023 a
+2026 e combinaram termos de três grupos: camadas de integração com modelos de
+linguagem (\textit{abstraction layer}, \textit{middleware}, \textit{gateway},
 \textit{provider-agnostic}, \textit{vendor lock-in}), arquitetura de
 \textit{software} de sistemas integrados a LLMs, e custo energético de
-\textit{frameworks}, padrões e táticas arquiteturais. Consideraram-se apenas
+\textit{frameworks}, padrões e táticas arquiteturais (decisões de projeto
+tomadas para influenciar um atributo de qualidade, como o consumo de energia
+\cite{bass2021}). As \textit{strings}, a
+data, o número de resultados e os critérios de triagem estão no
+Apêndice~\ref{ap:busca}. Consideraram-se apenas
 publicações revisadas por pares; dois trabalhos anteriores a esse período,
 fora do domínio da IA, foram incluídos pelo tema.
 
@@ -131,8 +144,8 @@ configurações de modelo. A semelhança com a presente proposta é direta: ambo
 interpõem uma camada para que a aplicação não dependa do provedor e tratam a
 troca de modelo como requisito. Diferenciam-se pela avaliação, pois o estudo de
 viabilidade de \citeonline{morais2026} demonstra que a substituição é possível,
-mas não mede o esforço de fazê-la nem o compara com uma integração direta, e
-pelo custo, que não é medido.
+mas o resumo do trabalho não relata medição do esforço de fazê-la, comparação
+com uma integração direta nem medição do custo da camada.
 
 No domínio dos agentes, \citeonline{kandogan2025} propõem uma arquitetura de
 referência para IA composta em ambiente corporativo, na qual registros de
@@ -144,7 +157,8 @@ aplicação se relaciona com o registro, e não com cada provedor, como aqui se
 relaciona com o \harness{}. A diferença é que a proposta de
 \citeonline{kandogan2025} não é comparada a uma integração direta, de modo que
 o efeito da abstração sobre o esforço de troca ou sobre o custo de execução não
-é conhecido.
+é conhecido: o caso de uso serve para demonstrar a arquitetura, e os próprios
+autores reconhecem que muito ainda está por projetar.
 
 A mesma ideia aparece, na prática, sob a forma de \textit{gateways}: serviços
 que oferecem uma API única para modelos de vários provedores.
@@ -182,30 +196,40 @@ decisões de projeto próprias, não permitiria isolar.
 \label{sec:tr-lockin}
 
 A dependência de fornecedor é tratada há mais tempo em computação em nuvem.
-\citeonline{kaur2017} revisam abordagens de interoperabilidade e portabilidade
-propostas para reduzir essa dependência em nuvens interconectadas. O trabalho
-contribui com a presente proposta ao mostrar que reduzir a dependência de um
-fornecedor por meio de interoperabilidade e portabilidade é problema
-estabelecido de arquitetura, o que dispensa justificar a ideia a partir da
-literatura recente sobre agentes. A diferença está no domínio, serviços de
-nuvem e não provedores de modelos, e no tipo de estudo, uma revisão, e não um
-experimento.
+A revisão de \citeonline{kaur2017}, apresentada na
+Seção~\ref{sec:arquitetura}, é o ponto de partida do tema. Ela difere da presente
+proposta no domínio, serviços de nuvem e não provedores de modelos, e no tipo
+de estudo, uma revisão, e não um experimento.
 
 O precedente empírico mais próximo é o de \citeonline{mo2023}. Os autores
 investigam bibliotecas de abstração de serviços de nuvem no acesso ao
 armazenamento de objetos a partir de funções \textit{serverless}: comparam o
 desempenho de sete funções na AWS e no Google Cloud escritas sobre a biblioteca
 Apache jclouds e sobre as APIs específicas de cada plataforma, avaliam
-métricas de qualidade do código e conduzem um estudo com estudantes para
-verificar o efeito da biblioteca sobre a portabilidade. O desenho é o mesmo
-deste trabalho: duas versões de uma aplicação, com e sem a camada, comparadas
-quanto ao benefício da abstração e ao preço que ela cobra. Também é comum o
-uso de métricas de código como medida do esforço de troca, assim como a
-limitação de construto que esse uso acarreta. As diferenças estão no domínio e
-no custo medido. Os provedores de modelos diferem não só na API de acesso, mas
-no formato das mensagens e do ciclo de ferramentas, que se repete várias vezes
-por requisição agêntica; e o preço da camada é medido aqui em energia, e não em
-desempenho.
+métricas de qualidade do código e conduzem um estudo com 42 estudantes, que
+migram código entre plataformas, para verificar o efeito da biblioteca sobre a
+portabilidade, medida pelo tempo, pelo esforço percebido e pelo sucesso da
+tarefa. O desenho é o mesmo deste trabalho: duas versões de uma aplicação, com
+e sem a camada, comparadas quanto ao benefício da abstração e ao preço que ela
+cobra. Também é comum o uso de métricas de código, que lá avaliam a qualidade
+do código escrito com e sem a biblioteca. As diferenças estão no domínio, no
+custo medido e em duas escolhas de método. Os provedores de modelos diferem não
+só na API de acesso, mas no formato das mensagens e do ciclo de ferramentas,
+que se repete várias vezes por requisição agêntica, isto é, a que envolve o
+ciclo de ferramentas (Seção~\ref{sec:llm-agentes}); e o preço da camada é medido aqui em energia, e
+não em desempenho.
+
+A primeira escolha de método é a medida do esforço de troca. Em
+\citeonline{mo2023}, ele foi medido com pessoas; aqui, por métricas de código
+aplicadas pelo próprio autor, sem participantes. O trabalho perde a validade de
+construto do esforço (o tempo e o esforço percebido de quem realmente migra o
+código) e ganha um procedimento que dispensa recrutar participantes e que se
+repete sem a variação entre pessoas. A segunda é a abstração avaliada: lá, uma
+biblioteca de terceiros pronta; aqui, uma camada construída pelo autor. O
+trabalho perde a possibilidade de atribuir o resultado a uma biblioteca
+consolidada e ganha o isolamento da camada, pelo mesmo argumento dado a
+\citeonline{zhu2026}: as duas versões da aplicação diferem apenas pela presença
+dela.
 
 % -----------------------------------------------------------------------------
 \section{Custo energético de decisões arquiteturais}
@@ -227,8 +251,9 @@ ou menor. Esses trabalhos se relacionam com a presente proposta por tratar a
 indireção introduzida por uma estrutura de projeto como possível fonte de
 consumo e por compará-la com uma alternativa equivalente sem ela; o achado de
 \citeonline{feitosa2017} sugere, além disso, que o peso relativo da indireção
-cai quando o trabalho envolvido cresce, o que é o caso de uma requisição a um
-LLM. Diferenciam-se pela escala da decisão: padrões de projeto no nível do
+cai quando o trabalho envolvido cresce. Por analogia, é de esperar que o mesmo
+ocorra em uma requisição a um LLM, mas essa extensão é uma hipótese deste
+trabalho, e não um achado dos autores. Diferenciam-se pela escala da decisão: padrões de projeto no nível do
 código, e não uma camada arquitetural entre a aplicação e um serviço externo
 cuja execução domina o custo da requisição.
 
@@ -236,11 +261,15 @@ No nível da arquitetura, \citeonline{xiao2025} avaliam, em experimento
 controlado sobre o sistema de microsserviços Online Boutique, três táticas e
 três padrões arquiteturais voltados a reduzir o consumo de energia, sob três
 níveis de carga. Todas as técnicas reduziram o consumo em ao menos um nível de
-carga, em até 5,6\%, mas as que também melhoraram o desempenho tenderam a
-prejudicar a manutenibilidade, por exemplo pelo aumento da duplicação de
-código e do acoplamento entre módulos. Esse é o trabalho mais próximo quanto à
+carga, em até 5,6\%, mas três delas prejudicaram a manutenibilidade, uma a
+favoreceu e duas não a alteraram. Esse é o trabalho mais próximo quanto à
 forma da pergunta: confronta, para a mesma decisão arquitetural, energia e
-manutenibilidade, que são as duas dimensões deste trabalho. A direção do
+manutenibilidade, que são as duas dimensões deste trabalho. Os autores
+resumem os compromissos de cada técnica em uma tabela comparativa e
+recomendam avaliar a carga do sistema antes de adotá-las, mas não propõem um
+critério para decidir quando a economia de energia compensa a perda de
+manutenibilidade; o critério de decisão do objetivo (e) não é, portanto,
+herdado desse estudo, e sim contribuição própria deste trabalho. A direção do
 compromisso, porém, é a inversa. Lá, as técnicas são adotadas para economizar
 energia e podem custar manutenibilidade; aqui, a camada é adotada para
 facilitar a troca de provedor e pode custar energia. Para sistemas com
@@ -279,8 +308,13 @@ de correção de \textit{issues} (SWE-Agent, OpenHands, Mini SWE Agent e
 AutoCodeRover) com dois modelos de linguagem pequenos, em \textit{hardware}
 fixo e com 150 execuções por configuração, e concluem que a arquitetura do
 \textit{framework} é o principal fator do consumo: o mais custoso consumiu, em
-média, 9,4 vezes a energia do menos custoso. Em trabalho anterior do autor,
-\citeonline{barros2026} compararam, por telemetria NVML em uma GPU H100, o
+média, 9,4 vezes a energia do menos custoso, embora quase nenhuma execução
+tenha resolvido a tarefa (4\% em uma configuração e 0\% nas demais), o que
+indica que boa parte dessa energia foi gasta em ciclos de raciocínio
+improdutivos. Em trabalho anterior, do qual o autor é coautor,
+\citeonline{barros2026} compararam, por telemetria NVML (\textit{NVIDIA Management Library}, interface
+de leitura de potência e energia da GPU; Seção~\ref{sec:energia}) em uma GPU
+H100, o
 processamento em um único \textit{prompt} com um debate entre agentes, em 100
 tarefas de contexto longo, contabilizando economia de energia apenas quando a
 configuração multiagente mantinha a qualidade da monolítica.
@@ -313,11 +347,12 @@ arquiteturais para integrar modelos de linguagem
 \cite{liu2025,bucaioni2025,bandeira2026,morais2026,kandogan2025}, os relatos de
 \textit{gateways} \cite{sheneman2026,rahaman2026} e o levantamento de
 \textit{frameworks} \cite{zhu2026} discutem ou demonstram os benefícios de uma
-camada de integração sem medi-los contra a integração direta. Fora da IA,
+camada de integração sem, segundo o que relatam, medi-los contra a integração
+direta. Fora da IA,
 \citeonline{mo2023} mediram o benefício e o custo de uma camada de abstração,
 mas em desempenho e sobre serviços de nuvem, e \citeonline{xiao2025}
 confrontaram energia e manutenibilidade de decisões arquiteturais, sem modelo
-de linguagem. Os estudos de energia em sistemas com LLMs, por sua vez, medem a
+de linguagem e sem propor um critério para decidir entre as duas. Os estudos de energia em sistemas com LLMs, por sua vez, medem a
 pilha de inferência ou comparam \textit{frameworks} e topologias inteiros
 \cite{vellaisamy2026,ifath2026,matinpour2026,tripathy2026,barros2026}.
 
@@ -327,51 +362,51 @@ pilha de inferência ou comparam \textit{frameworks} e topologias inteiros
   relacionados e a proposta quanto ao objeto e às dimensões avaliadas}
   \UFCqua{}{
     \scriptsize
-    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{2.2cm}|>{\raggedright\arraybackslash}p{1.9cm}|>{\raggedright\arraybackslash}p{1.4cm}|>{\raggedright\arraybackslash}p{1.6cm}|}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{1.9cm}|>{\raggedright\arraybackslash}p{1.4cm}|>{\raggedright\arraybackslash}p{1.6cm}|>{\raggedright\arraybackslash}p{1.2cm}|>{\raggedright\arraybackslash}p{1.4cm}|}
       \hline
-      \textbf{Trabalho} & \textbf{Objeto} & \textbf{Tipo de avaliação} & \textbf{Esforço de troca ou manuteni\-bilidade} & \textbf{Energia medida} & \textbf{Compara com e sem a decisão} \\
+      \textbf{Trabalho} & \textbf{Objeto} & \textbf{Tipo de avaliação} & \textbf{Esforço de troca me\-dido} & \textbf{Manu\-tenibi\-lidade me\-dida} & \textbf{Energia medida} & \textbf{Compara com e sem a decisão} \\
       \hline
-      \citeonline{liu2025} & Padrões para agentes baseados em modelos de fundação & Catálogo derivado de revisão & Qualitativo & Não & Não \\
+      \citeonline{liu2025} & Padrões para agentes baseados em modelos de fundação & Catálogo derivado de revisão & Não & Qualitativo & Não & Não \\
       \hline
-      \citeonline{bucaioni2025} & Arquitetura de referência para sistemas integrados a LLMs & Mapeamento a três sistemas & Qualitativo & Não & Não \\
+      \citeonline{bucaioni2025} & Arquitetura de referência para sistemas integrados a LLMs & Mapeamento a três sistemas & Não & Qualitativo & Não & Não \\
       \hline
-      \citeonline{bandeira2026} & Arquitetura de referência para aplicações com o LLM como núcleo & Ilustração & Não & Não & Não \\
+      \citeonline{bandeira2026} & Arquitetura de referência para aplicações com o LLM como núcleo & Ilustração & Não & Não & Não & Não \\
       \hline
-      \citeonline{morais2026} & Composição declarativa de agentes, independente do provedor & Estudo de viabilidade & Qualitativo & Não & Não \\
+      \citeonline{morais2026} & Composição declarativa de agentes, independente do provedor & Estudo de viabilidade & Não (resumo) & Não (resumo) & Não & Não \\
       \hline
-      \citeonline{kandogan2025} & Arquitetura para IA composta com registros de agentes e dados & Caso de uso ilustrativo & Não & Não & Não \\
+      \citeonline{kandogan2025} & Arquitetura para IA composta com registros de agentes e dados & Caso de uso ilustrativo & Não & Não & Não & Não \\
       \hline
-      \citeonline{sheneman2026}; \citeonline{rahaman2026} & \textit{Gateways} de acesso a modelos de vários provedores & Relato de implantação & Não & Não & Não \\
+      \citeonline{sheneman2026}; \citeonline{rahaman2026} & \textit{Gateways} de acesso a modelos de vários provedores & Relato de implantação & Não & Não & Não & Não \\
       \hline
-      \citeonline{lin2026} & Comportamento de \textit{gateways} comerciais de terceiros & Medição (auditoria) & Não & Não & Não \\
+      \citeonline{lin2026} & Comportamento de \textit{gateways} comerciais de terceiros & Medição (auditoria) & Não & Não & Não & Não \\
       \hline
-      \citeonline{zhu2026} & \textit{Frameworks} e protocolos multiagente & \textit{Survey} & Qualitativo & Não & Não \\
+      \citeonline{zhu2026} & \textit{Frameworks} e protocolos multiagente & \textit{Survey} & Não & Qualitativo & Não & Não \\
       \hline
-      \citeonline{kaur2017} & Interoperabilidade e portabilidade em nuvens & Revisão & Qualitativo & Não & Não \\
+      \citeonline{kaur2017} & Interoperabilidade e portabilidade em nuvens & Revisão & Não & Qualitativo & Não & Não \\
       \hline
-      \citeonline{mo2023} & Biblioteca de abstração e APIs nativas em funções \textit{serverless} & Experimento & Sim & Não (desem\-penho) & Sim \\
+      \citeonline{mo2023} & Biblioteca de abstração e APIs nativas em funções \textit{serverless} & Experimento (42 estudantes) & Sim & Sim & Não (desem\-penho) & Sim \\
       \hline
-      \citeonline{poy2025} & Padrões de projeto, \textit{code smells} e refatorações & Mapeamento sistemático & Não & Sim (estudos primários) & Sim (estudos primários) \\
+      \citeonline{poy2025} & Padrões de projeto, \textit{code smells} e refatorações & Mapeamento sistemático & Não & Não & Sim (estudos primários) & Sim (estudos primários) \\
       \hline
-      \citeonline{feitosa2017} & Padrões de projeto GoF e alternativas sem o padrão & Experimento & Não & Sim & Sim \\
+      \citeonline{feitosa2017} & Padrões de projeto GoF e alternativas sem o padrão & Experimento & Não & Não & Sim & Sim \\
       \hline
-      \citeonline{xiao2025} & Táticas e padrões em microsserviços & Experimento & Sim & Sim & Sim \\
+      \citeonline{xiao2025} & Táticas e padrões em microsserviços & Experimento & Não & Sim & Sim & Sim \\
       \hline
-      \citeonline{jarvenpaa2024} & Táticas arquiteturais verdes para sistemas com aprendizado de máquina & Catálogo derivado de revisão & Não & Não & Não \\
+      \citeonline{jarvenpaa2024} & Táticas arquiteturais verdes para sistemas com aprendizado de máquina & Catálogo derivado de revisão & Não & Não & Não & Não \\
       \hline
-      \citeonline{vellaisamy2026} & Sobrecarga do hospedeiro na inferência de LLMs & Caracterização & Não & Não (latência) & Não \\
+      \citeonline{vellaisamy2026} & Sobrecarga do hospedeiro na inferência de LLMs & Caracterização & Não & Não & Não (latência) & Não \\
       \hline
-      \citeonline{ifath2026} & Fluxos de múltiplas requisições a LLMs & Caracterização (resumo estendido) & Não & Sim & Não \\
+      \citeonline{ifath2026} & Fluxos de múltiplas requisições a LLMs & Caracterização (resumo estendido) & Não & Não & Sim & Não \\
       \hline
-      \citeonline{matinpour2026} & \textit{Frameworks} de orquestração (LangChain e LlamaIndex) & Experimento & Não & Sim & Não (\textit{frameworks} inteiros) \\
+      \citeonline{matinpour2026} & \textit{Frameworks} de orquestração (LangChain e LlamaIndex) & Experimento & Não & Não & Sim & Não (\textit{frameworks} inteiros) \\
       \hline
-      \citeonline{tripathy2026} & \textit{Frameworks} agênticos com modelos pequenos & Experimento & Não & Sim & Não (\textit{frameworks} inteiros) \\
+      \citeonline{tripathy2026} & \textit{Frameworks} agênticos com modelos pequenos & Experimento & Não & Não & Sim & Não (\textit{frameworks} inteiros) \\
       \hline
-      \citeonline{barros2026} & Prompt único e debate multiagente & Experimento & Não & Sim & Sim \\
+      \citeonline{barros2026} & Prompt único e debate multiagente & Experimento & Não & Não & Sim & Sim \\
       \hline
-      \citeonline{nascimento2026} & \textit{Hardware} e matriz elétrica para modelos de aprendizado profundo & Experimento & Não & Sim & Não \\
+      \citeonline{nascimento2026} & \textit{Hardware} e matriz elétrica para modelos de aprendizado profundo & Experimento & Não & Não & Sim & Não \\
       \hline
-      \textbf{Proposta deste trabalho} & \textbf{Camada de \harness{} entre aplicação \textit{web} e provedor de IA} & \textbf{Experimento} & \textbf{Sim} & \textbf{Sim} & \textbf{Sim} \\
+      \textbf{Proposta deste trabalho} & \textbf{Camada de \harness{} entre aplicação \textit{web} e provedor de IA} & \textbf{Experimento} & \textbf{Sim} & \textbf{Sim} & \textbf{Sim} & \textbf{Sim} \\
       \hline
     \end{tabularx}
   }{
@@ -379,13 +414,21 @@ pilha de inferência ou comparam \textit{frameworks} e topologias inteiros
   }
 \end{quadro}
 
+No quadro, \textit{Não (resumo)} indica que o resumo do trabalho não relata a
+dimensão; o texto integral de \citeonline{morais2026} não foi lido. Só o
+trabalho de \citeonline{mo2023} e a proposta medem o esforço de trocar a
+abstração, e só a proposta o faz sobre a camada entre aplicação e provedor de
+modelo.
+
 Nenhum dos trabalhos encontrados reúne as três características da proposta:
 ter como objeto a camada entre a aplicação e o provedor do modelo, medir o
 esforço de trocar o provedor e medir a energia que a camada acrescenta,
 comparando a mesma aplicação com e sem ela. É essa combinação que define a
 contribuição do trabalho. Dos trabalhos analisados, ele herda o desenho com e
-sem a camada e as métricas de código de \citeonline{mo2023}, a pergunta que
-confronta energia e manutenibilidade de \citeonline{xiao2025}, as
-responsabilidades da camada do catálogo de \citeonline{liu2025} e o protocolo
-de medição de \citeonline{barros2026}. Os conceitos que sustentam essas
+sem a camada e as métricas de código de \citeonline{mo2023}, sem herdar a
+medida do esforço com participantes nem o uso de uma biblioteca pronta
+(Seção~\ref{sec:tr-lockin}), a pergunta que confronta energia e
+manutenibilidade de \citeonline{xiao2025}, as responsabilidades da camada do
+catálogo de \citeonline{liu2025} e o protocolo de medição de
+\citeonline{barros2026}. Os conceitos que sustentam essas
 escolhas são apresentados no Capítulo~\ref{cap:fundamentacao}.
