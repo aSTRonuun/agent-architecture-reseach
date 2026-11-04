@@ -6,9 +6,23 @@ Total: 17 tasks (0 críticas, 0 altas, 1 média, 16 baixas) | Pontos recuperáve
 
 Nada foi compilado: não há LaTeX na máquina. As edições passaram só por conferência estática (chaves, `\ref`, chaves do `.bib`). Compilar no Overleaf e conferir o quadro (T13) e o novo apêndice.
 
+### Enxugamento do capítulo (03/11/2026)
+
+O capítulo passou de 21 para 12 trabalhos e de quatro para duas seções; saiu o parágrafo de abertura sobre as bases de busca (fica só a remissão ao Apêndice). Retirados: Bandeira, Sheneman, Rahaman, Lin, Kaur, Poy, Järvenpää, Ifath e Nascimento (motivos no cabeçalho do `.tex`; entradas mantidas no `.bib`). Efeito nas tasks:
+
+- **T11 resolvida por retirada**: Nascimento et al. não aparece mais (atende ao critério de aceite). Pode sair do backlog.
+- **T01 atende ao critério de aceite**: a única negativa sobre trabalho não lido na íntegra (Morais et al.) está como "o resumo não relata"; sobre Matinpour et al. o capítulo só afirma números conferidos no resumo. Ler os dois na íntegra passa a ser melhoria opcional. Pode sair do backlog.
+- **T05 continua pendente**, mas encolheu: o capítulo só cita Vellaisamy et al. em uma frase e o protocolo de Barros et al. em outra. Quando a Fund. T01 (A11) fechar, basta conferir essas duas frases; pode ser absorvida pela Fund. T01.
+- T13: o quadro caiu para 13 linhas, o que reduz o risco de paginação; ainda falta compilar.
+- T17: a definição de táticas arquiteturais (com `bass2021`) foi para a 1ª ocorrência, no parágrafo de Xiao et al.; "requisição agêntica" não aparece mais no capítulo.
+- T09 (Lin), T10 (Ifath) e T12 (Kaur): os trechos tratados saíram do capítulo; as correções no `.bib` e na Fundamentação continuam valendo.
+- Introdução e Apêndice ajustados: a lacuna remete só ao Apêndice; o Apêndice informa 21 incluídos na triagem e 12 mantidos no capítulo.
+
+### Status por task
+
 | ID | Status | O que foi feito / o que falta |
 |---|---|---|
-| T01 | Parcial | Lidos na versão arXiv: Kandogan et al. (negativas confirmadas) e Tripathy et al. Matinpour et al. e Morais et al.: só o resumo (ACM DL bloqueia download automático). Negativas sobre Morais reformuladas como "o resumo não relata". **Falta:** ler o texto integral de Morais e Matinpour pelo Portal CAPES e confirmar ou desfazer a reformulação. Cabeçalho do `.tex` atualizado. |
+| T01 | Feita (critério de aceite; ver enxugamento) | Lidos na versão arXiv: Kandogan et al. (negativas confirmadas) e Tripathy et al. Matinpour et al. e Morais et al.: só o resumo (ACM DL bloqueia download automático). Negativas sobre Morais reformuladas como "o resumo não relata". **Falta:** ler o texto integral de Morais e Matinpour pelo Portal CAPES e confirmar ou desfazer a reformulação. Cabeçalho do `.tex` atualizado. |
 | T02 | Feita | Novo `3-pos-textuais/apendices/apendice-busca.tex` (rótulo `ap:busca`), incluído também na entrega parcial em `documento.tex`; parágrafo de abertura remete a ele. O número de triados por etapa não estava registrado e consta como tal; as buscas complementares (OpenAlex, Crossref, web, SBC) não têm strings registradas. |
 | T03 | Feita | Cap. 2 e Introdução citam as mesmas bases; SBC como busca por evento, com os eventos nomeados. |
 | T04 | Feita | Parágrafo de Mo et al. traz 42 estudantes e biblioteca pronta, com o que a proposta perde e ganha em cada uma; síntese e quadro ajustados. |
@@ -18,7 +32,7 @@ Nada foi compilado: não há LaTeX na máquina. As edições passaram só por co
 | T08 | Feita | `Mo, Di`. |
 | T09 | Feita | Lin et al.: dez gateways confirmados. Matinpour et al.: 3–15% e 2–4% confirmados no resumo. Xiao et al.: a nuance não constava; trocada por "três prejudicaram, uma favoreceu, duas não alteraram" (e retirado o exemplo de duplicação e acoplamento, não confirmado). |
 | T10 | Feita | Prenomes completos pelo Crossref (Vellaisamy, Ifath, Kandogan). |
-| T11 | **Pendente (decisão)** | Depende da T05. |
+| T11 | Feita (retirada em 03/11) | Nascimento et al. saiu do capítulo e do quadro. |
 | T12 | Feita | A frase "revisam abordagens…" fica só na Fundamentação; o Cap. 2 só compara. |
 | T13 | Feita, sem compilar | Coluna dividida em "Esforço de troca medido" e "Manutenibilidade medida"; só Mo et al. e a proposta têm "Sim" em esforço de troca. Quadro com 7 colunas e 21 linhas em `[h!]`: conferir a paginação e, se quebrar mal, usar `longtable` (o pacote não está carregado no preâmbulo). A célula "Não (resumo)" de Morais et al. e a coluna "Qualitativo" (Liu, Bucaioni, Zhu, Kaur) são julgamento meu: revisar. |
 | T14 | Feita | Extensão a LLMs marcada como analogia. |
