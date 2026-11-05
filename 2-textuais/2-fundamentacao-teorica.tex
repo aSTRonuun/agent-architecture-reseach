@@ -100,8 +100,7 @@ servem só para descrever mecanismos, instrumentos e notações, nunca para
 sustentar afirmação empírica. A segunda
 trata das definições: as distinções e classificações operacionais, como a de
 requisição simples e agêntica, a lista de responsabilidades do \harness{} e a
-sua correspondência com a literatura, são decisões do autor, e não resultados
-da literatura. O detalhamento de protocolo, com instrumentos, métricas e
+sua correspondência com a literatura, foram definidas pelo autor. O detalhamento de protocolo, com instrumentos, métricas e
 procedimentos estatísticos, fica para
 \ifentregaparcial a Metodologia\else o Capítulo~\ref{cap:metodologia}\fi.
 
@@ -127,9 +126,9 @@ usuário, capaz de perseguir objetivos e gerar planos. \citeonline{sapkota2026}
 separam os \textbf{agentes de IA}, voltados à automação de tarefas específicas,
 da \textbf{IA agêntica}, formada por sistemas multiagente com planejamento e
 coordenação autônoma. Adota-se aqui o primeiro uso: o objeto é o agente de IA
-que atua sobre uma tarefa, e não o sistema multiagente, que está fora do escopo.
+que atua sobre uma tarefa, e os sistemas multiagente ficam fora do escopo.
 
-O que torna um modelo capaz de agir é a chamada de ferramentas. A intercalação
+O modelo age por meio da chamada de ferramentas. A intercalação
 de etapas de raciocínio do modelo com ações sobre fontes externas foi proposta
 por \citeonline{yao2023}, e os provedores comerciais a oferecem hoje como recurso
 das suas APIs. Segundo a documentação dos dois provedores usados neste trabalho,
@@ -197,8 +196,8 @@ nuvens interconectadas. Os trabalhos que avaliam camadas de abstração contra
 essa dependência, dentro e fora do domínio da IA, são comparados com a proposta
 no Capítulo~\ref{cap:trabalhos-relacionados}.
 
-Os conceitos acima são o que torna mensurável o \textbf{custo de substituição
-do provedor} definido na Seção~\ref{sec:problema}. A extensão do código
+Esses conceitos tornam mensurável o custo de substituição do provedor definido
+na Seção~\ref{sec:problema}. A extensão do código
 alterado expressa a modificabilidade, isto é, quanto da aplicação precisa mudar;
 o número de pontos de dependência direta ao SDK expressa o acoplamento, isto é,
 em quantos lugares a mudança se propaga; e os casos de uso que continuam
@@ -248,18 +247,18 @@ A heterogeneidade em jogo neste trabalho é a que separa os provedores de
 modelos, cada um com suas convenções para mensagens, ferramentas, erros e
 limites de uso (Seção~\ref{sec:contexto}). Os formatos descritos na
 Seção~\ref{sec:llm-agentes}, com blocos \texttt{tool\_use} e
-\texttt{tool\_result} de um lado e chamadas de função do outro, são um exemplo
-concreto: o mesmo ciclo de ferramentas, expresso em dois vocabulários.
+\texttt{tool\_result} de um lado e chamadas de função do outro, mostram o mesmo
+ciclo de ferramentas expresso em dois vocabulários.
 
-A abstração, porém, tem preço. Toda camada acrescenta indireção a cada
-requisição, e o acoplamento ao provedor pode ser trocado por acoplamento à
+Toda camada de abstração, porém, acrescenta indireção a cada requisição, e o
+acoplamento ao provedor pode ser trocado por acoplamento à
 interface da própria camada, risco que o catálogo de \citeonline{liu2025}
 registra para o \textit{Tool/agent registry}, que pode tornar-se ele próprio uma
 solução de aprisionamento a fornecedor e um ponto único de falha. Em leitura
 própria do catálogo, 14 dos 18 padrões listam a sobrecarga (\textit{overhead})
 entre as desvantagens, e um décimo quinto, a sobrecarga de manutenção; nenhum a
-quantifica. Esse custo da indireção é o que a hipótese energética deste trabalho
-coloca à prova, e o benefício da abstração, o que o custo de substituição mede.
+quantifica. A hipótese energética deste trabalho testa esse custo da indireção,
+e o custo de substituição mede o benefício da abstração.
 O conceito de \textit{middleware} explica por que uma camada intermediária
 absorve a heterogeneidade, mas não indica como projetá-la para provedores de
 modelos, o que cabe ao projeto da camada.
@@ -422,9 +421,8 @@ fonte que as complementa.
 Das cinco responsabilidades, só a segunda tem correspondência parcial direta com
 um padrão do catálogo; a primeira corresponde por analogia, a terceira em parte
 (só quanto ao contexto), e a quarta e a quinta não têm correspondência nos 18
-padrões. A razão está no escopo do catálogo: o seu objeto é o agente que
-persegue objetivos e gera planos, e não a camada que o liga ao provedor do
-modelo. O exame de cada correspondência, com os padrões e as fontes de
+padrões, o que decorre do escopo do catálogo, centrado no projeto interno do
+agente (Seção~\ref{subsec:harness-catalogo}). O exame de cada correspondência, com os padrões e as fontes de
 complemento, pertence ao projeto da camada.
 
 Duas lacunas pedem fontes próprias. Na responsabilidade 4, o \textit{Retry} (nova
@@ -435,8 +433,7 @@ de modelos \cite{mendonca2020}. Na responsabilidade 5, adota-se a documentação
 do OpenTelemetry, projeto de padronização de telemetria, segundo a qual o
 registro (\textit{log}) estruturado pode carregar o identificador do rastreio e
 do segmento da requisição (\textit{TraceId} e \textit{SpanId}), que o associam à
-requisição em cujo processamento foi emitido \cite{opentelemetrylogs}. Essa
-fonte fixa o conceito, e não sustenta afirmação empírica.
+requisição em cujo processamento foi emitido \cite{opentelemetrylogs}.
 
 \subsection{Síntese e relação com o trabalho}
 \label{subsec:harness-sintese}
@@ -448,9 +445,9 @@ diferentes. O catálogo de
 \textit{middleware} (Seção~\ref{sec:abstracao}); o estado, na 3, em
 \citeonline{chang2025}; a 4, em padrões de resiliência de microsserviços
 \cite{mendonca2020,sedghpour2022,aderaldo2025}; e a 5, em documentação técnica
-de telemetria \cite{opentelemetrylogs}. Nenhuma fonte, isoladamente, sustenta a
-definição inteira, e as correspondências por analogia são hipóteses de projeto, e
-não resultados.
+de telemetria \cite{opentelemetrylogs}. Nenhuma fonte sustenta sozinha a
+definição inteira, e as correspondências por analogia continuam sendo hipóteses
+de projeto.
 
 Das cinco responsabilidades, duas se ligam aos efeitos medidos no experimento:
 o custo de substituição do provedor, associado à responsabilidade 1, e o custo
@@ -482,11 +479,11 @@ respectivamente, de componente \textbf{extensional} e componente
 \textbf{intensivo} do custo; na prática, a distinção se faz relatando em
 separado a potência média e a duração.
 
-Há precedente para decompor, e não somente somar, o custo de uma camada de
-\textit{software}: \citeonline{vellaisamy2026} separam o tempo que o processador
-hospedeiro gasta em orquestração do tempo que o dispositivo gasta na computação
-do modelo, e é essa decomposição, feita pelos autores para a latência, que se
-transpõe aqui para a energia do acréscimo da camada.
+O custo de uma camada de \textit{software} já foi decomposto em partes:
+\citeonline{vellaisamy2026} separam o tempo que o processador hospedeiro gasta
+em orquestração do tempo que o dispositivo gasta na computação do modelo. Este
+trabalho transpõe para a energia do acréscimo da camada essa decomposição, que
+os autores fizeram para a latência.
 
 Medir é necessário porque o indicador defendido na origem da área, a contagem de
 operações, é uma estimativa. \citeonline{fernandez2025} compararam estimativas
@@ -525,8 +522,8 @@ Neste trabalho, a variável independente é a forma de integração com o proved
 com ou sem a camada de \harness{}, aplicada a duas versões funcionalmente
 equivalentes de uma mesma aplicação; as variáveis dependentes são o custo de
 substituição do provedor e o custo energético, medidos em dois
-\textit{benchmarks}, um para cada custo. A equivalência funcional é o que
-permite atribuir a diferença observada à camada, e não a outra causa.
+\textit{benchmarks}, um para cada custo. Como as duas versões são
+funcionalmente equivalentes, a diferença observada pode ser atribuída à camada.
 
 Os mesmos autores classificam as ameaças à validade em quatro tipos: interna,
 externa, de construto e de conclusão, taxonomia que o trabalho adota para analisar as
@@ -542,17 +539,16 @@ da coleta de dados, para que a conclusão não seja ajustada aos resultados
 \section{Síntese do capítulo}
 \label{sec:fundamentacao-sintese}
 
-Os conceitos deste capítulo se encadeiam em torno de uma mesma decisão
-arquitetural. O ciclo de ferramentas dos agentes (Seção~\ref{sec:llm-agentes})
-aumenta a quantidade de código que depende das convenções de um provedor; o
-acoplamento resultante é o que a modificabilidade e o custo de substituição
-medem (Seção~\ref{sec:arquitetura}); a camada de abstração, na forma de
-\textit{middleware}, é a resposta arquitetural a esse acoplamento
-(Seção~\ref{sec:abstracao}), e o \harness{} é a sua aplicação aos provedores de
-modelos (Seção~\ref{sec:harness}); a indireção que a camada introduz é o que a
-medição de energia coloca à prova (Seção~\ref{sec:energia}); e a experimentação
-controlada é o que permite atribuir à camada, e não a outra causa, as diferenças
-observadas (Seção~\ref{sec:experimentacao}). O Quadro~\ref{qua:conceitos-uso}
+Os conceitos deste capítulo giram em torno de uma mesma decisão arquitetural.
+O ciclo de ferramentas dos agentes (Seção~\ref{sec:llm-agentes}) aumenta a
+quantidade de código que depende das convenções de um provedor. A
+modificabilidade e o custo de substituição medem o acoplamento resultante
+(Seção~\ref{sec:arquitetura}). A camada de abstração, na forma de
+\textit{middleware}, responde a esse acoplamento (Seção~\ref{sec:abstracao}), e
+o \harness{} aplica essa resposta aos provedores de modelos
+(Seção~\ref{sec:harness}). A medição de energia testa o custo da indireção que a
+camada introduz (Seção~\ref{sec:energia}), e a experimentação controlada permite
+atribuir à camada as diferenças observadas (Seção~\ref{sec:experimentacao}). O Quadro~\ref{qua:conceitos-uso}
 resume o papel de cada conceito no trabalho.
 
 \begin{quadro}[h!]

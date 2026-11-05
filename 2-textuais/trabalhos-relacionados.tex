@@ -53,8 +53,8 @@ interno do agente, e não a camada que liga a aplicação ao provedor do modelo.
 referência que isolam a integração com o modelo: os primeiros, em uma camada
 própria, separada da lógica de aplicação, em sistemas integrados a LLMs; os
 segundos, em registros de agentes e de dados que abstraem provedores e APIs
-proprietárias em ambiente corporativo. Como na proposta, a aplicação se
-relaciona com um intermediário, e não com cada provedor. As duas arquiteturas,
+proprietárias em ambiente corporativo. Como na proposta, a aplicação passa por
+um intermediário para chegar aos provedores. As duas arquiteturas,
 porém, são verificadas por mapeamento a sistemas existentes ou por um caso de
 uso ilustrativo, sem comparação com uma integração direta, de modo que o efeito
 da abstração sobre o esforço de troca e sobre o custo de execução não é medido.
@@ -86,12 +86,12 @@ medida em um estudo com 42 estudantes. O desenho é o mesmo deste trabalho: duas
 versões da aplicação, com e sem a camada, comparadas quanto ao benefício e ao
 preço da abstração. As diferenças estão no domínio (provedores de modelos, que
 diferem também no formato das mensagens e do ciclo de ferramentas), no custo
-medido (energia, e não desempenho) e em duas escolhas de método. Aqui, o
-esforço de troca é medido por métricas de código, sem participantes, o que
-perde a validade de construto do esforço percebido, mas dispensa recrutamento e
-elimina a variação entre pessoas. E a abstração é uma camada construída pelo
-autor, e não uma biblioteca pronta, o que garante que as duas versões difiram
-apenas por ela.
+medido (energia no lugar de desempenho) e em duas escolhas de método. Primeiro,
+o esforço de troca é medido por métricas de código, sem participantes: perde-se
+a validade de construto do esforço percebido, mas dispensa-se o recrutamento e
+elimina-se a variação entre pessoas. Segundo, a abstração é uma camada
+construída pelo autor em vez de uma biblioteca pronta, o que garante que as duas
+versões difiram apenas por ela.
 
 % -----------------------------------------------------------------------------
 \section{Custo energético de decisões arquiteturais e de orquestração}
@@ -103,10 +103,10 @@ alternativas equivalentes sem o padrão: a alternativa consumiu menos na maior
 parte dos casos, mas, em métodos grandes ou que invocam muitos outros, o padrão
 teve consumo semelhante ou menor. O trabalho compartilha com a proposta a
 comparação de uma estrutura de indireção com uma alternativa equivalente sem
-ela. Por analogia, é de esperar que o peso da camada caia diante do custo de
-uma requisição a um LLM, mas essa é uma hipótese deste trabalho, e não um
-achado dos autores. A diferença está na escala: padrões no nível do código, e
-não uma camada arquitetural diante de um serviço externo.
+ela. A diferença está na escala: os autores estudam padrões no nível do código,
+e este trabalho, uma camada arquitetural diante de um serviço externo. Por
+analogia, este trabalho supõe que o peso da camada diminua diante do custo de
+uma requisição a um LLM, hipótese que os autores não testam.
 
 \citeonline{xiao2025} avaliam, sobre o sistema de microsserviços Online
 Boutique, três táticas arquiteturais (decisões de projeto tomadas para
@@ -124,8 +124,8 @@ critério do objetivo (e) é contribuição própria deste trabalho.
 Em sistemas com LLMs, \citeonline{vellaisamy2026} mostram que a sobrecarga de
 orquestração no processador hospedeiro, separada do trabalho executado na GPU,
 é um custo oculto da latência da inferência. Como aqui, isolam o custo do
-\textit{software} em torno do modelo, mas tratam da pilha de inferência, e não
-de uma camada da aplicação. Mais próximos do objeto estão os estudos que
+\textit{software} em torno do modelo, mas o fazem na pilha de inferência, abaixo
+da camada de aplicação. Mais próximos do objeto estão os estudos que
 comparam formas de orquestrar o modelo na aplicação. \citeonline{matinpour2026}
 mostram que a escolha entre LangChain e LlamaIndex altera latência e energia
 independentemente do modelo: nas tarefas com recuperação, o LlamaIndex teve
@@ -202,11 +202,11 @@ ou comparam \textit{frameworks} e topologias inteiros
 \end{quadro}
 
 No quadro, \textit{Não (resumo)} indica que o resumo do trabalho não relata a
-dimensão. Nenhum dos trabalhos reúne as três características da proposta: ter
-como objeto a camada entre a aplicação e o provedor do modelo, medir o esforço
-de trocar o provedor e medir a energia que a camada acrescenta, comparando a
-mesma aplicação com e sem ela. É essa combinação que define a contribuição do
-trabalho. Dos trabalhos analisados, ele herda o desenho com e sem a camada de
+dimensão. Nenhum dos trabalhos reúne as três características que definem a
+contribuição da proposta: ter como objeto a camada entre a aplicação e o
+provedor do modelo, medir o esforço de trocar o provedor e medir a energia que a
+camada acrescenta, comparando a mesma aplicação com e sem ela. Dos trabalhos
+analisados, a proposta herda o desenho com e sem a camada de
 \citeonline{mo2023}, a pergunta que confronta energia e manutenibilidade de
 \citeonline{xiao2025}, as responsabilidades da camada de \citeonline{liu2025} e
 o protocolo de medição de \citeonline{barros2026}. Os conceitos que sustentam

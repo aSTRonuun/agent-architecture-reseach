@@ -44,10 +44,10 @@ direta possível: o código de negócio importa o kit de desenvolvimento
 chama o modelo nos pontos em que precisa dele. Cada provedor, porém, define o
 próprio formato de mensagens, de declaração e de chamada de ferramentas, de
 erros e de limites de uso. À medida que as integrações deixam de ser uma
-pergunta isolada ao modelo e passam a envolver a execução de ferramentas
-externas em ciclos de várias etapas --- o que \citeonline{sapkota2026} chamam de
-agentes de IA, em contraste com sistemas multiagentes de \textit{IA agêntica}
----, a quantidade de código dependente dessas convenções cresce. Esse
+pergunta isolada ao modelo e passam a executar ferramentas externas em ciclos
+de várias etapas (o que \citeonline{sapkota2026} chamam de agentes de IA, em
+contraste com os sistemas multiagentes da \textit{IA agêntica}), cresce a
+quantidade de código que depende dessas convenções. Esse
 acoplamento a um pacote de terceiros é um caso conhecido de dívida técnica em
 sistemas de aprendizado de máquina \cite{sculley2015}.
 
@@ -59,18 +59,17 @@ consolidado, tratado pela literatura de computação em nuvem \cite{kaur2017},
 pela noção de \textit{middleware} \cite{issarny2007} e por comparações empíricas
 de funções \textit{serverless} \cite{mo2023}.
 
-No caso dos modelos de IA, a escolha do provedor é justamente uma decisão com
-alta probabilidade de mudar. O mesmo levantamento da Menlo Ventures registra
-que a participação da OpenAI no uso corporativo de LLMs caiu de 50\%, ao fim de
-2023, para 25\% em meados de 2025, enquanto a Anthropic --- empresa do
-portfólio da própria Menlo --- chegou a 32\% e o Google a 20\%
-\cite{menlo2025}. Ainda assim, apenas 11\% das equipes
-consultadas trocaram de fornecedor no último ano, ao passo que 66\% apenas
-atualizaram o modelo dentro do provedor que já utilizavam \cite{menlo2025}.
-Esses números não isolam a causa da baixa taxa de troca --- desempenho,
-contratos e preço também pesam ---, mas são coerentes com a hipótese de que
-trocar de provedor tem custo técnico relevante para quem integrou o modelo
-diretamente ao código.
+No caso dos modelos de IA, a escolha do provedor é uma decisão com alta
+probabilidade de mudar. O mesmo levantamento da Menlo Ventures registra que a
+participação da OpenAI no uso corporativo de LLMs caiu de 50\%, ao fim de 2023,
+para 25\% em meados de 2025, enquanto a Anthropic (empresa do portfólio da
+própria Menlo) chegou a 32\% e o Google a 20\% \cite{menlo2025}. Ainda assim,
+apenas 11\% das equipes consultadas trocaram de fornecedor no último ano, e
+66\% só atualizaram o modelo dentro do provedor que já utilizavam
+\cite{menlo2025}. Desempenho, contratos e preço também influenciam essa baixa
+taxa de troca, e os números não isolam a causa. Eles são coerentes, porém, com
+a hipótese de que trocar de provedor tem custo técnico relevante para quem
+integrou o modelo diretamente ao código.
 
 Uma alternativa arquitetural é interpor, entre a aplicação e o provedor, uma
 camada dedicada à integração com os modelos. Na literatura recente, essa camada
@@ -85,12 +84,11 @@ agentes baseados em modelos de fundação proposto por \citeonline{liu2025}; o
 Capítulo~\ref{cap:fundamentacao} as apresenta, mostra até onde esse catálogo as
 sustenta e que outras fontes cobrem o que ele não cobre.
 
-Essa camada, contudo, pode não ser gratuita. Cada nível de indireção acrescenta
-trabalho a toda requisição --- normalização de mensagens, serialização,
-orquestração do ciclo de ferramentas, registro de eventos ---, e é razoável
-supor que esse trabalho consuma energia. A questão ganhou peso com a escala
-atual da IA. A Agência
-Internacional de Energia estima que os centros de dados consumiram cerca de
+Essa camada, contudo, pode ter um custo. Cada nível de indireção acrescenta
+trabalho a toda requisição (normalizar mensagens, serializar dados, orquestrar o
+ciclo de ferramentas, registrar eventos), e é razoável supor que esse trabalho
+consuma energia. O consumo dos centros de dados torna a questão relevante: a
+Agência Internacional de Energia estima que eles consumiram cerca de
 415~TWh em 2024, aproximadamente 1,5\% da eletricidade mundial, e projeta que
 esse consumo mais que dobre até 2030, chegando a cerca de 945~TWh, com a IA como
 principal vetor de crescimento \cite{iea2025}. A área de \textit{Green AI}, que
@@ -98,13 +96,12 @@ defende incluir a eficiência energética entre os critérios de avaliação de
 modelos \cite{schwartz2020}, é posterior ao alerta sobre o custo do treinamento
 \cite{strubell2019}.
 
-Na fase de uso, que se repete a cada requisição, os números também são
-expressivos. \citeonline{luccioni2024} mostram que arquiteturas generativas de
-propósito geral consomem muito mais energia que sistemas específicos: gerar
-texto consumiu em média 0,047~kWh a cada mil inferências, contra 0,002~kWh da
-classificação de texto, uma razão de mais de vinte vezes. Além disso, o
-consumo depende da pilha de \textit{software}, e não apenas do modelo
-\cite{fernandez2025}. A sobrecarga de orquestração no processador hospedeiro,
+O custo também aparece na fase de uso, que se repete a cada requisição.
+\citeonline{luccioni2024} mostram que arquiteturas generativas de propósito
+geral consomem muito mais energia que sistemas específicos: gerar texto consumiu
+em média 0,047~kWh a cada mil inferências, contra 0,002~kWh da classificação de
+texto, uma razão de mais de vinte vezes. O consumo depende também da pilha de
+\textit{software} que executa o modelo \cite{fernandez2025}. A sobrecarga de orquestração no processador hospedeiro,
 fora da unidade de processamento gráfico (GPU)\glsadd{GPU}, é um custo oculto da
 latência da inferência \cite{vellaisamy2026}, e os compromissos entre
 desempenho e energia já foram caracterizados em fluxos agênticos de múltiplas
@@ -112,12 +109,11 @@ requisições \cite{ifath2026}, o padrão de uso que uma camada de \harness{}
 orquestra.
 
 Estender esses resultados a uma camada de aplicação interposta entre o código
-de negócio e o provedor é uma analogia, e não um achado. A relevância
-energética da camada é, portanto, uma \textbf{hipótese}: a de que uma decisão
-puramente arquitetural, como acrescentar uma camada entre a aplicação e o
-modelo, pode ter consequências energéticas mensuráveis, que raramente entram na
-avaliação dessa decisão. Há razão para esperar que o efeito direto seja pequeno
-em uma requisição isolada. Tomando como referência os 0,047~kWh por mil
+de negócio e o provedor é uma analogia. Por isso, a relevância energética da
+camada é tratada aqui como hipótese: uma decisão puramente arquitetural, como
+acrescentar uma camada entre a aplicação e o modelo, pode ter consequências
+energéticas mensuráveis, que raramente entram na avaliação dessa decisão. Em uma
+requisição isolada, o efeito direto tende a ser pequeno. Tomando como referência os 0,047~kWh por mil
 inferências de geração de texto citados acima \cite{luccioni2024} (cerca de
 170~J por requisição) e supondo, como premissa do autor, que o trabalho próprio
 da camada ocupe a unidade central de processamento
@@ -125,8 +121,7 @@ da camada ocupe a unidade central de processamento
 (aproximadamente 1~J), o acréscimo direto seria inferior a 1\% da energia da
 requisição. Em fluxos agênticos o efeito pode ser maior, pois a camada conduz o
 ciclo de ferramentas e pode alterar o número de chamadas e o tamanho do contexto
-enviado ao modelo. Essa estimativa é uma premissa a confrontar com a medição, e
-não um resultado.
+enviado ao modelo. A estimativa é uma premissa, a confrontar com a medição.
 
 \section{Problema e lacuna de pesquisa}
 \label{sec:problema}
@@ -138,15 +133,12 @@ sem comparação controlada com uma integração direta. O
 Capítulo~\ref{cap:trabalhos-relacionados} compara esses trabalhos com a
 proposta.
 
-A lacuna, portanto, não está na ausência de discussão sobre os
-\textit{trade-offs} dessa camada, mas na ausência de \textbf{medição
-controlada} deles: nas buscas registradas no
-Apêndice~\ref{ap:busca}, entre publicações de 2023 a 2026, não foram
-encontrados estudos que
-comparem, sob as mesmas condições, uma aplicação com e sem a camada de
-integração, quantificando ao
-mesmo tempo o benefício mais alegado da camada --- a facilidade de trocar de
-provedor --- e o preço que ela possa cobrar em energia. Sem essa medição,
+A lacuna está na medição controlada desses \textit{trade-offs}. Nas buscas
+registradas no Apêndice~\ref{ap:busca}, entre publicações de 2023 a 2026, não
+foram encontrados estudos que comparem, sob as mesmas condições, uma aplicação
+com e sem a camada de integração, quantificando ao mesmo tempo o benefício mais
+alegado da camada, a facilidade de trocar de provedor, e o preço que ela possa
+cobrar em energia. Sem essa medição,
 desenvolvedores e arquitetos que integram LLMs a aplicações \textit{web}
 decidem entre adotar ou não uma camada de \harness{} com base em argumentos de
 princípio ou em alegações de fornecedores.
@@ -162,12 +154,11 @@ Diante disso, este trabalho busca responder à seguinte questão de pesquisa:
 aplicação \textit{web} e um provedor de IA reduz o custo de substituição do
 provedor, e qual é o custo energético associado a essa camada?}
 
-Parte-se da hipótese de que a camada reduz o custo de substituição e cobra por
-isso um custo energético; essa hipótese é tratada como algo a testar, e não
-como pressuposto. Caso a camada reduza o custo de substituição sem acréscimo
-relevante de energia, ou caso acrescente custo energético sem reduzir o esforço
-de substituição, ambos os resultados são informativos para quem precisa tomar a
-decisão arquitetural.
+A hipótese de partida, a ser testada, é que a camada reduz o custo de
+substituição e cobra por isso um custo energético. Os resultados que a
+contrariem também servem a quem precisa tomar a decisão arquitetural: a camada
+pode reduzir o custo de substituição sem acréscimo relevante de energia, ou
+acrescentar custo energético sem reduzir o esforço de substituição.
 
 \section{Justificativa}
 \label{sec:justificativa}
@@ -175,36 +166,34 @@ decisão arquitetural.
 Do ponto de vista prático, desenvolvedores e arquitetos que integram LLMs a
 aplicações \textit{web} decidem, explícita ou implicitamente, entre acoplar o
 código ao SDK de um provedor ou investir em uma camada de abstração, própria ou
-oferecida por um \textit{framework}. Em um mercado no qual a liderança entre
-provedores mudou em menos de dois anos \cite{menlo2025}, trocar de provedor é
-uma possibilidade concreta para quem integra LLMs, e o custo técnico dessa troca
-é o que está em jogo na escolha entre acoplar e abstrair; e, em um cenário de
-demanda crescente por energia nos centros de dados \cite{iea2025}, uma
-sobrecarga paga a cada requisição, se existir, é multiplicada pelo volume de
-uso. Evidência quantitativa sobre os
-dois lados dessa decisão permite tomá-la com base em dados, e não apenas em
-princípios de projeto ou em material promocional.
+oferecida por um \textit{framework}. Como a liderança entre provedores mudou em
+menos de dois anos \cite{menlo2025}, a troca de provedor é uma possibilidade
+concreta, e o custo técnico dessa troca pesa na escolha entre acoplar e
+abstrair. Do lado da energia, a demanda dos centros de dados cresce
+\cite{iea2025}, e uma sobrecarga paga a cada requisição, se existir, se
+multiplica pelo volume de uso. Hoje essa decisão se apoia sobretudo em
+princípios de projeto e em material de fornecedores; evidência quantitativa
+sobre os dois lados permite baseá-la em dados.
 
 Do ponto de vista científico, o trabalho contribui para a arquitetura de
 \textit{software} de sistemas com IA ao submeter a avaliação experimental uma
 decisão que, até aqui, foi discutida principalmente de forma qualitativa
 \cite{liu2025}, e aproxima a Engenharia de Software da agenda de \textit{Green
 AI} \cite{schwartz2020} ao tratar o consumo de energia como atributo de
-qualidade de uma decisão arquitetural, e não apenas do modelo. O estudo segue
+qualidade de uma decisão arquitetural, além de propriedade do modelo. O estudo segue
 os princípios de experimentação controlada em Engenharia de Software
 sistematizados por \citeonline{wohlin2024}, comparando duas versões
 funcionalmente equivalentes de uma mesma aplicação: uma integrada ao provedor
 por meio da camada e outra integrada diretamente.
 
-O recorte em duas dimensões é deliberado. A substituibilidade do provedor
-representa o benefício mais associado à camada, e o custo energético, o preço
-que ela pode cobrar; juntos, formam um compromisso fechado sobre a mesma
-decisão.
-Outros atributos usualmente atribuídos a uma camada desse tipo, como a
-recuperação de falhas e a auditabilidade, serão implementados por serem
-pré-requisitos técnicos do experimento, mas não serão avaliados. Por isso, a
-conclusão do trabalho se limita a responder se a camada compensa pelo
-desacoplamento que proporciona, e não se ela compensa de modo geral.
+O trabalho se restringe a duas dimensões: a substituibilidade do provedor, o
+benefício mais associado à camada, e o custo energético, o preço que ela pode
+cobrar. As duas avaliam a mesma decisão por lados opostos. Outros atributos
+usualmente atribuídos a uma camada desse tipo, como a recuperação de falhas e a
+auditabilidade, serão implementados por serem pré-requisitos técnicos do
+experimento, mas não serão avaliados. Por isso, a conclusão responde se a camada
+compensa pelo desacoplamento que proporciona; se ela compensa de modo geral fica
+fora do seu alcance.
 
 Os modelos de IA integrados à aplicação são definidos desde já, para que o
 experimento seja replicável. Na avaliação do custo de substituição, a aplicação
@@ -222,10 +211,10 @@ telemetria é coletada por meio da biblioteca NVML. Entre os modelos abertos
 hospedados no servidor, ele foi escolhido por reunir pesos abertos, suporte a
 chamada de ferramentas, necessário às requisições agênticas, e execução em uma
 única GPU, o que permite atribuir a energia medida a um único dispositivo. Os
-provedores comerciais não entram nessa medição, e a escolha é deliberada: em
-modelos hospedados por terceiros o consumo da inferência não é observável, ao
-passo que em ambiente controlado é possível comparar, sob as mesmas condições, a
-energia das requisições com e sem a camada. Os resultados caracterizam, assim, o
+provedores comerciais ficam fora dessa medição porque, em modelos hospedados por
+terceiros, o consumo da inferência não é observável; em ambiente controlado, é
+possível comparar, sob as mesmas condições, a energia das requisições com e sem
+a camada. Os resultados caracterizam, assim, o
 efeito da camada sobre a energia de inferência de um modelo e de um
 \textit{hardware} específicos, e não se estendem, sem ressalva, a outros modelos,
 outros equipamentos ou a provedores em nuvem. Esse limite de generalização é
