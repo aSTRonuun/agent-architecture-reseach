@@ -45,7 +45,7 @@
 | A24 | Buscar base acadêmica formal para ADRs, C4 e ISO/IEC 25010 | P3 | antes do Cap. 2 | — | em análise (busca feita; ISO aberta) |
 | A25 | Escolher artigo específico do AGENT 2026, se citado nominalmente | P3 | antes do Cap. 3 | — | aberto |
 | A26 | Nota de redação: capítulos sem herdar o meta-comentário do plano | P3 | redação (11–12) | — | aberto |
-| A27 | Ancorar o "mês 1" do cronograma a uma data de calendário | P2 | imediato | Todos os prazos | aberto |
+| A27 | Ancorar o "mês 1" do cronograma a uma data de calendário | P2 | imediato | Todos os prazos | **fechado** |
 | A28 | Fazer o mapeamento responsabilidades do harness × padrões de R21 | P2 | mês 1–2 | Cap. 2; contribuição 1 | em análise (D5a decidida; D5b–D5d abertas) |
 | A29 | Escolher o modelo local e a stack de serving do B2 (pendência §12.3) | P2 | mês 3 (stack) / mês 6 (modelo) | MVP (mês 4); Piloto | em análise (modelo decidido; stack aberta) |
 | A30 | Definir o critério de decisão de "compensa" (objetivo específico d) | P1 | mês 3 | Protocolo B1/B2; Cap. 3 (T25) | aberto |
@@ -242,6 +242,7 @@ Os documentos de planejamento são densos e autorreferentes (pendências, avisos
 **Origem:** revisão do registro (01/10/2026) · **P2** · **imediato** · **Afeta:** §9.1 do plano; todos os prazos deste registro
 O cronograma (§9.1) e todos os prazos daqui são relativos ("mês 3", "mês 8"), mas o plano não diz qual mês do calendário é o mês 1. Sem essa âncora não dá para saber se A03, A04 e A06 (prazo: mês 1) estão em dia ou atrasados. O próprio plano já depende de datas absolutas: os venues-alvo do §11 são do CBSoft 2027, com prazos de submissão fixos, e só dá para saber se os resultados ficam prontos a tempo com o cronograma ancorado. Fixar a data de início e conferir que o **TCC I (mês 6)** e a defesa (mês 12) batem com o calendário acadêmico do curso.
 **Definition of done:** data do mês 1 registrada no §9.1 do plano e no cabeçalho deste registro; prazos do mês 1 reavaliados.
+**Decisão:** ✔ **Fechado em 07/11/2026** — calendário informado pelo autor: defesa do TCC I em **dez/2026**; TCC II de **jan a jun/2027**, com defesa final em jun/2027. Nenhuma atividade técnica (C4/ADRs, harness, versão D, piloto) foi executada até esta data, então o cronograma relativo de 12 meses do §9.1 foi comprimido em Nov/2026–Jun/2027: fase de solução jan–mar; piloto e verificação do orçamento de GPU em mar; B1 em abr–mai; coleta do B2 em abr–mai; análise e confronto em mai–jun. O cronograma vigente passa a ser o Quadro `qua:cronograma` do Cap. 4 (`2-textuais/3-metodologia.tex`); o §9.1 do plano (congelado) fica como registro histórico. Consequência: os prazos "mês 3" dos itens de protocolo (A07–A19, A30) passam a vencer em **fev/2027** (atividade 4 da metodologia); o gate do "mês 8" vira a atividade 10, em mar–abr/2027.
 **Decisão:** —
 
 #### A28 — Mapear as responsabilidades do harness contra os padrões de R21
