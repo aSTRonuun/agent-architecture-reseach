@@ -1,29 +1,197 @@
 % =============================================================================
 % Capítulo 4 — Metodologia                                      (peso: pesado)
 % -----------------------------------------------------------------------------
-% Fonte principal: plano §6. Detalhes de protocolo entram à medida que os itens
-% A07–A23 do context/action_log.md forem fechados (congelamento no mês 3).
+% Redigido em 07/11/2026 com a skill metodologia-tcc. Fonte: plano §5, §6 e §9
+% (context/planning/TCC_minimal_v5.md) e decisões do context/action_log.md.
+% Calendário (fecha A27): defesa do TCC I em dez/2026; TCC II de jan a jun/2027.
+% Nenhuma atividade técnica foi executada até esta data; o cronograma relativo
+% de 12 meses do plano (§9.1) foi comprimido em Nov/2026–Jun/2027.
+% REGRA: os nomes das 13 atividades são idênticos no texto (títulos das
+% subseções), na Figura fig:fluxo-atividades e no Quadro qua:cronograma.
+% Mudou um, mude os três.
+% Itens do action_log tratados como decisão de alguma atividade (e não como
+% lacuna do texto): A07–A11, A13–A19, A21–A23 e A30 → atividade 4; A29 (pilha de
+% inferência) → atividade 2; A12 (três adaptadores) → atividades 3, 5 e 7.
 % Taxonomia de validade: Wohlin et al. (R1).
 % =============================================================================
 \chapter{Metodologia}
 \label{cap:metodologia}
 
-O desenho experimental e a classificação das ameaças à validade seguem
-\citeonline{wohlin2024}.
-\pendencia{Visão geral: fase de solução seguida de dois \textit{benchmarks} sobre as versões H e D.}
+Este trabalho é uma pesquisa experimental. Compara, sob condições controladas,
+duas versões funcionalmente equivalentes de uma mesma aplicação \textit{web}:
+uma integrada ao provedor de IA por meio da camada de \harness{} (\versaoH) e
+outra integrada diretamente ao provedor (\versaoD). O desenho dos experimentos e
+a classificação das ameaças à validade seguem \citeonline{wohlin2024}. Este
+capítulo descreve as treze atividades previstas, na ordem em que serão
+executadas, as ameaças à validade do estudo e o cronograma.
+
+A Figura~\ref{fig:fluxo-atividades} apresenta o fluxo das atividades. As
+atividades 1 a 6 formam a fase de solução: escolha da aplicação e das
+tecnologias, projeto da camada, planejamento dos experimentos e implementação
+das duas versões. Concluída essa fase, o fluxo se divide em dois ramos. O
+\textit{Benchmark}~1 (atividades 7 e 8), que mede o custo de substituição do
+provedor, não depende de GPU e pode correr enquanto o \textit{Benchmark}~2
+(atividades 9 a 12), que mede o custo energético, depende das janelas de uso
+exclusivo do servidor institucional. Os dois ramos se reúnem na atividade 13,
+que confronta os resultados.
+
+Cada objetivo específico (Seção~\ref{subsec:objetivos-especificos}) é atendido
+por ao menos uma atividade: o primeiro, pela atividade 3; o segundo, pelas
+atividades 5 e 6; o terceiro, pelas atividades 7 e 8; o quarto, pelas
+atividades 9 a 12; e o quinto, pela atividade 4, em que o critério de decisão é
+fixado, e pela atividade 13, em que ele é aplicado.
+
+\begin{figure}[h!]
+  \centering
+  \Caption{\label{fig:fluxo-atividades}Fluxo das atividades do trabalho}
+  \UFCfig{}{
+    \begin{tikzpicture}[
+        font=\footnotesize,
+        ativ/.style={draw, rectangle, rounded corners=2pt, align=center,
+                     text width=3.9cm, minimum height=1.05cm,
+                     execute at begin node={\hyphenpenalty=10000\exhyphenpenalty=10000}},
+        evento/.style={draw, circle, minimum size=0.55cm, inner sep=0pt},
+        fimev/.style={draw, circle, line width=1.6pt, minimum size=0.55cm,
+                      inner sep=0pt},
+        portao/.style={draw, diamond, aspect=1, minimum size=0.75cm,
+                       inner sep=0pt, font=\normalsize},
+        rotulo/.style={font=\scriptsize\itshape},
+        seta/.style={-{Stealth[length=2mm]}}]
+      % Fase de solução (linha 1: esquerda -> direita; linha 2: direita -> esquerda)
+      \node[evento] (ini) at (-5.1, 1.35) {};
+      \node[rotulo, left=0.15cm of ini] {Início};
+      \node[ativ] (a1) at (-5.1, 0) {1. Selecionar a aplicação \textit{web} e o caso de uso};
+      \node[ativ] (a2) at ( 0.0, 0) {2. Selecionar as tecnologias de implementação e de inferência};
+      \node[ativ] (a3) at ( 5.1, 0) {3. Projetar a arquitetura do \harness{}};
+      \node[ativ] (a4) at ( 5.1,-1.75) {4. Planejar os experimentos e o critério de decisão};
+      \node[ativ] (a5) at ( 0.0,-1.75) {5. Implementar o \harness{} e a \versaoH};
+      \node[ativ] (a6) at (-5.1,-1.75) {6. Implementar a \versaoD{} e a suíte de paridade};
+      % Divisão em dois ramos paralelos
+      \node[portao] (fork) at (-5.1,-3.25) {$+$};
+      % Ramo do Benchmark 1
+      \node[ativ] (a7) at (-5.1,-4.75) {7. Executar a troca de provedor (\textit{Benchmark}~1)};
+      \node[ativ] (a8) at (-5.1,-6.45) {8. Consolidar e analisar os dados do \textit{Benchmark}~1};
+      % Ramo do Benchmark 2
+      \node[ativ] (a9)  at ( 0.0,-4.75) {9. Executar o piloto instrumentado};
+      \node[ativ] (a10) at ( 5.1,-4.75) {10. Verificar o orçamento de horas de GPU};
+      \node[ativ] (a11) at ( 5.1,-6.45) {11. Executar a coleta energética (\textit{Benchmark}~2)};
+      \node[ativ] (a12) at ( 0.0,-6.45) {12. Consolidar e analisar os dados do \textit{Benchmark}~2};
+      % Junção e encerramento
+      \node[portao] (join) at (0.0,-7.95) {$+$};
+      \node[ativ] (a13) at (0.0,-9.35) {13. Confrontar os resultados dos dois \textit{benchmarks}};
+      \node[fimev] (fim) at (4.1,-9.35) {};
+      \node[rotulo, right=0.15cm of fim] {Fim};
+      % Conexões
+      \draw[seta] (ini) -- (a1);
+      \draw[seta] (a1) -- (a2);
+      \draw[seta] (a2) -- (a3);
+      \draw[seta] (a3) -- (a4);
+      \draw[seta] (a4) -- (a5);
+      \draw[seta] (a5) -- (a6);
+      \draw[seta] (a6) -- (fork);
+      \draw[seta] (fork) -- node[rotulo, right] {sem GPU} (a7);
+      \draw[seta] (fork.east) -| node[rotulo, above, pos=0.3] {janelas exclusivas de GPU} (a9.north);
+      \draw[seta] (a7) -- (a8);
+      \draw[seta] (a9) -- (a10);
+      \draw[seta] (a10) -- (a11);
+      \draw[seta] (a11) -- (a12);
+      \draw[seta] (a12) -- (join);
+      \draw[seta] (a8.south) |- (join.west);
+      \draw[seta] (join) -- (a13);
+      \draw[seta] (a13) -- (fim);
+    \end{tikzpicture}
+  }{
+    \Fonte{Elaborado pelo autor}
+  }
+\end{figure}
 
 % -----------------------------------------------------------------------------
 \section{Fase de solução}
 \label{sec:fase-solucao}
-% Fonte: plano §6.1. C4 + ADRs, harness como biblioteca,
-% versão D com paridade funcional (A19), congelamento de versões.
-\pendencia{Documentação arquitetural, implementação do harness e da \versaoD.}
 
-% Texto migrado do Cap. 2 (antiga subseção 2.1.3) em 17/10/2026, decisão do autor:
-% o detalhamento por responsabilidade é projeto da camada, não teoria. O Quadro
-% resumo (qua:harness-liu) permanece no Cap. 2. Atribuições a Liu et al. (2025) e
-% às demais fontes inalteradas; as analogias e transposições são do autor.
-\subsection{Delimitação das responsabilidades do \harness}
+As seis primeiras atividades produzem as duas versões da aplicação e fixam,
+antes de qualquer coleta, o que será medido e como. A partir do início da
+implementação, as versões de todas as dependências serão congeladas, para que
+uma atualização de biblioteca no meio do projeto não se confunda com o efeito
+da camada.
+
+\subsection{Atividade 1 -- Selecionar a aplicação \textit{web} e o caso de uso}
+\label{subsec:at-aplicacao}
+
+Será escolhida a aplicação \textit{web} sobre a qual os dois experimentos serão
+conduzidos. A aplicação não é a contribuição do trabalho, e sim o objeto em que
+a camada é avaliada; por isso a simplicidade do domínio é um critério de
+escolha, e não uma limitação. A escolha seguirá cinco critérios: (i) ter ao
+menos um fluxo em que o modelo use chamada de ferramentas, necessário às
+requisições agênticas do \textit{Benchmark}~2; (ii) permitir repetir as mesmas
+requisições sob os mesmos parâmetros; (iii) permitir simular falhas, como
+esgotamento de tempo, erro de conexão, limite de uso e resposta inválida,
+condição do plano alternativo descrito na atividade 10; (iv) não exigir dados
+sensíveis; e (v) ter lógica de negócio simples o bastante para que o código de
+integração com o modelo fique separável do restante.
+
+Na mesma atividade serão definidos o caso de uso que as duas versões
+implementarão e as duas ou três ferramentas determinísticas que o modelo poderá
+chamar, com a especificação de entrada e saída de cada uma. O resultado será um
+registro da aplicação escolhida, com a justificativa frente a cada critério, o
+caso de uso e as ferramentas.
+\pendencia{Definir se a aplicação será construída para o estudo ou adaptada de
+um projeto existente.}
+
+\subsection{Atividade 2 -- Selecionar as tecnologias de implementação e de inferência}
+\label{subsec:at-tecnologias}
+
+Os modelos já estão definidos (Seção~\ref{sec:justificativa}): Claude Haiku 5.5
+(Anthropic) e GPT-6 Luna (OpenAI) no \textit{Benchmark}~1, e Qwen3.6 27B,
+hospedado no servidor institucional com GPU NVIDIA H100, no
+\textit{Benchmark}~2. Esta atividade escolherá o restante da pilha: a linguagem
+e o \textit{framework} da aplicação; os SDKs oficiais dos dois provedores
+comerciais; o servidor de inferência que expõe o modelo local à aplicação, com a
+quantização e a identificação exata do modelo; a forma de acesso à NVML para a
+telemetria da GPU \cite{nvml}; e as bibliotecas de análise estatística.
+
+Os critérios serão: SDKs oficiais dos dois provedores disponíveis na linguagem
+escolhida, com suporte a chamada de ferramentas; servidor de inferência capaz
+de executar o modelo em uma única GPU e de atender chamadas de ferramentas;
+a mesma pilha nas duas versões, de modo que a única diferença entre elas seja a
+camada; e preferência por \textit{software} aberto. A escolha do servidor de
+inferência define também como a \versaoD{} falará com o modelo local no
+\textit{Benchmark}~2: se ele expuser interface compatível com a da OpenAI, a
+\versaoD{} poderá usar o SDK desse provedor apontado para o servidor local. O
+resultado será a lista de tecnologias com as versões que passam a ser
+congeladas.
+
+\subsection{Atividade 3 -- Projetar a arquitetura do \harness}
+\label{subsec:at-projeto}
+
+O projeto será documentado antes da implementação, com o modelo C4 nos níveis
+de contexto, contêineres e componentes \cite{brown-c4} e com registros de
+decisão arquitetural (ADRs) \cite{tyree2005}, apresentados na
+Seção~\ref{subsec:arq-documentacao}. Os diagramas cobrirão as duas versões da
+aplicação, para que a diferença entre elas fique explícita desde o projeto.
+
+O \harness{} será projetado como biblioteca separada da aplicação, com uma
+interface estável que esconde os detalhes de cada provedor. O produto mínimo
+terá cinco componentes: (1) interface abstrata com um adaptador por provedor;
+(2) execução das ferramentas definidas na atividade 1; (3) normalização de
+requisições e respostas; (4) política de nova tentativa (\textit{retry}) para
+falhas transitórias; e (5) registro estruturado de eventos. Os componentes 4 e
+5 não serão avaliados, mas o experimento depende deles: sem a nova tentativa,
+uma falha de rede contaminaria a medição de energia; sem o registro, não haveria
+como associar cada janela de telemetria à requisição correspondente nem conferir
+os casos de uso após a troca de provedor. A presença de cada um será justificada
+em um ADR. A camada terá três adaptadores ao final do trabalho, um para cada
+provedor comercial e um para o modelo local.
+
+Nesta atividade também será fixado o contrato da interface: operações, formato
+das mensagens, das declarações de ferramenta e dos erros. É esse contrato que a
+\versaoD{} terá de reproduzir, por outros meios, na atividade 6. O ponto de
+partida do projeto é a delimitação das responsabilidades da camada, apresentada
+a seguir.
+
+% Texto migrado do Cap. 2 (antiga subseção 2.1.3) em 17/10/2026; em 07/11/2026
+% passou a subsubseção da atividade 3, sem alteração do conteúdo.
+\subsubsection{Delimitação das responsabilidades do \harness}
 \label{sec:delimitacao}
 
 Esta subseção examina, responsabilidade a responsabilidade, o que o catálogo de
@@ -117,84 +285,356 @@ o da integração com provedores de modelos, mas o argumento vale para a camada
 estudada aqui: abstrair o provedor para reduzir a dependência pode criar uma
 dependência nova, na própria camada.
 
-\subsection{Documentação arquitetural}
-\pendencia{C4 e ADRs — inclusive \textit{retry} e \textit{logging}.}
+\subsection{Atividade 4 -- Planejar os experimentos e o critério de decisão}
+\label{subsec:at-planejamento}
 
-\subsection{Implementação do \harness}
-\pendencia{MVP de 5 componentes; interface estável (A12).}
+Os protocolos dos dois \textit{benchmarks} serão redigidos e congelados antes da
+implementação da \versaoD{} e de qualquer coleta, seguindo o desenho de
+experimento controlado de \citeonline{wohlin2024}. Fixar as escolhas antes de ver
+os dados impede que a análise seja ajustada aos resultados.
 
-\subsection{Versão de controle (\versaoD) e paridade funcional}
-\pendencia{Política da versão D (A07) e critério de paridade (A19).}
+O protocolo do \textit{Benchmark}~1 definirá: a política de implementação da
+\versaoD, que seguirá a documentação oficial de cada provedor, sem espalhar
+chamadas artificialmente e sem uma camada de abstração própria, e o número de
+pontos do código de negócio que chamam o modelo, parâmetro que afeta o tamanho
+da diferença entre as versões; a lista de verificação dos passos da troca de
+provedor, registrada antes da execução; a forma de contar as alterações de
+código, separando arquivos existentes modificados de código novo; e o
+procedimento de medição do tempo de implementação. Também estimará o custo das
+chamadas às APIs comerciais; se o orçamento for limitante, a segunda condição
+poderá usar um provedor simulado determinístico, o que será declarado.
+
+O protocolo do \textit{Benchmark}~2 definirá: os parâmetros que tornam as
+requisições repetíveis (temperatura, semente, limite de \textit{tokens} de saída
+e modo de raciocínio), entendendo-se que, em GPU, mesmo parâmetros fixos não
+garantem saídas idênticas; a regra que descarta requisições agênticas em que o
+número de chamadas de ferramenta difere do esperado; a unidade amostral; se a
+energia da CPU será medida ou declarada como limitação; o pacote estatístico
+definitivo; a margem de não inferioridade que operacionaliza um consumo
+``comparável''; o limiar do tamanho de efeito; o menor efeito de interesse
+prático, a partir do qual o tamanho da amostra será calculado no piloto; e a
+regra de verificação do orçamento de horas de GPU usada na atividade 10.
+
+Dois critérios comuns aos dois experimentos serão fixados aqui. O primeiro é o
+critério de paridade funcional entre as versões, usado na atividade 6: como a
+saída do modelo varia entre execuções, a paridade não exigirá texto idêntico, e
+sim asserções funcionais, como resultado de negócio correto, resposta em
+formato válido e as mesmas ferramentas chamadas com argumentos equivalentes. O
+segundo é o critério de decisão do quinto objetivo específico, que dirá, para
+requisições simples e para requisições agênticas, se a redução do custo de
+substituição justifica o acréscimo de energia. Como os dois custos são medidos
+em unidades diferentes, sem conversão natural entre elas, o critério combinará
+um limite para cada dimensão, em vez de somá-las.
+
+Por fim, será redigido o protocolo de um terceiro \textit{benchmark}, de
+recuperação de falhas, mantido em reserva para o caso previsto na atividade 10.
+O resultado da atividade serão os três protocolos e os dois critérios,
+registrados com data no repositório do trabalho.
+
+\subsection{Atividade 5 -- Implementar o \harness{} e a \versaoH}
+\label{subsec:at-versao-h}
+
+Será implementado o \harness{} projetado na atividade 3, como biblioteca, e a
+\versaoH{} da aplicação, em que o código de negócio acessa o modelo apenas pela
+interface da camada e não importa nenhum SDK de provedor. Nesta etapa a camada
+terá o adaptador de um dos provedores comerciais e o adaptador do modelo local;
+o adaptador do segundo provedor comercial só será escrito na atividade 7, como
+parte da troca medida. Cada componente terá testes de unidade, e o registro de
+eventos será conferido contra requisições de exemplo antes de a versão ser dada
+como pronta.
+
+\subsection{Atividade 6 -- Implementar a \versaoD{} e a suíte de paridade}
+\label{subsec:at-versao-d}
+
+A \versaoD{} implementará o mesmo caso de uso chamando diretamente o SDK do
+provedor, segundo a política fixada na atividade 4, e com os mesmos
+\textit{prompts}, ferramentas e parâmetros da \versaoH. Em seguida será escrita
+uma suíte de testes comum às duas versões, com as asserções do critério de
+paridade. A taxa de sucesso nessa suíte é a mesma medida que condiciona a
+análise energética (atividade 12). A suíte terá de passar nas duas versões antes
+de cada coleta; sem paridade verificada, os dois \textit{benchmarks} comparariam
+objetos diferentes, e nenhum deles teria validade.
 
 % -----------------------------------------------------------------------------
 \section{\textit{Benchmark} 1 --- Substituibilidade}
 \label{sec:b1}
-% Fonte: plano §6.2. Ancoragem: R14 (Mo), R13 (Kaur), R12 (Issarny).
-% Pendências: A04 (provedores), A07, A08 (checklist), A09 (métrica de código),
-% A10 (tempo).
 
-\subsection{Variáveis e métricas}
-\begin{table}[h!]
+O primeiro experimento mede o custo de trocar o provedor de IA nas duas
+versões. A variável independente é a forma de integração (com ou sem a camada),
+e as variáveis dependentes estão no Quadro~\ref{qua:b1-metricas}. A escolha de
+métricas de estrutura de código como medida principal tem precedente em
+\citeonline{mo2023}, que comparam funções \textit{serverless} escritas com uma
+biblioteca de abstração e com as APIs nativas de cada plataforma.
+
+\begin{quadro}[h!]
   \centering
-  \Caption{\label{tab:b1-metricas}Métricas do \textit{Benchmark} 1}
-  \UFCtab{}{
-    \begin{tabularx}{\textwidth}{lXl}
-      \toprule
-      Dimensão & Métrica & Papel \\
-      \midrule \midrule
-      Comportamento      & Casos de uso que continuam funcionando após a troca & Primária \\
+  \Caption{\label{qua:b1-metricas}Métricas do \textit{Benchmark}~1}
+  \UFCqua{}{
+    \small
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{2.2cm}|}
+      \hline
+      \textbf{Dimensão} & \textbf{Métrica} & \textbf{Papel} \\
+      \hline
+      Comportamento       & Casos de uso que continuam funcionando após a troca & Primária \\
+      \hline
       Alteração no código & Arquivos, linhas e módulos alterados               & Primária \\
-      Impacto estrutural & Componentes ou interfaces afetados                  & Primária \\
-      Dependência        & Referências diretas ao SDK do provedor              & Primária \\
-      Testes             & Testes alterados ou quebrados                       & Primária \\
-      Esforço            & Tempo de implementação da substituição              & Secundária \\
-      \bottomrule
+      \hline
+      Impacto estrutural  & Componentes ou interfaces afetados                  & Primária \\
+      \hline
+      Dependência         & Referências diretas ao SDK do provedor              & Primária \\
+      \hline
+      Testes              & Testes alterados ou quebrados                       & Primária \\
+      \hline
+      Esforço             & Tempo de implementação da substituição              & Secundária \\
+      \hline
     \end{tabularx}
   }{
     \Fonte{Elaborado pelo autor}
   }
-\end{table}
+\end{quadro}
 
-\subsection{Protocolo}
-\pendencia{Troca de provedor em H e D; \textit{checklist} pré-registrado (A08).}
+\subsection{Atividade 7 -- Executar a troca de provedor (\textit{Benchmark}~1)}
+\label{subsec:at-troca}
 
-\subsection{Mitigação do viés do experimentador}
-\pendencia{Métricas objetivas como primárias; tempo secundário; ordem registrada.}
+O provedor comercial será substituído pelo outro nas duas versões, seguindo a
+lista de verificação registrada na atividade 4. Na \versaoH, a troca consiste
+em escrever o adaptador do novo provedor e alterar a configuração; na
+\versaoD, em reescrever as chamadas ao SDK onde quer que estejam. Ao fim de cada
+troca, a suíte de paridade será executada para contar os casos de uso que
+continuam funcionando. As alterações de código serão extraídas do controle de
+versões, comparando o estado anterior e o posterior à troca, e o tempo de
+implementação será registrado como métrica secundária. Como o autor implementa
+as duas versões conhecendo a hipótese, a ordem das trocas e as condições da
+medição do tempo serão registradas e declaradas nas ameaças à validade.
+
+\subsection{Atividade 8 -- Consolidar e analisar os dados do \textit{Benchmark}~1}
+\label{subsec:at-analise-b1}
+
+Os valores das métricas do Quadro~\ref{qua:b1-metricas} serão consolidados em
+uma tabela por versão. Como cada versão passa por uma única troca, a comparação
+será descritiva: diferença absoluta e relativa entre a \versaoH{} e a \versaoD{}
+em cada métrica, acompanhada da descrição qualitativa do que foi alterado em
+cada uma. A análise interpretará o resultado à luz do número de pontos de
+integração da aplicação, já que a diferença entre as versões tende a crescer com
+ele.
 
 % -----------------------------------------------------------------------------
 \section{\textit{Benchmark} 2 --- Eficiência energética}
 \label{sec:b2}
-% Fonte: plano §6.3. Ancoragem: R2, R3, R4, R5, R6.
-% Pendências: A11 (RAPL), A13 (determinismo), A14 (unidade amostral),
-% A15–A18 (estatística), A21–A22 (piloto), A29 (modelo/serving).
 
-\subsection{Matriz experimental}
-\pendencia{2×2: requisição simples vs.\ agêntica × H vs.\ D.}
+O segundo experimento mede o custo energético que a camada acrescenta à
+execução de requisições ao modelo local. A matriz experimental tem quatro
+células: as duas versões (\versaoD{} e \versaoH) cruzadas com dois níveis de
+requisição. O nível~1, requisição simples, sem ferramenta, isola o custo de a
+camada estar no caminho; o nível~2, requisição agêntica, com um ciclo de duas
+chamadas de ferramenta, mede o custo de a camada orquestrar ferramentas. A
+unidade de medida é a requisição completa, incluindo o ciclo de ferramentas, e
+não a chamada isolada ao modelo. As métricas estão no
+Quadro~\ref{qua:b2-metricas}. A medição será feita por telemetria do
+\textit{hardware}, e não por estimativa, porque estimativas baseadas em
+operações de ponto flutuante subestimam o consumo real \cite{fernandez2025}. O
+protocolo de telemetria e o pacote estatístico reaproveitam os de trabalho
+anterior do autor \cite{barros2026}; a diferença é que lá a coleta ocorreu em GPU
+dedicada e contínua, e aqui o acesso exclusivo se dá em janelas recorrentes de
+poucas horas, o que obriga a fragmentar a coleta.
 
-\subsection{Métricas e critério de aceitação}
-\pendencia{J/requisição, J/\textit{token}, potência, latência; \textit{gating} de corretude.}
+\begin{quadro}[h!]
+  \centering
+  \Caption{\label{qua:b2-metricas}Métricas do \textit{Benchmark}~2}
+  \UFCqua{}{
+    \small
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.6cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{2.2cm}|}
+      \hline
+      \textbf{Dimensão} & \textbf{Métrica} & \textbf{Papel} \\
+      \hline
+      Energia por requisição & Joules por requisição, pela integração da potência instantânea lida pela NVML & Primária \\
+      \hline
+      Energia por \textit{token} & Joules por \textit{token} de saída & Primária \\
+      \hline
+      Potência da GPU & Potência média e de pico, em watts & Primária \\
+      \hline
+      Latência & Percentis 50, 95 e 99 do tempo de resposta & Primária \\
+      \hline
+      Utilização da GPU & Percentual de utilização & Secundária \\
+      \hline
+      Carbono estimado & gCO$_2$e, pelo fator de emissão da matriz elétrica local & Secundária \\
+      \hline
+    \end{tabularx}
+  }{
+    \Fonte{Elaborado pelo autor}
+  }
+\end{quadro}
 
-\subsection{Protocolo de telemetria e sessões}
-\pendencia{NVML a 100 ms; \textit{baseline} de ociosidade; estabilização térmica; intercalação H/D.}
+\subsection{Atividade 9 -- Executar o piloto instrumentado}
+\label{subsec:at-piloto}
 
-\subsection{Análise estatística}
-\pendencia{Pacote definitivo após A15–A18.}
+Em uma janela curta de uso exclusivo do servidor, as duas versões serão
+executadas nos dois níveis com poucas repetições. O piloto verificará se a
+leitura da NVML a cada 100~ms funciona e se cada janela de telemetria pode ser
+associada à requisição pelo registro de eventos, e medirá: o tempo médio por
+requisição em cada nível; o tempo de estabilização térmica da GPU; a variação
+residual das saídas sob parâmetros fixos; e se a diferença de energia entre as
+versões fica acima do ruído da medição. Com o menor efeito de interesse prático
+fixado na atividade 4, será calculado o número de repetições necessário por
+célula. O piloto também confirmará que o Qwen3.6 27B passa no critério de
+corretude com chamada de ferramentas; se não passar, será substituído pelo
+modelo reserva antes do congelamento. O resultado é o orçamento de horas de GPU
+exigido pela matriz completa.
+
+\subsection{Atividade 10 -- Verificar o orçamento de horas de GPU}
+\label{subsec:at-orcamento}
+
+O orçamento calculado no piloto será comparado com as janelas de uso exclusivo
+confirmadas ou previstas até o fim da coleta, segundo a regra fixada na
+atividade 4. Se as janelas cobrirem o orçamento, o trabalho segue para a
+atividade 11. Se não cobrirem, o \textit{Benchmark}~2 será substituído pelo
+\textit{benchmark} de recuperação de falhas, cujo protocolo terá sido redigido
+na atividade 4 e que não depende de GPU: um injetor de falhas configurável será
+acoplado às duas versões, e as atividades 11 e 12 darão lugar à execução e à
+análise desse experimento, no mesmo período. Nesse caso, o quarto objetivo
+específico e a parte energética do quinto deixam de ser atendidos, e o escopo
+será revisto com o orientador.
+
+\subsection{Atividade 11 -- Executar a coleta energética (\textit{Benchmark}~2)}
+\label{subsec:at-coleta}
+
+A matriz será executada em lotes, ao longo das janelas de uso exclusivo. O
+\textit{driver} e o \textit{firmware} da GPU e a versão do modelo ficarão
+congelados durante toda a coleta, porque ela se estende por semanas e qualquer
+atualização intermediária se tornaria uma variável de confusão entre sessões.
+Cada sessão seguirá o mesmo roteiro: conferir que nenhum outro processo usa a
+GPU, já que a NVML lê o dispositivo inteiro; executar a suíte de paridade nas
+duas versões; medir a potência ociosa, que será subtraída depois; aguardar a
+estabilização térmica; e executar as requisições intercalando a \versaoH{} e a
+\versaoD{} dentro da mesma janela, para que temperatura e estado do servidor
+afetem as duas igualmente. Serão registrados, por sessão, a data, a versão do
+\textit{driver} e a temperatura ambiente aproximada. Sessões em que a
+exclusividade da GPU não puder ser garantida serão descartadas ou declaradas
+como amostra degradada.
+
+\subsection{Atividade 12 -- Consolidar e analisar os dados do \textit{Benchmark}~2}
+\label{subsec:at-analise-b2}
+
+A energia de cada requisição será obtida pela integração da potência
+instantânea na janela da requisição, descontada a potência ociosa. Antes de
+qualquer comparação energética, será aplicado o critério de corretude: se a taxa
+de sucesso da \versaoH{} for menor que a da \versaoD{} em um nível, a análise
+energética daquele nível será descartada, pois economizar energia perdendo
+funcionalidade não é eficiência. Para os níveis que passarem, o pacote
+estatístico previsto, a confirmar na atividade 4, é o do trabalho anterior do
+autor \cite{barros2026}: teste de Shapiro-Wilk para normalidade; teste de
+Mann-Whitney~U ($\alpha = 0{,}05$) em caso de rejeição; delta de Cliff como
+tamanho de efeito; e correção de Holm-Bonferroni para as comparações
+múltiplas, que são duas (\versaoH{} contra \versaoD{} em cada nível) para cada
+métrica primária. A potência média será reportada separadamente da duração,
+para identificar se o custo da camada vem de manter a GPU ocupada por mais
+tempo ou de exigir mais potência a cada instante \cite{vellaisamy2026}. A
+variância entre sessões será reportada separadamente da variância dentro de
+cada sessão.
+
+% -----------------------------------------------------------------------------
+\section{Confronto dos resultados}
+\label{sec:confronto}
+
+\subsection{Atividade 13 -- Confrontar os resultados dos dois \textit{benchmarks}}
+\label{subsec:at-confronto}
+
+O critério de decisão fixado na atividade 4 será aplicado aos resultados das
+atividades 8 e 12, separadamente para requisições simples e agênticas. Para
+cada nível, o resultado será uma resposta à pergunta do quinto objetivo
+específico: a redução do custo de substituição compensa ou não o acréscimo de
+energia. A discussão apontará as condições em que cada resposta vale, como o
+número de pontos de integração da aplicação e o nível de requisição, e os
+limites de generalização que as ameaças à validade impõem.
 
 % -----------------------------------------------------------------------------
 \section{Ameaças à validade}
 \label{sec:ameacas}
-% Fonte: plano §6.4. Quatro blocos de \citeonline{wohlin2024}.
+
+As ameaças previstas seguem os quatro tipos de \citeonline{wohlin2024}. Elas
+serão revistas ao fim da coleta, com o que de fato tiver ocorrido.
+
 \subsection{Validade interna}
-\pendencia{}
+
+O autor implementa as duas versões conhecendo a hipótese. Para reduzir esse
+viés no \textit{Benchmark}~1, as métricas primárias serão estruturais e
+comportamentais, e não dependem de julgamento; o tempo, mais sujeito ao viés,
+será secundário, e a ordem das trocas será declarada. A falta de paridade entre
+as versões faria os dois experimentos compararem objetos diferentes, ameaça
+tratada pela suíte comum executada antes de cada coleta. No
+\textit{Benchmark}~2, a leitura de potência pode ser contaminada por outros
+processos na GPU e variar entre sessões; as medidas são a exclusividade
+verificada a cada sessão, o congelamento de \textit{driver} e modelo, a
+intercalação das versões e a potência ociosa medida em cada sessão.
+
 \subsection{Validade externa}
-\pendencia{Inclui número de pontos de integração (A07).}
+
+O estudo usa uma única aplicação, de um único domínio, e deve ser lido como
+estudo de caso. O resultado do \textit{Benchmark}~1 depende do número de pontos
+de integração da aplicação, que será declarado. O \textit{Benchmark}~2 usa um
+único modelo, em um único equipamento, e não permite afirmar se o custo da
+camada muda com o tamanho do modelo ou com outro \textit{hardware}. O
+\harness{} e os protocolos serão publicados para permitir a replicação.
+
 \subsection{Validade de construto}
-\pendencia{}
+
+As métricas estruturais medem o custo de substituição de forma indireta e podem
+não captar o esforço de entender o código, limitação também reconhecida por
+\citeonline{mo2023}; por isso são combinadas com a métrica comportamental e com
+o tempo. O consumo agregado de energia esconde a relação entre potência e
+duração, e por isso as duas serão reportadas separadamente.
+
 \subsection{Validade de conclusão}
-\pendencia{}
+
+Com amostras grandes, diferenças pequenas tornam-se estatisticamente
+significativas sem ter importância prática. Por isso o tamanho de efeito será
+reportado ao lado do valor-$p$, com correção para comparações múltiplas e com o
+limiar de efeito fixado antes da coleta.
 
 % -----------------------------------------------------------------------------
-\section{Base metodológica reaproveitada}
-\label{sec:base-reaproveitada}
-% Fonte: plano §6.5. Citação de R7 padronizada após A06.
-\pendencia{Protocolo de medição de trabalho prévio do autor; diferenças de infraestrutura.}
+\section{Cronograma}
+\label{sec:cronograma}
+
+O Quadro~\ref{qua:cronograma} distribui as atividades entre novembro de 2026,
+quando o projeto é concluído e defendido, e junho de 2027, fim do TCC~II. A
+fase de solução ocupa os primeiros meses de 2027. O piloto foi posto em março,
+logo após a \versaoD{}, para que a coleta energética tenha abril e maio inteiros
+de janelas de GPU, enquanto o \textit{Benchmark}~1, que não depende do
+servidor, é executado em paralelo. A escrita da monografia acompanha todo o
+TCC~II.
+
+\begin{quadro}[h!]
+  \centering
+  \Caption{\label{qua:cronograma}Cronograma das atividades}
+  \UFCqua{}{
+    \footnotesize
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|*{8}{>{\centering\arraybackslash}p{0.88cm}|}}
+      \hline
+      \multirow{2}{*}{\textbf{Atividade}} & \multicolumn{2}{c|}{\textbf{2026}} & \multicolumn{6}{c|}{\textbf{2027}} \\
+      \cline{2-9}
+       & \textbf{Nov} & \textbf{Dez} & \textbf{Jan} & \textbf{Fev} & \textbf{Mar} & \textbf{Abr} & \textbf{Mai} & \textbf{Jun} \\
+      \hline
+      Redação do projeto de TCC~I                                         & X & X &   &   &   &   &   &   \\ \hline
+      Defesa do TCC~I                                                     &   & X &   &   &   &   &   &   \\ \hline
+      1. Selecionar a aplicação \textit{web} e o caso de uso              &   & X & X &   &   &   &   &   \\ \hline
+      2. Selecionar as tecnologias de implementação e de inferência       &   & X & X &   &   &   &   &   \\ \hline
+      3. Projetar a arquitetura do \harness{}                             &   &   & X &   &   &   &   &   \\ \hline
+      4. Planejar os experimentos e o critério de decisão                 &   &   & X & X &   &   &   &   \\ \hline
+      5. Implementar o \harness{} e a \versaoH                            &   &   &   & X & X &   &   &   \\ \hline
+      6. Implementar a \versaoD{} e a suíte de paridade                   &   &   &   &   & X &   &   &   \\ \hline
+      7. Executar a troca de provedor (\textit{Benchmark}~1)              &   &   &   &   &   & X &   &   \\ \hline
+      8. Consolidar e analisar os dados do \textit{Benchmark}~1           &   &   &   &   &   & X & X &   \\ \hline
+      9. Executar o piloto instrumentado                                  &   &   &   &   & X &   &   &   \\ \hline
+      10. Verificar o orçamento de horas de GPU                           &   &   &   &   & X & X &   &   \\ \hline
+      11. Executar a coleta energética (\textit{Benchmark}~2)             &   &   &   &   &   & X & X &   \\ \hline
+      12. Consolidar e analisar os dados do \textit{Benchmark}~2          &   &   &   &   &   &   & X & X \\ \hline
+      13. Confrontar os resultados dos dois \textit{benchmarks}           &   &   &   &   &   &   &   & X \\ \hline
+      Escrita da monografia                                               &   &   & X & X & X & X & X & X \\ \hline
+      Revisão final                                                       &   &   &   &   &   &   &   & X \\ \hline
+      Defesa do trabalho final                                            &   &   &   &   &   &   &   & X \\ \hline
+    \end{tabularx}
+  }{
+    \Fonte{Elaborado pelo autor}
+  }
+\end{quadro}
