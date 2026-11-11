@@ -274,7 +274,7 @@ opcionais, e o seu modelo de dados prevê campos de identificação do rastreio
 \textit{SpanId}), que associam o registro à requisição em cujo processamento ele
 foi emitido \cite{opentelemetrylogs}. Trata-se de documento técnico, não revisado
 por pares, usado apenas para fixar o conceito de registro estruturado e
-correlacionado, e não para sustentar afirmação empírica.
+correlacionado.
 
 \paragraph{Risco da própria camada.} O catálogo registra, por fim, um risco que
 interessa diretamente a este trabalho. Entre as desvantagens do
@@ -365,6 +365,15 @@ e as variáveis dependentes estão no Quadro~\ref{qua:b1-metricas}. A escolha de
 métricas de estrutura de código como medida principal tem precedente em
 \citeonline{mo2023}, que comparam funções \textit{serverless} escritas com uma
 biblioteca de abstração e com as APIs nativas de cada plataforma.
+
+O Quadro~\ref{qua:b1-metricas} operacionaliza os três componentes do custo de
+substituição do provedor definidos na Seção~\ref{sec:problema}. A extensão do
+código alterado será medida pelos arquivos, linhas e módulos alterados, pelos
+componentes ou interfaces afetados e pelos testes alterados. Os pontos de
+dependência direta serão medidos pelas referências diretas ao SDK do provedor.
+A preservação do comportamento será medida pelos casos de uso que continuam
+funcionando após a troca e pelos testes quebrados. O tempo de implementação da
+substituição será registrado como métrica secundária e não integra a definição.
 
 \begin{quadro}[h!]
   \centering

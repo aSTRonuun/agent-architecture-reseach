@@ -2,19 +2,19 @@
 % Capítulo 3 — Fundamentação Teórica   (peso: médio)
 % 02/11/2026: o capítulo passou a vir depois de Trabalhos Relacionados. Saíram
 % daqui, por serem comparação e não conceito: Mo et al. (2023) como precedente
-% (2.2), o parágrafo de Mo e Kandogan et al. (2025) na 2.3, o "é esse espaço
-% que o trabalho ocupa" do Liu (2.4.4) e o limite dos estudos de energia
-% (Ifath; 2.5). Mo continua na 2.6 só como precedente de método.
+% (3.2), o parágrafo de Mo e Kandogan et al. (2025) na 3.3, o "é esse espaço
+% que o trabalho ocupa" do Liu (3.4.4) e o limite dos estudos de energia
+% (Ifath; 3.5). Mo continua na 3.6 só como precedente de método.
 % Fonte: plano §8. Arquitetura (estilos, ADRs, C4, atributos de qualidade); harness como middleware (R12, R21); terminologia agêntica (R8); Green AI (R2, R3, R5).
 % -----------------------------------------------------------------------------
 % Estrutura (decisões do autor, 17/10/2026):
-%   2.1 LLMs, agentes e chamada de ferramentas   (R8, R11, Yao et al.)
-%   2.2 Arquitetura: modificabilidade, acoplamento, lock-in; ADRs e C4
-%   2.3 Camadas de abstração e middleware        (middleware mora aqui, não na 2.4)
-%   2.4 O harness: definição e padrões           (seção já redigida, condensada)
-%   2.5 Energia em inferência (Green AI)
-%   2.6 Experimentação controlada
-%   2.7 Síntese do capítulo (Quadro conceito -> uso -> objetivo)
+%   3.1 LLMs, agentes e chamada de ferramentas   (R8, R11, Yao et al.)
+%   3.2 Arquitetura: modificabilidade, acoplamento, lock-in; ADRs e C4
+%   3.3 Camadas de abstração e middleware        (middleware mora aqui, não na 3.4)
+%   3.4 O harness: definição e padrões           (seção já redigida, condensada)
+%   3.5 Energia em inferência (Green AI)
+%   3.6 Experimentação controlada
+%   3.7 Síntese do capítulo (Quadro conceito -> uso -> objetivo)
 % Decisões de 17/10/2026: busca 6 executada (ADRs, C4, ISO/IEC 25010); SagaLLM (R9)
 % usado na responsabilidade 3; detalhamento por responsabilidade (antiga 2.1.3)
 % migrado para a Metodologia (Seção "Delimitação das responsabilidades do
@@ -68,7 +68,7 @@
 %   - Schwartz et al. (2020): FPO como indicador proposto;
 %   - Fernández et al. (2025): lista de otimizações (decodificação, frameworks,
 %     paralelismo) e "utilização teórica da GPU" (esta consta do resumo).
-% T08/T09 (21/10/2026): 2.3, §1 ancorada em Parnas (1972), conferido numa cópia
+% T08/T09 (21/10/2026): 3.3, §1 ancorada em Parnas (1972), conferido numa cópia
 % do texto (math.pku.edu.cn; o original na ACM bloqueou, HTTP 403): módulo cuja
 % "interface or definition was chosen to reveal as little as possible about its
 % inner workings" e que esconde uma decisão de projeto dos demais. C4: fonte
@@ -76,8 +76,7 @@
 % quatro diagramas (system context, container, component, code); sem artigo
 % revisado por pares do criador. Livro de Brown (O'Reilly, 2026) NÃO citado: ISBN
 % e data divergem entre as páginas da editora e dos varejistas.
-% Figura (a) produzida em TikZ (fig:harness-camadas, Seção 2.4). Sugestão ainda
-% não produzida: quadro "conceito -> objetivo -> uso no experimento".
+% Figura (a) produzida em TikZ (fig:harness-camadas, Seção 3.4).
 % =============================================================================
 \chapter{Fundamentação Teórica}
 \label{cap:fundamentacao}
@@ -131,7 +130,7 @@ que atua sobre uma tarefa, e os sistemas multiagente ficam fora do escopo.
 O modelo age por meio da chamada de ferramentas. A intercalação
 de etapas de raciocínio do modelo com ações sobre fontes externas foi proposta
 por \citeonline{yao2023}, e os provedores comerciais a oferecem hoje como recurso
-das suas APIs. Segundo a documentação dos dois provedores usados neste trabalho,
+das suas APIs. Segundo a documentação dos dois provedores comerciais usados neste trabalho,
 o modelo não executa as ferramentas definidas pela aplicação: ele devolve uma
 solicitação de chamada estruturada, com o nome da ferramenta e os argumentos; a
 aplicação executa a operação e envia o resultado em uma nova requisição; e o
@@ -285,8 +284,8 @@ deixa de importar o SDK. O fluxo de uma requisição passa, assim, da aplicaçã
 \harness{} e deste ao provedor, e fica fora da camada o que não é integração com
 o modelo: as regras de negócio, a interface com o usuário e o treinamento de
 modelos. Em termos da
-Seção~\ref{sec:abstracao}, é um \textit{middleware} aplicado aos provedores de
-modelos. A Figura~\ref{fig:harness-camadas} contrasta as duas formas de
+Seção~\ref{sec:abstracao}, cumpre para os provedores de modelos o papel que o
+\textit{middleware} cumpre para plataformas heterogêneas. A Figura~\ref{fig:harness-camadas} contrasta as duas formas de
 integração comparadas no experimento: na integração direta, o código de negócio
 depende do SDK do provedor em cada ponto de chamada; com o \harness{}, depende
 apenas da interface da camada, e a troca de provedor deveria ficar confinada a
@@ -418,18 +417,20 @@ fonte que as complementa.
   }
 \end{quadro}
 
-Das cinco responsabilidades, só a segunda tem correspondência parcial direta com
-um padrão do catálogo; a primeira corresponde por analogia, a terceira em parte
-(só quanto ao contexto), e a quarta e a quinta não têm correspondência nos 18
+Das cinco responsabilidades, a segunda tem correspondência parcial com padrões
+do catálogo, e a terceira, também parcial, só quanto ao contexto; a primeira
+corresponde por analogia, e a quarta e a quinta não têm correspondência nos 18
 padrões, o que decorre do escopo do catálogo, centrado no projeto interno do
 agente (Seção~\ref{subsec:harness-catalogo}). O exame de cada correspondência, com os padrões e as fontes de
-complemento, pertence ao projeto da camada.
+complemento, pertence ao projeto da
+camada\ifentregaparcial\else{} (Seção~\ref{sec:delimitacao})\fi.
 
 Duas lacunas pedem fontes próprias. Na responsabilidade 4, o \textit{Retry} (nova
 tentativa após falha transitória) e o \textit{Circuit Breaker} (interrupção
 temporária das chamadas a um serviço que falha repetidamente) são padrões de
 resiliência usados em microsserviços \cite{aderaldo2025}, já analisados por meio
-de modelos \cite{mendonca2020}. Na responsabilidade 5, adota-se a documentação
+de modelos \cite{mendonca2020} e avaliados experimentalmente
+\cite{sedghpour2022,aderaldo2025}. Na responsabilidade 5, adota-se a documentação
 do OpenTelemetry, projeto de padronização de telemetria, segundo a qual o
 registro (\textit{log}) estruturado pode carregar o identificador do rastreio e
 do segmento da requisição (\textit{TraceId} e \textit{SpanId}), que o associam à
@@ -494,7 +495,8 @@ avaliar otimizações de inferência, como estratégias de decodificação,
 na energia total. A consequência para o desenho é que a energia de uma
 requisição depende da pilha que a executa, e não só do modelo, de modo que a
 pilha precisa ser fixada e a energia, medida. Por isso o trabalho mede a energia da GPU por telemetria
-do \textit{hardware}, no protocolo já empregado pelo autor \cite{barros2026}. A
+do \textit{hardware}, no protocolo já empregado em trabalho anterior, do qual o
+autor é coautor \cite{barros2026}. A
 telemetria é lida pela NVIDIA Management Library (NVML)\glsadd{NVML}, API em C
 da fabricante para monitorar e gerenciar suas GPUs, que expõe as duas grandezas
 definidas acima: a potência consumida pela GPU e pelos seus circuitos
@@ -528,8 +530,8 @@ funcionalmente equivalentes, a diferença observada pode ser atribuída à camad
 Os mesmos autores classificam as ameaças à validade em quatro tipos: interna,
 externa, de construto e de conclusão, taxonomia que o trabalho adota para analisar as
 ameaças à validade. Duas decisões do desenho dependem desse referencial: o
-uso de métricas de estrutura de código como medida do custo de substituição, com
-precedente em \citeonline{mo2023}, e o critério de decisão final, definido antes
+uso de métricas de estrutura de código entre as medidas do custo de
+substituição, com precedente em \citeonline{mo2023}, e o critério de decisão final, definido antes
 da coleta de dados, para que a conclusão não seja ajustada aos resultados
 (Seção~\ref{subsec:objetivos-especificos}).
 

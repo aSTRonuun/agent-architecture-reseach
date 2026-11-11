@@ -72,9 +72,10 @@ a hipótese de que trocar de provedor tem custo técnico relevante para quem
 integrou o modelo diretamente ao código.
 
 Uma alternativa arquitetural é interpor, entre a aplicação e o provedor, uma
-camada dedicada à integração com os modelos. Na literatura recente, essa camada
-passou a ser chamada de \harness{} \cite{rafique2026}, uso ainda sem definição
-canônica. Neste trabalho,
+camada dedicada à integração com os modelos. A literatura recente sobre agentes
+chama de \harness{} a camada de \textit{software} que envolve o modelo
+\cite{rafique2026}, uso ainda sem definição canônica. Este trabalho aplica o
+termo à camada situada entre a aplicação e o provedor:
 \harness{} é definido operacionalmente como a \textbf{camada arquitetural intermediária entre a
 aplicação \textit{web} e o provedor de IA}, que abstrai e centraliza as
 interações da aplicação com modelos e agentes, de modo que a aplicação não
@@ -222,7 +223,7 @@ tratado como ameaça à validade externa na metodologia.
 
 Por fim, o trabalho é viável no prazo de um trabalho de conclusão de curso. A
 medição energética apoia-se em protocolo de telemetria de \textit{hardware} já
-empregado pelo autor em trabalho anterior \cite{barros2026}, e o experimento
+empregado em trabalho anterior, do qual o autor é coautor \cite{barros2026}, e o experimento
 utiliza infraestrutura com GPU disponível na instituição, onde os modelos abertos
 são hospedados.
 

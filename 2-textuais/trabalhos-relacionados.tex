@@ -43,7 +43,7 @@ protocolo da busca está no Apêndice~\ref{ap:busca}.
 \citeonline{liu2025} catalogam 18 padrões arquiteturais para agentes baseados
 em modelos de fundação, descrevendo, para cada um, contexto, forças e
 consequências. O catálogo serve aqui de referência para delimitar as
-responsabilidades da camada, parte das quais tem correspondência, completa ou
+responsabilidades da camada, parte das quais tem correspondência, parcial ou
 por analogia, com os seus padrões. Diferencia-se da proposta em dois pontos:
 avalia os compromissos de forma qualitativa, e os próprios autores observam que
 a maior parte deles ainda exige quantificação; e tem como objeto o projeto
@@ -155,9 +155,9 @@ discutem ou demonstram os benefícios de uma camada de integração sem medi-los
 contra a integração direta. Fora da IA, \citeonline{mo2023} mediram o
 benefício e o custo de uma abstração, mas em desempenho e sobre serviços de
 nuvem, e \citeonline{xiao2025} confrontaram energia e manutenibilidade sem
-modelo de linguagem. Os estudos de energia com LLMs medem a pilha de inferência
-ou comparam \textit{frameworks} e topologias inteiros
-\cite{vellaisamy2026,matinpour2026,tripathy2026,barros2026}.
+modelo de linguagem. Os estudos de latência e de energia com LLMs caracterizam
+a pilha de inferência \cite{vellaisamy2026} ou comparam \textit{frameworks} e
+topologias inteiros \cite{matinpour2026,tripathy2026,barros2026}.
 
 \begin{quadro}[h!]
   \centering
@@ -208,6 +208,7 @@ provedor do modelo, medir o esforço de trocar o provedor e medir a energia que 
 camada acrescenta, comparando a mesma aplicação com e sem ela. Dos trabalhos
 analisados, a proposta herda o desenho com e sem a camada de
 \citeonline{mo2023}, a pergunta que confronta energia e manutenibilidade de
-\citeonline{xiao2025}, as responsabilidades da camada de \citeonline{liu2025} e
-o protocolo de medição de \citeonline{barros2026}. Os conceitos que sustentam
+\citeonline{xiao2025} e o protocolo de medição de \citeonline{barros2026}; o
+catálogo de \citeonline{liu2025} serve de referência para delimitar as
+responsabilidades da camada, que são definidas pelo autor. Os conceitos que sustentam
 essas escolhas são apresentados no Capítulo~\ref{cap:fundamentacao}.
