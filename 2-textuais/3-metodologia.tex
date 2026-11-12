@@ -13,33 +13,33 @@
 % lacuna do texto): A07–A11, A13–A19, A21–A23 e A30 → atividade 4; A29 (pilha de
 % inferência) → atividade 2; A12 (três adaptadores) → atividades 3, 5 e 7.
 % Taxonomia de validade: Wohlin et al. (R1).
+% 11/11/2026: revisão de concisão com a skill metodologia-tcc. Cortadas as
+% repetições entre atividades, quadros e ameaças à validade; nenhuma atividade,
+% métrica, critério ou citação foi removido. As quatro ameaças passaram de
+% subseções a parágrafos. A delimitação das responsabilidades (antiga
+% subsubseção da atividade 3) foi movida, sem alteração do conteúdo, para o
+% Apêndice ap:delimitacao (3-pos-textuais/apendices/apendice-delimitacao.tex).
 % =============================================================================
 \chapter{Metodologia}
 \label{cap:metodologia}
 
-Este trabalho é uma pesquisa experimental. Compara, sob condições controladas,
-duas versões funcionalmente equivalentes de uma mesma aplicação \textit{web}:
+Este trabalho é uma pesquisa experimental: compara, sob condições controladas,
+duas versões funcionalmente equivalentes de uma mesma aplicação \textit{web},
 uma integrada ao provedor de IA por meio da camada de \harness{} (\versaoH) e
 outra integrada diretamente ao provedor (\versaoD). O desenho dos experimentos e
-a classificação das ameaças à validade seguem \citeonline{wohlin2024}. Este
-capítulo descreve as treze atividades previstas, na ordem em que serão
-executadas, as ameaças à validade do estudo e o cronograma.
+a classificação das ameaças à validade seguem \citeonline{wohlin2024}.
 
-A Figura~\ref{fig:fluxo-atividades} apresenta o fluxo das atividades. As
-atividades 1 a 6 formam a fase de solução: escolha da aplicação e das
-tecnologias, projeto da camada, planejamento dos experimentos e implementação
-das duas versões. Concluída essa fase, o fluxo se divide em dois ramos. O
-\textit{Benchmark}~1 (atividades 7 e 8), que mede o custo de substituição do
-provedor, não depende de GPU e pode correr enquanto o \textit{Benchmark}~2
-(atividades 9 a 12), que mede o custo energético, depende das janelas de uso
-exclusivo do servidor institucional. Os dois ramos se reúnem na atividade 13,
-que confronta os resultados.
-
-Cada objetivo específico (Seção~\ref{subsec:objetivos-especificos}) é atendido
-por ao menos uma atividade: o primeiro, pela atividade 3; o segundo, pelas
-atividades 5 e 6; o terceiro, pelas atividades 7 e 8; o quarto, pelas
-atividades 9 a 12; e o quinto, pela atividade 4, em que o critério de decisão é
-fixado, e pela atividade 13, em que ele é aplicado.
+A Figura~\ref{fig:fluxo-atividades} apresenta as treze atividades previstas, na
+ordem de execução. As atividades 1 a 6 produzem as duas versões e fixam os
+protocolos. Em seguida o fluxo se divide: o \textit{Benchmark}~1 (atividades 7
+e 8) mede o custo de substituição do provedor e não depende de GPU; o
+\textit{Benchmark}~2 (atividades 9 a 12) mede o custo energético e depende das
+janelas de uso exclusivo do servidor institucional. A atividade 13 confronta os
+dois resultados. Quanto aos objetivos específicos
+(Seção~\ref{subsec:objetivos-especificos}), o primeiro é atendido pela
+atividade 3; o segundo, pelas atividades 5 e 6; o terceiro, pelas atividades 7
+e 8; o quarto, pelas atividades 9 a 12; e o quinto, pela atividade 4, que fixa
+o critério de decisão, e pela atividade 13, que o aplica.
 
 \begin{figure}[h!]
   \centering
@@ -110,31 +110,28 @@ fixado, e pela atividade 13, em que ele é aplicado.
 \label{sec:fase-solucao}
 
 As seis primeiras atividades produzem as duas versões da aplicação e fixam,
-antes de qualquer coleta, o que será medido e como. A partir do início da
-implementação, as versões de todas as dependências serão congeladas, para que
-uma atualização de biblioteca no meio do projeto não se confunda com o efeito
-da camada.
+antes de qualquer coleta, o que será medido e como. As versões das dependências
+serão congeladas no início da implementação, para que uma atualização de
+biblioteca não se confunda com o efeito da camada.
 
 \subsection{Atividade 1 -- Selecionar a aplicação \textit{web} e o caso de uso}
 \label{subsec:at-aplicacao}
 
 Será escolhida a aplicação \textit{web} sobre a qual os dois experimentos serão
-conduzidos. A aplicação não é a contribuição do trabalho, e sim o objeto em que
-a camada é avaliada; por isso a simplicidade do domínio é um critério de
-escolha, e não uma limitação. A escolha seguirá cinco critérios: (i) ter ao
-menos um fluxo em que o modelo use chamada de ferramentas, necessário às
-requisições agênticas do \textit{Benchmark}~2; (ii) permitir repetir as mesmas
-requisições sob os mesmos parâmetros; (iii) permitir simular falhas, como
-esgotamento de tempo, erro de conexão, limite de uso e resposta inválida,
-condição do plano alternativo descrito na atividade 10; (iv) não exigir dados
-sensíveis; e (v) ter lógica de negócio simples o bastante para que o código de
-integração com o modelo fique separável do restante.
+conduzidos. Ela é o objeto em que a camada é avaliada, e não a contribuição do
+trabalho, de modo que a simplicidade do domínio é critério de escolha. A
+aplicação deverá: (i) ter ao menos um fluxo com chamada de ferramentas, exigido
+pelas requisições agênticas do \textit{Benchmark}~2; (ii) permitir repetir as
+mesmas requisições sob os mesmos parâmetros; (iii) permitir simular falhas
+(esgotamento de tempo, erro de conexão, limite de uso e resposta inválida),
+condição do plano alternativo da atividade 10; (iv) não exigir dados sensíveis;
+e (v) ter lógica de negócio simples, que deixe o código de integração com o
+modelo separável do restante.
 
-Na mesma atividade serão definidos o caso de uso que as duas versões
-implementarão e as duas ou três ferramentas determinísticas que o modelo poderá
-chamar, com a especificação de entrada e saída de cada uma. O resultado será um
-registro da aplicação escolhida, com a justificativa frente a cada critério, o
-caso de uso e as ferramentas.
+Serão definidos também o caso de uso que as duas versões implementarão e as
+duas ou três ferramentas determinísticas que o modelo poderá chamar, com a
+especificação de entrada e saída de cada uma. O resultado será o registro da
+aplicação escolhida, com a justificativa frente a cada critério.
 \pendencia{Definir se a aplicação será construída para o estudo ou adaptada de
 um projeto existente.}
 
@@ -142,33 +139,31 @@ um projeto existente.}
 \label{subsec:at-tecnologias}
 
 Os modelos já estão definidos (Seção~\ref{sec:justificativa}): Claude Haiku 5.5
-(Anthropic) e GPT-6 Luna (OpenAI) no \textit{Benchmark}~1, e Qwen3.6 27B,
-hospedado no servidor institucional com GPU NVIDIA H100, no
-\textit{Benchmark}~2. Esta atividade escolherá o restante da pilha: a linguagem
-e o \textit{framework} da aplicação; os SDKs oficiais dos dois provedores
-comerciais; o servidor de inferência que expõe o modelo local à aplicação, com a
-quantização e a identificação exata do modelo; a forma de acesso à NVML para a
-telemetria da GPU \cite{nvml}; e as bibliotecas de análise estatística.
+(Anthropic) e GPT-6 Luna (OpenAI) no \textit{Benchmark}~1, e Qwen3.6 27B, em
+servidor institucional com GPU NVIDIA H100, no \textit{Benchmark}~2. Esta
+atividade escolherá o restante da pilha: a linguagem e o \textit{framework} da
+aplicação; os SDKs oficiais dos dois provedores comerciais; o servidor de
+inferência do modelo local, com a quantização e a identificação exata do
+modelo; a forma de acesso à NVML para a telemetria da GPU \cite{nvml}; e as
+bibliotecas de análise estatística.
 
-Os critérios serão: SDKs oficiais dos dois provedores disponíveis na linguagem
-escolhida, com suporte a chamada de ferramentas; servidor de inferência capaz
-de executar o modelo em uma única GPU e de atender chamadas de ferramentas;
-a mesma pilha nas duas versões, de modo que a única diferença entre elas seja a
-camada; e preferência por \textit{software} aberto. A escolha do servidor de
-inferência define também como a \versaoD{} falará com o modelo local no
-\textit{Benchmark}~2: se ele expuser interface compatível com a da OpenAI, a
-\versaoD{} poderá usar o SDK desse provedor apontado para o servidor local. O
-resultado será a lista de tecnologias com as versões que passam a ser
-congeladas.
+Os critérios serão: SDKs oficiais dos dois provedores na linguagem escolhida,
+com suporte a chamada de ferramentas; servidor de inferência que execute o
+modelo em uma única GPU e atenda chamadas de ferramentas; a mesma pilha nas duas
+versões, para que a única diferença entre elas seja a camada; e preferência por
+\textit{software} aberto. O servidor de inferência define também como a
+\versaoD{} acessará o modelo local: se ele expuser interface compatível com a da
+OpenAI, a \versaoD{} poderá usar o SDK desse provedor apontado para o servidor
+local. O resultado será a lista de tecnologias, com as versões a congelar.
 
 \subsection{Atividade 3 -- Projetar a arquitetura do \harness}
 \label{subsec:at-projeto}
 
 O projeto será documentado antes da implementação, com o modelo C4 nos níveis
 de contexto, contêineres e componentes \cite{brown-c4} e com registros de
-decisão arquitetural (ADRs) \cite{tyree2005}, apresentados na
-Seção~\ref{subsec:arq-documentacao}. Os diagramas cobrirão as duas versões da
-aplicação, para que a diferença entre elas fique explícita desde o projeto.
+decisão arquitetural (ADRs) \cite{tyree2005}
+(Seção~\ref{subsec:arq-documentacao}). Os diagramas cobrirão as duas versões da
+aplicação, para explicitar a diferença entre elas.
 
 O \harness{} será projetado como biblioteca separada da aplicação, com uma
 interface estável que esconde os detalhes de cada provedor. O produto mínimo
@@ -177,154 +172,60 @@ terá cinco componentes: (1) interface abstrata com um adaptador por provedor;
 requisições e respostas; (4) política de nova tentativa (\textit{retry}) para
 falhas transitórias; e (5) registro estruturado de eventos. Os componentes 4 e
 5 não serão avaliados, mas o experimento depende deles: sem a nova tentativa,
-uma falha de rede contaminaria a medição de energia; sem o registro, não haveria
-como associar cada janela de telemetria à requisição correspondente nem conferir
-os casos de uso após a troca de provedor. A presença de cada um será justificada
-em um ADR. A camada terá três adaptadores ao final do trabalho, um para cada
-provedor comercial e um para o modelo local.
+uma falha de rede contaminaria a medição de energia; sem o registro, não seria
+possível associar cada janela de telemetria à sua requisição nem conferir os
+casos de uso após a troca de provedor. Cada um será justificado em um ADR. Ao
+final do trabalho, a camada terá três adaptadores: um para cada provedor
+comercial e um para o modelo local.
+\pendencia{Indicar em qual componente fica o gerenciamento de contexto e estado
+(responsabilidade 3), que a Seção~\ref{subsec:harness-sintese} dá como
+implementado e que não aparece entre os cinco componentes.}
 
-Nesta atividade também será fixado o contrato da interface: operações, formato
-das mensagens, das declarações de ferramenta e dos erros. É esse contrato que a
-\versaoD{} terá de reproduzir, por outros meios, na atividade 6. O ponto de
-partida do projeto é a delimitação das responsabilidades da camada, apresentada
-a seguir.
-
-% Texto migrado do Cap. 2 (antiga subseção 2.1.3) em 17/10/2026; em 07/11/2026
-% passou a subsubseção da atividade 3, sem alteração do conteúdo.
-\subsubsection{Delimitação das responsabilidades do \harness}
-\label{sec:delimitacao}
-
-Esta subseção examina, responsabilidade a responsabilidade, o que o catálogo de
-\citeonline{liu2025} cobre e o que fica a cargo de outras fontes ou de decisão do
-projeto, segundo o resumo do Quadro~\ref{qua:harness-liu}. Atende ao primeiro
-objetivo específico, que delimita as responsabilidades da camada com base em
-padrões arquiteturais publicados.
-
-\paragraph{Responsabilidade 1.} O \textit{Agent adapter} converte as mensagens do
-agente para o formato exigido por ferramentas externas e vice-versa, e o
-\textit{Prompt/response optimiser} padroniza \textit{prompts} e respostas por
-meio de modelos de texto (\textit{templates}) \cite{liu2025}. Nenhum dos dois
-trata da troca do provedor do modelo: o primeiro lida com as interfaces das
-ferramentas, e o segundo, com a estrutura dos \textit{prompts}. É, porém, a
-responsabilidade cujo efeito o experimento mede. Para ancorá-la, recorre-se à
-noção de \textit{middleware}, a camada reutilizável que absorve a heterogeneidade
-entre plataformas \cite{issarny2007}, discutida na
-Seção~\ref{sec:abstracao}. A correspondência é de propósito, e não de projeto:
-o conceito explica por que uma camada intermediária absorve a heterogeneidade,
-mas não indica como projetá-la para provedores de modelos, e essa transposição é
-do autor.
-
-\paragraph{Responsabilidade 2.} O \textit{Agent adapter} invoca e gerencia as
-interfaces das ferramentas e devolve ao modelo os resultados da execução
-\cite{liu2025}, o que cobre parte da função. O \textit{Tool/agent registry} trata
-da seleção entre muitas ferramentas e agentes, problema que pouco se coloca
-quando o conjunto de ferramentas é pequeno e conhecido de antemão, como se prevê
-neste trabalho. Já os padrões \textit{One-shot model querying} e
-\textit{Incremental model querying} descrevem quantas vezes o modelo é consultado
-para gerar um plano; relacioná-los ao ciclo de ferramentas é uma analogia do
-autor.
-
-\paragraph{Responsabilidade 3.} O \textit{Passive goal creator} recupera da
-memória o histórico de conversas, os artefatos em edição e as ferramentas usadas
-recentemente, e os anexa ao \textit{prompt} do usuário; o \textit{Incremental
-model querying} divide o contexto em vários \textit{prompts} para contornar o
-limite da janela de contexto; e o \textit{Retrieval augmented generation}
-enriquece a consulta com conhecimento externo \cite{liu2025}. Nenhum deles trata
-da gestão do estado da interação como responsabilidade de uma camada. Para o
-estado, recorre-se a \citeonline{chang2025}, cujo SagaLLM integra o padrão
-transacional \textit{Saga} a memória persistente e compensação automática, para
-tratar a perda de contexto e a ausência de reversão no planejamento multiagente.
-O escopo multiagente está fora deste trabalho, e o que se retém é a separação
-entre dois problemas: preservar contexto e estado ao longo das etapas, e
-desfazer ou compensar etapas já executadas. A segunda, por ser compensação
-semântica, não é tratada pela camada; o tratamento de falhas da
-responsabilidade 4 limita-se às de transporte e de protocolo.\pendencia{Confirmar
-com o orientador que a recuperação de falhas se limita a transporte e protocolo
-e que a compensação semântica fica explicitamente fora do escopo.}
-
-\paragraph{Responsabilidade 4.} A tolerância a falhas (\textit{fault tolerance})
-aparece no catálogo apenas como força e benefício da cooperação baseada em
-papéis, no sentido de substituir agentes indisponíveis, e a seção 5.3 cita a
-identificação e o tratamento de exceções em tempo real como trabalho em
-andamento dos autores \cite{liu2025}. A literatura de arquitetura de software
-trata o mesmo problema por outro ângulo, o de lidar com serviços remotos sujeitos
-a falha: \textit{Retry} e \textit{Circuit Breaker} são padrões de resiliência
-usados com essa finalidade em microsserviços \cite{aderaldo2025}, já analisados
-por meio de modelos \cite{mendonca2020} e avaliados experimentalmente
-\cite{sedghpour2022,aderaldo2025}. Do ponto de vista da aplicação, o provedor de
-IA é um serviço remoto, sujeito às mesmas classes de falha transitória, como
-tempo esgotado, erro de conexão e limite de uso. Transpor esses padrões das
-chamadas entre microsserviços para as chamadas a provedores de modelos é uma
-analogia do autor: as fontes não tratam de IA. Há ainda uma indicação útil para a
-questão deste trabalho: os próprios padrões de resiliência introduzem atrasos de
-invocação, e o efeito desses atrasos sobre o desempenho da aplicação ainda era
-pouco estudado \cite{aderaldo2025}.
-
-\paragraph{Responsabilidade 5.} Também não há padrão entre os 18. Ao discutir a
-integração do catálogo com padrões existentes, \citeonline{liu2025} citam padrões
-de IA responsável publicados em outra obra do mesmo grupo, entre eles o
-\textit{black box}, que coleta as entradas e saídas do agente em tempo de
-execução para servir de evidência em processos de auditoria. Esses padrões não
-integram o catálogo e não são tratados neste trabalho. Para o que se entende
-aqui por registro estruturado de eventos, adota-se a documentação do
-OpenTelemetry: um registro (\textit{log}) é um registro textual com marca de
-tempo, estruturado (formato recomendado pela documentação) ou não, com metadados
-opcionais, e o seu modelo de dados prevê campos de identificação do rastreio
-(\textit{trace}) e do segmento (\textit{span}) da requisição (\textit{TraceId} e
-\textit{SpanId}), que associam o registro à requisição em cujo processamento ele
-foi emitido \cite{opentelemetrylogs}. Trata-se de documento técnico, não revisado
-por pares, usado apenas para fixar o conceito de registro estruturado e
-correlacionado.
-
-\paragraph{Risco da própria camada.} O catálogo registra, por fim, um risco que
-interessa diretamente a este trabalho. Entre as desvantagens do
-\textit{Tool/agent registry}, os autores apontam que ele pode se tornar uma
-solução de aprisionamento a fornecedor (\textit{vendor lock-in}) e um ponto único
-de falha \cite{liu2025}. O contexto é outro, o do registro de ferramentas, e não
-o da integração com provedores de modelos, mas o argumento vale para a camada
-estudada aqui: abstrair o provedor para reduzir a dependência pode criar uma
-dependência nova, na própria camada.
+Será fixado ainda o contrato da interface (operações e formatos das mensagens,
+das declarações de ferramenta e dos erros), que a \versaoD{} terá de reproduzir
+por outros meios na atividade 6. O projeto parte da delimitação das
+responsabilidades da camada, resumida no Quadro~\ref{qua:harness-liu} e
+detalhada no Apêndice~\ref{ap:delimitacao}.
 
 \subsection{Atividade 4 -- Planejar os experimentos e o critério de decisão}
 \label{subsec:at-planejamento}
 
 Os protocolos dos dois \textit{benchmarks} serão redigidos e congelados antes da
-implementação da \versaoD{} e de qualquer coleta, seguindo o desenho de
-experimento controlado de \citeonline{wohlin2024}. Fixar as escolhas antes de ver
-os dados impede que a análise seja ajustada aos resultados.
+implementação da \versaoD{} e de qualquer coleta, segundo o desenho de
+experimento controlado de \citeonline{wohlin2024}, para que a análise não seja
+ajustada aos resultados.
 
 O protocolo do \textit{Benchmark}~1 definirá: a política de implementação da
 \versaoD, que seguirá a documentação oficial de cada provedor, sem espalhar
-chamadas artificialmente e sem uma camada de abstração própria, e o número de
-pontos do código de negócio que chamam o modelo, parâmetro que afeta o tamanho
-da diferença entre as versões; a lista de verificação dos passos da troca de
-provedor, registrada antes da execução; a forma de contar as alterações de
-código, separando arquivos existentes modificados de código novo; e o
-procedimento de medição do tempo de implementação. Também estimará o custo das
-chamadas às APIs comerciais; se o orçamento for limitante, a segunda condição
-poderá usar um provedor simulado determinístico, o que será declarado.
+chamadas artificialmente e sem camada de abstração própria; o número de pontos
+do código de negócio que chamam o modelo, parâmetro que afeta o tamanho da
+diferença entre as versões; a lista de verificação dos passos da troca de
+provedor; a forma de contar as alterações de código, separando arquivos
+existentes modificados de código novo; e o procedimento de medição do tempo de
+implementação. Estimará também o custo das chamadas às APIs comerciais; se o
+orçamento for limitante, a troca poderá usar um provedor simulado determinístico
+como segunda condição, o que será declarado.
 
 O protocolo do \textit{Benchmark}~2 definirá: os parâmetros que tornam as
 requisições repetíveis (temperatura, semente, limite de \textit{tokens} de saída
-e modo de raciocínio), entendendo-se que, em GPU, mesmo parâmetros fixos não
-garantem saídas idênticas; a regra que descarta requisições agênticas em que o
-número de chamadas de ferramenta difere do esperado; a unidade amostral; se a
-energia da CPU será medida ou declarada como limitação; o pacote estatístico
-definitivo; a margem de não inferioridade que operacionaliza um consumo
-``comparável''; o limiar do tamanho de efeito; o menor efeito de interesse
-prático, a partir do qual o tamanho da amostra será calculado no piloto; e a
-regra de verificação do orçamento de horas de GPU usada na atividade 10.
+e modo de raciocínio), ressalvado que, em GPU, parâmetros fixos não garantem
+saídas idênticas; a regra de descarte das requisições agênticas em que o número
+de chamadas de ferramenta diferir do esperado; a unidade amostral; se a energia
+da CPU será medida ou declarada como limitação; o pacote estatístico definitivo;
+a margem de não inferioridade que operacionaliza um consumo ``comparável''; o
+limiar do tamanho de efeito; o menor efeito de interesse prático, base do
+cálculo do tamanho da amostra no piloto; e a regra de verificação do orçamento
+de horas de GPU, usada na atividade 10.
 
-Dois critérios comuns aos dois experimentos serão fixados aqui. O primeiro é o
-critério de paridade funcional entre as versões, usado na atividade 6: como a
-saída do modelo varia entre execuções, a paridade não exigirá texto idêntico, e
-sim asserções funcionais, como resultado de negócio correto, resposta em
-formato válido e as mesmas ferramentas chamadas com argumentos equivalentes. O
-segundo é o critério de decisão do quinto objetivo específico, que dirá, para
-requisições simples e para requisições agênticas, se a redução do custo de
-substituição justifica o acréscimo de energia. Como os dois custos são medidos
-em unidades diferentes, sem conversão natural entre elas, o critério combinará
-um limite para cada dimensão, em vez de somá-las.
+Dois critérios comuns aos dois experimentos serão fixados. O critério de
+paridade funcional, usado na atividade 6, não exigirá texto idêntico, pois a
+saída do modelo varia entre execuções, e sim asserções funcionais: resultado de
+negócio correto, resposta em formato válido e as mesmas ferramentas chamadas com
+argumentos equivalentes. O critério de decisão do quinto objetivo específico
+dirá, para requisições simples e agênticas, se a redução do custo de
+substituição justifica o acréscimo de energia; como os dois custos têm unidades
+diferentes, sem conversão natural entre elas, o critério combinará um limite
+para cada dimensão, em vez de somá-las.
 
 Por fim, será redigido o protocolo de um terceiro \textit{benchmark}, de
 recuperação de falhas, mantido em reserva para o caso previsto na atividade 10.
@@ -334,26 +235,24 @@ registrados com data no repositório do trabalho.
 \subsection{Atividade 5 -- Implementar o \harness{} e a \versaoH}
 \label{subsec:at-versao-h}
 
-Será implementado o \harness{} projetado na atividade 3, como biblioteca, e a
+Serão implementados o \harness{} projetado na atividade 3, como biblioteca, e a
 \versaoH{} da aplicação, em que o código de negócio acessa o modelo apenas pela
-interface da camada e não importa nenhum SDK de provedor. Nesta etapa a camada
-terá o adaptador de um dos provedores comerciais e o adaptador do modelo local;
-o adaptador do segundo provedor comercial só será escrito na atividade 7, como
-parte da troca medida. Cada componente terá testes de unidade, e o registro de
-eventos será conferido contra requisições de exemplo antes de a versão ser dada
-como pronta.
+interface da camada, sem importar SDK de provedor. Nesta etapa a camada terá o
+adaptador de um dos provedores comerciais e o do modelo local; o do segundo
+provedor comercial será escrito na atividade 7, como parte da troca medida.
+Cada componente terá testes de unidade, e o registro de eventos será conferido
+contra requisições de exemplo.
 
 \subsection{Atividade 6 -- Implementar a \versaoD{} e a suíte de paridade}
 \label{subsec:at-versao-d}
 
 A \versaoD{} implementará o mesmo caso de uso chamando diretamente o SDK do
-provedor, segundo a política fixada na atividade 4, e com os mesmos
+provedor, segundo a política fixada na atividade 4, com os mesmos
 \textit{prompts}, ferramentas e parâmetros da \versaoH. Em seguida será escrita
 uma suíte de testes comum às duas versões, com as asserções do critério de
-paridade. A taxa de sucesso nessa suíte é a mesma medida que condiciona a
-análise energética (atividade 12). A suíte terá de passar nas duas versões antes
-de cada coleta; sem paridade verificada, os dois \textit{benchmarks} comparariam
-objetos diferentes, e nenhum deles teria validade.
+paridade. A suíte terá de passar nas duas versões antes de cada coleta, e a sua
+taxa de sucesso é a medida de corretude que condiciona a análise energética
+(atividade 12).
 
 % -----------------------------------------------------------------------------
 \section{\textit{Benchmark} 1 --- Substituibilidade}
@@ -361,19 +260,16 @@ objetos diferentes, e nenhum deles teria validade.
 
 O primeiro experimento mede o custo de trocar o provedor de IA nas duas
 versões. A variável independente é a forma de integração (com ou sem a camada),
-e as variáveis dependentes estão no Quadro~\ref{qua:b1-metricas}. A escolha de
-métricas de estrutura de código como medida principal tem precedente em
-\citeonline{mo2023}, que comparam funções \textit{serverless} escritas com uma
-biblioteca de abstração e com as APIs nativas de cada plataforma.
-
-O Quadro~\ref{qua:b1-metricas} operacionaliza os três componentes do custo de
-substituição do provedor definidos na Seção~\ref{sec:problema}. A extensão do
-código alterado será medida pelos arquivos, linhas e módulos alterados, pelos
-componentes ou interfaces afetados e pelos testes alterados. Os pontos de
-dependência direta serão medidos pelas referências diretas ao SDK do provedor.
-A preservação do comportamento será medida pelos casos de uso que continuam
-funcionando após a troca e pelos testes quebrados. O tempo de implementação da
-substituição será registrado como métrica secundária e não integra a definição.
+e as variáveis dependentes são as métricas do Quadro~\ref{qua:b1-metricas}, que
+operacionalizam os três componentes do custo de substituição definidos na
+Seção~\ref{sec:problema}: a extensão do código alterado (alteração no código,
+impacto estrutural e testes alterados), os pontos de dependência direta
+(dependência) e a preservação do comportamento (comportamento e testes
+quebrados). O tempo de implementação é métrica secundária e não integra a
+definição. O uso de métricas de estrutura de código como medida principal tem
+precedente em \citeonline{mo2023}, que comparam funções \textit{serverless}
+escritas com uma biblioteca de abstração e com as APIs nativas de cada
+plataforma.
 
 \begin{quadro}[h!]
   \centering
@@ -406,15 +302,13 @@ substituição será registrado como métrica secundária e não integra a defin
 \label{subsec:at-troca}
 
 O provedor comercial será substituído pelo outro nas duas versões, seguindo a
-lista de verificação registrada na atividade 4. Na \versaoH, a troca consiste
-em escrever o adaptador do novo provedor e alterar a configuração; na
-\versaoD, em reescrever as chamadas ao SDK onde quer que estejam. Ao fim de cada
-troca, a suíte de paridade será executada para contar os casos de uso que
-continuam funcionando. As alterações de código serão extraídas do controle de
-versões, comparando o estado anterior e o posterior à troca, e o tempo de
-implementação será registrado como métrica secundária. Como o autor implementa
-as duas versões conhecendo a hipótese, a ordem das trocas e as condições da
-medição do tempo serão registradas e declaradas nas ameaças à validade.
+lista de verificação da atividade 4. Na \versaoH, a troca consiste em escrever
+o adaptador do novo provedor e alterar a configuração; na \versaoD, em
+reescrever as chamadas ao SDK onde quer que estejam. Ao fim de cada troca, a
+suíte de paridade será executada para contar os casos de uso que continuam
+funcionando. As alterações de código serão extraídas do controle de versões,
+pela comparação dos estados anterior e posterior à troca. O tempo de
+implementação, a ordem das trocas e as condições da medição serão registrados.
 
 \subsection{Atividade 8 -- Consolidar e analisar os dados do \textit{Benchmark}~1}
 \label{subsec:at-analise-b1}
@@ -422,10 +316,9 @@ medição do tempo serão registradas e declaradas nas ameaças à validade.
 Os valores das métricas do Quadro~\ref{qua:b1-metricas} serão consolidados em
 uma tabela por versão. Como cada versão passa por uma única troca, a comparação
 será descritiva: diferença absoluta e relativa entre a \versaoH{} e a \versaoD{}
-em cada métrica, acompanhada da descrição qualitativa do que foi alterado em
-cada uma. A análise interpretará o resultado à luz do número de pontos de
-integração da aplicação, já que a diferença entre as versões tende a crescer com
-ele.
+em cada métrica, com a descrição qualitativa do que foi alterado em cada uma. O
+resultado será interpretado à luz do número de pontos de integração da
+aplicação, pois a diferença entre as versões tende a crescer com ele.
 
 % -----------------------------------------------------------------------------
 \section{\textit{Benchmark} 2 --- Eficiência energética}
@@ -433,19 +326,18 @@ ele.
 
 O segundo experimento mede o custo energético que a camada acrescenta à
 execução de requisições ao modelo local. A matriz experimental tem quatro
-células: as duas versões (\versaoD{} e \versaoH) cruzadas com dois níveis de
-requisição. O nível~1, requisição simples, sem ferramenta, isola o custo de a
-camada estar no caminho; o nível~2, requisição agêntica, com um ciclo de duas
-chamadas de ferramenta, mede o custo de a camada orquestrar ferramentas. A
-unidade de medida é a requisição completa, incluindo o ciclo de ferramentas, e
-não a chamada isolada ao modelo. As métricas estão no
-Quadro~\ref{qua:b2-metricas}. A medição será feita por telemetria do
-\textit{hardware}, e não por estimativa, porque estimativas baseadas em
-operações de ponto flutuante subestimam o consumo real \cite{fernandez2025}. O
-protocolo de telemetria e o pacote estatístico reaproveitam os de trabalho
-anterior do autor \cite{barros2026}; a diferença é que lá a coleta ocorreu em GPU
-dedicada e contínua, e aqui o acesso exclusivo se dá em janelas recorrentes de
-poucas horas, o que obriga a fragmentar a coleta.
+células: as duas versões cruzadas com dois níveis de requisição. O nível~1,
+requisição simples, sem ferramenta, isola o custo de a camada estar no caminho;
+o nível~2, requisição agêntica, com um ciclo de duas chamadas de ferramenta,
+mede o custo de a camada orquestrar ferramentas. A unidade de medida é a
+requisição completa, incluído o ciclo de ferramentas, e as métricas estão no
+Quadro~\ref{qua:b2-metricas}. A energia será medida por telemetria do
+\textit{hardware}, e não estimada, pois estimativas baseadas em operações de
+ponto flutuante subestimam o consumo real \cite{fernandez2025}. O protocolo de
+telemetria e o pacote estatístico reaproveitam os de trabalho anterior do autor
+\cite{barros2026}, com uma diferença: lá a coleta ocorreu em GPU dedicada e
+contínua; aqui, o acesso exclusivo se dá em janelas recorrentes de poucas horas,
+o que obriga a fragmentar a coleta.
 
 \begin{quadro}[h!]
   \centering
@@ -478,48 +370,46 @@ poucas horas, o que obriga a fragmentar a coleta.
 \label{subsec:at-piloto}
 
 Em uma janela curta de uso exclusivo do servidor, as duas versões serão
-executadas nos dois níveis com poucas repetições. O piloto verificará se a
+executadas nos dois níveis, com poucas repetições. O piloto verificará se a
 leitura da NVML a cada 100~ms funciona e se cada janela de telemetria pode ser
-associada à requisição pelo registro de eventos, e medirá: o tempo médio por
-requisição em cada nível; o tempo de estabilização térmica da GPU; a variação
-residual das saídas sob parâmetros fixos; e se a diferença de energia entre as
-versões fica acima do ruído da medição. Com o menor efeito de interesse prático
-fixado na atividade 4, será calculado o número de repetições necessário por
-célula. O piloto também confirmará que o Qwen3.6 27B passa no critério de
-corretude com chamada de ferramentas; se não passar, será substituído pelo
-modelo reserva antes do congelamento. O resultado é o orçamento de horas de GPU
-exigido pela matriz completa.
+associada à sua requisição pelo registro de eventos. Medirá também o tempo médio
+por requisição em cada nível, o tempo de estabilização térmica da GPU, a
+variação residual das saídas sob parâmetros fixos e se a diferença de energia
+entre as versões supera o ruído da medição. Com o menor efeito de interesse
+prático fixado na atividade 4, será calculado o número de repetições por célula
+e, a partir dele, o orçamento de horas de GPU exigido pela matriz completa. O
+piloto confirmará ainda que o Qwen3.6 27B passa no critério de corretude com
+chamada de ferramentas; se não passar, será substituído, antes do congelamento,
+pelo gpt-oss 20B, também hospedado no servidor.
 
 \subsection{Atividade 10 -- Verificar o orçamento de horas de GPU}
 \label{subsec:at-orcamento}
 
 O orçamento calculado no piloto será comparado com as janelas de uso exclusivo
 confirmadas ou previstas até o fim da coleta, segundo a regra fixada na
-atividade 4. Se as janelas cobrirem o orçamento, o trabalho segue para a
-atividade 11. Se não cobrirem, o \textit{Benchmark}~2 será substituído pelo
-\textit{benchmark} de recuperação de falhas, cujo protocolo terá sido redigido
-na atividade 4 e que não depende de GPU: um injetor de falhas configurável será
-acoplado às duas versões, e as atividades 11 e 12 darão lugar à execução e à
-análise desse experimento, no mesmo período. Nesse caso, o quarto objetivo
-específico e a parte energética do quinto deixam de ser atendidos, e o escopo
-será revisto com o orientador.
+atividade 4. Se as janelas o cobrirem, o trabalho segue para a atividade 11.
+Caso contrário, o \textit{Benchmark}~2 será substituído pelo \textit{benchmark}
+de recuperação de falhas, que não depende de GPU: um injetor de falhas
+configurável será acoplado às duas versões, e as atividades 11 e 12 darão lugar,
+no mesmo período, à execução e à análise desse experimento. Nesse caso, o quarto
+objetivo específico e a parte energética do quinto deixarão de ser atendidos, e
+o escopo será revisto com o orientador.
 
 \subsection{Atividade 11 -- Executar a coleta energética (\textit{Benchmark}~2)}
 \label{subsec:at-coleta}
 
-A matriz será executada em lotes, ao longo das janelas de uso exclusivo. O
-\textit{driver} e o \textit{firmware} da GPU e a versão do modelo ficarão
-congelados durante toda a coleta, porque ela se estende por semanas e qualquer
-atualização intermediária se tornaria uma variável de confusão entre sessões.
-Cada sessão seguirá o mesmo roteiro: conferir que nenhum outro processo usa a
-GPU, já que a NVML lê o dispositivo inteiro; executar a suíte de paridade nas
-duas versões; medir a potência ociosa, que será subtraída depois; aguardar a
-estabilização térmica; e executar as requisições intercalando a \versaoH{} e a
-\versaoD{} dentro da mesma janela, para que temperatura e estado do servidor
-afetem as duas igualmente. Serão registrados, por sessão, a data, a versão do
-\textit{driver} e a temperatura ambiente aproximada. Sessões em que a
-exclusividade da GPU não puder ser garantida serão descartadas ou declaradas
-como amostra degradada.
+A matriz será executada em lotes, ao longo das janelas de uso exclusivo. Como a
+coleta se estende por semanas, o \textit{driver} e o \textit{firmware} da GPU e
+a versão do modelo ficarão congelados, para que uma atualização não se torne
+variável de confusão entre sessões. Cada sessão seguirá o mesmo roteiro:
+conferir que nenhum outro processo usa a GPU, pois a NVML lê o dispositivo
+inteiro; executar a suíte de paridade nas duas versões; medir a potência ociosa,
+a ser subtraída na análise; aguardar a estabilização térmica; e executar as
+requisições intercalando a \versaoH{} e a \versaoD{} na mesma janela, para que
+temperatura e estado do servidor afetem as duas igualmente. Serão registrados,
+por sessão, a data, a versão do \textit{driver} e a temperatura ambiente
+aproximada. Sessões sem exclusividade garantida da GPU serão descartadas ou
+declaradas como amostra degradada.
 
 \subsection{Atividade 12 -- Consolidar e analisar os dados do \textit{Benchmark}~2}
 \label{subsec:at-analise-b2}
@@ -529,17 +419,16 @@ instantânea na janela da requisição, descontada a potência ociosa. Antes de
 qualquer comparação energética, será aplicado o critério de corretude: se a taxa
 de sucesso da \versaoH{} for menor que a da \versaoD{} em um nível, a análise
 energética daquele nível será descartada, pois economizar energia perdendo
-funcionalidade não é eficiência. Para os níveis que passarem, o pacote
-estatístico previsto, a confirmar na atividade 4, é o do trabalho anterior do
-autor \cite{barros2026}: teste de Shapiro-Wilk para normalidade; teste de
+funcionalidade não é eficiência. Para os níveis aprovados, o pacote estatístico
+previsto, a confirmar na atividade 4, é o do trabalho anterior do autor
+\cite{barros2026}: teste de Shapiro-Wilk para normalidade; teste de
 Mann-Whitney~U ($\alpha = 0{,}05$) em caso de rejeição; delta de Cliff como
-tamanho de efeito; e correção de Holm-Bonferroni para as comparações
-múltiplas, que são duas (\versaoH{} contra \versaoD{} em cada nível) para cada
-métrica primária. A potência média será reportada separadamente da duração,
-para identificar se o custo da camada vem de manter a GPU ocupada por mais
-tempo ou de exigir mais potência a cada instante \cite{vellaisamy2026}. A
-variância entre sessões será reportada separadamente da variância dentro de
-cada sessão.
+tamanho de efeito; e correção de Holm-Bonferroni para as duas comparações
+(\versaoH{} contra \versaoD{} em cada nível) de cada métrica primária. A
+potência média será reportada separadamente da duração, para identificar se o
+custo da camada vem de manter a GPU ocupada por mais tempo ou de exigir mais
+potência a cada instante \cite{vellaisamy2026}, e a variância entre sessões,
+separadamente da variância dentro de cada sessão.
 
 % -----------------------------------------------------------------------------
 \section{Confronto dos resultados}
@@ -549,68 +438,62 @@ cada sessão.
 \label{subsec:at-confronto}
 
 O critério de decisão fixado na atividade 4 será aplicado aos resultados das
-atividades 8 e 12, separadamente para requisições simples e agênticas. Para
-cada nível, o resultado será uma resposta à pergunta do quinto objetivo
-específico: a redução do custo de substituição compensa ou não o acréscimo de
-energia. A discussão apontará as condições em que cada resposta vale, como o
-número de pontos de integração da aplicação e o nível de requisição, e os
-limites de generalização que as ameaças à validade impõem.
+atividades 8 e 12, separadamente para requisições simples e agênticas. Para cada
+nível, o resultado responderá à pergunta do quinto objetivo específico: se a
+redução do custo de substituição compensa ou não o acréscimo de energia. A
+discussão apontará as condições em que cada resposta vale, como o número de
+pontos de integração da aplicação, e os limites de generalização impostos pelas
+ameaças à validade.
 
 % -----------------------------------------------------------------------------
 \section{Ameaças à validade}
 \label{sec:ameacas}
 
-As ameaças previstas seguem os quatro tipos de \citeonline{wohlin2024}. Elas
-serão revistas ao fim da coleta, com o que de fato tiver ocorrido.
+As ameaças previstas seguem os quatro tipos de \citeonline{wohlin2024} e serão
+revistas ao fim da coleta, com o que de fato tiver ocorrido.
 
-\subsection{Validade interna}
+\paragraph{Validade interna.} O autor implementa as duas versões conhecendo a
+hipótese. Para reduzir esse viés no \textit{Benchmark}~1, as métricas primárias
+são estruturais e comportamentais, independentes de julgamento; o tempo, mais
+sujeito ao viés, é secundário, e a ordem das trocas será declarada. A falta de
+paridade faria os dois experimentos compararem objetos diferentes, o que a suíte
+comum, executada antes de cada coleta, evita. No \textit{Benchmark}~2, a leitura
+de potência pode ser contaminada por outros processos na GPU e variar entre
+sessões; as medidas são a exclusividade verificada a cada sessão, o congelamento
+de \textit{driver} e modelo, a intercalação das versões e a potência ociosa
+medida em cada sessão.
 
-O autor implementa as duas versões conhecendo a hipótese. Para reduzir esse
-viés no \textit{Benchmark}~1, as métricas primárias serão estruturais e
-comportamentais, e não dependem de julgamento; o tempo, mais sujeito ao viés,
-será secundário, e a ordem das trocas será declarada. A falta de paridade entre
-as versões faria os dois experimentos compararem objetos diferentes, ameaça
-tratada pela suíte comum executada antes de cada coleta. No
-\textit{Benchmark}~2, a leitura de potência pode ser contaminada por outros
-processos na GPU e variar entre sessões; as medidas são a exclusividade
-verificada a cada sessão, o congelamento de \textit{driver} e modelo, a
-intercalação das versões e a potência ociosa medida em cada sessão.
+\paragraph{Validade externa.} O estudo usa uma única aplicação, de um único
+domínio, e deve ser lido como estudo de caso. O resultado do
+\textit{Benchmark}~1 depende do número de pontos de integração da aplicação, que
+será declarado. O \textit{Benchmark}~2 usa um único modelo, em um único
+equipamento, e não permite afirmar se o custo da camada muda com o tamanho do
+modelo ou com outro \textit{hardware}. O \harness{} e os protocolos serão
+publicados para permitir a replicação.
 
-\subsection{Validade externa}
+\paragraph{Validade de construto.} As métricas estruturais medem o custo de
+substituição de forma indireta e podem não captar o esforço de entender o
+código, limitação também reconhecida por \citeonline{mo2023}; por isso são
+combinadas com a métrica comportamental e com o tempo. O consumo agregado de
+energia esconde a relação entre potência e duração, e por isso as duas serão
+reportadas separadamente.
 
-O estudo usa uma única aplicação, de um único domínio, e deve ser lido como
-estudo de caso. O resultado do \textit{Benchmark}~1 depende do número de pontos
-de integração da aplicação, que será declarado. O \textit{Benchmark}~2 usa um
-único modelo, em um único equipamento, e não permite afirmar se o custo da
-camada muda com o tamanho do modelo ou com outro \textit{hardware}. O
-\harness{} e os protocolos serão publicados para permitir a replicação.
-
-\subsection{Validade de construto}
-
-As métricas estruturais medem o custo de substituição de forma indireta e podem
-não captar o esforço de entender o código, limitação também reconhecida por
-\citeonline{mo2023}; por isso são combinadas com a métrica comportamental e com
-o tempo. O consumo agregado de energia esconde a relação entre potência e
-duração, e por isso as duas serão reportadas separadamente.
-
-\subsection{Validade de conclusão}
-
-Com amostras grandes, diferenças pequenas tornam-se estatisticamente
-significativas sem ter importância prática. Por isso o tamanho de efeito será
-reportado ao lado do valor-$p$, com correção para comparações múltiplas e com o
-limiar de efeito fixado antes da coleta.
+\paragraph{Validade de conclusão.} Com amostras grandes, diferenças pequenas
+tornam-se estatisticamente significativas sem ter importância prática. Por isso
+o tamanho de efeito será reportado ao lado do valor-$p$, com correção para
+comparações múltiplas e com o limiar de efeito fixado antes da coleta.
 
 % -----------------------------------------------------------------------------
 \section{Cronograma}
 \label{sec:cronograma}
 
-O Quadro~\ref{qua:cronograma} distribui as atividades entre novembro de 2026,
-quando o projeto é concluído e defendido, e junho de 2027, fim do TCC~II. A
-fase de solução ocupa os primeiros meses de 2027. O piloto foi posto em março,
-logo após a \versaoD{}, para que a coleta energética tenha abril e maio inteiros
-de janelas de GPU, enquanto o \textit{Benchmark}~1, que não depende do
-servidor, é executado em paralelo. A escrita da monografia acompanha todo o
-TCC~II.
+O Quadro~\ref{qua:cronograma} distribui as atividades entre novembro de 2026 e
+junho de 2027, fim do TCC~II; a defesa do TCC~I ocorre em dezembro de 2026. As
+seleções das atividades 1 e 2 começam nesse mesmo mês, e a fase de solução se
+estende até março de 2027. O piloto ocorre em março, logo após a \versaoD{},
+para que a coleta energética disponha de abril e maio inteiros de janelas de
+GPU, em paralelo ao \textit{Benchmark}~1. A escrita da monografia acompanha todo
+o TCC~II.
 
 \begin{quadro}[h!]
   \centering
