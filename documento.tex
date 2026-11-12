@@ -292,16 +292,19 @@
 	\bibliographystyle{abntex2-alf}
 	\bibliography{3-pos-textuais/referencias}
 %	\imprimirglossario
-	% O protocolo da busca (Cap. 2) é o único apêndice já redigido e precisa
-	% estar no PDF da entrega parcial, pois o Cap. 1 e o Cap. 2 remetem a ele.
+	% O protocolo da busca (Cap. 2) e a delimitação das responsabilidades do
+	% harness são os apêndices já redigidos e precisam estar no PDF da entrega
+	% parcial: os Caps. 1 e 2 remetem ao primeiro; os Caps. 3 e 4, ao segundo.
 	\ifentregaparcial
 	\imprimirapendices
 		\input{3-pos-textuais/apendices/apendice-busca}
+		\input{3-pos-textuais/apendices/apendice-delimitacao}
 	\else
 	\imprimirapendices
 		% Adicione aqui os apendices do seu trabalho
 		\input{3-pos-textuais/apendices/apendice-a}
 		\input{3-pos-textuais/apendices/apendice-busca}
+		\input{3-pos-textuais/apendices/apendice-delimitacao}
 		% apendice-b/c/d são exemplos do template (questionário, código-fonte,
 		% artigo de outro trabalho) sem relação com este TCC — desativados até
 		% que o autor tenha apêndices reais para incluir.
