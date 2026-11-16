@@ -24,6 +24,9 @@
 %  - ifath2026 (resumo estendido; segue citado na Introdução);
 %  - nascimento2026 (decisão de infraestrutura; resolve a T11 por retirada).
 % As entradas continuam no .bib e podem voltar se a banca pedir.
+% 15/11/2026: "esforço de troca" passou a "custo de substituição" (validação
+% cruzada T07); célula de Barros et al. na última coluna alinhada ao texto
+% (T15c); frase sobre o alcance da telemetria depois de Vellaisamy et al. (T05).
 % =============================================================================
 \chapter{Trabalhos Relacionados}
 \label{cap:trabalhos-relacionados}
@@ -57,7 +60,8 @@ proprietárias em ambiente corporativo. Como na proposta, a aplicação passa po
 um intermediário para chegar aos provedores. As duas arquiteturas,
 porém, são verificadas por mapeamento a sistemas existentes ou por um caso de
 uso ilustrativo, sem comparação com uma integração direta, de modo que o efeito
-da abstração sobre o esforço de troca e sobre o custo de execução não é medido.
+da abstração sobre o custo de substituição e sobre o custo de execução não é
+medido.
 
 Mais próximo quanto ao objetivo, \citeonline{morais2026} especificam agentes de
 IA como artefatos declarativos, independentes do modelo e do provedor,
@@ -65,9 +69,9 @@ executados por uma arquitetura com substituição transparente do modelo; um
 estudo de viabilidade com agentes de análise de \textit{code smells} mostra que
 a portabilidade entre configurações de modelo se preserva. Como na proposta,
 uma camada é interposta para que a aplicação não dependa do provedor. O estudo
-demonstra que a troca é possível, mas o seu resumo não relata medição do esforço
-de fazê-la, comparação com uma integração direta nem medição do custo da
-camada.
+demonstra que a troca é possível, mas o seu resumo não relata medição do custo
+de fazê-la, comparação com uma integração direta nem medição do custo de
+execução da camada.
 
 Em vez de construir a camada, uma equipe pode adotar um \textit{framework} de
 orquestração. \citeonline{zhu2026} comparam seis deles, entre eles LangGraph,
@@ -87,7 +91,7 @@ versões da aplicação, com e sem a camada, comparadas quanto ao benefício e a
 preço da abstração. As diferenças estão no domínio (provedores de modelos, que
 diferem também no formato das mensagens e do ciclo de ferramentas), no custo
 medido (energia no lugar de desempenho) e em duas escolhas de método. Primeiro,
-o esforço de troca é medido por métricas de código, sem participantes: perde-se
+o custo de substituição é medido por métricas de código, sem participantes: perde-se
 a validade de construto do esforço percebido, mas dispensa-se o recrutamento e
 elimina-se a variação entre pessoas. Segundo, a abstração é uma camada
 construída pelo autor em vez de uma biblioteca pronta, o que garante que as duas
@@ -116,16 +120,19 @@ consumo em ao menos um nível, em até 5,6\%, mas três prejudicaram a
 manutenibilidade, uma a favoreceu e duas não a alteraram. É o trabalho mais
 próximo quanto à forma da pergunta, pois confronta energia e manutenibilidade
 da mesma decisão arquitetural. A direção, porém, é inversa: lá, as técnicas
-economizam energia e podem custar manutenibilidade; aqui, a camada facilita a
-troca de provedor e pode custar energia. Os autores também não propõem um
-critério para decidir quando a economia compensa a perda, de modo que o
-critério do objetivo é contribuição própria deste trabalho.
+economizam energia e podem custar manutenibilidade; aqui, a camada reduz o
+custo de substituição do provedor e pode custar energia. Os autores também não
+propõem um critério para decidir quando a economia compensa a perda, de modo
+que o critério de decisão do quinto objetivo específico é contribuição própria
+deste trabalho (Seção~\ref{subsec:exp-criterio}).
 
 Em sistemas com LLMs, \citeonline{vellaisamy2026} mostram que a sobrecarga de
 orquestração no processador hospedeiro, separada do trabalho executado na GPU,
 é um custo oculto da latência da inferência. Como aqui, isolam o custo do
 \textit{software} em torno do modelo, mas o fazem na pilha de inferência, abaixo
-da camada de aplicação. Mais próximos do objeto estão os estudos que
+da camada de aplicação. A sobrecarga que descrevem ocorre fora da GPU, o que
+delimita o alcance da telemetria usada neste trabalho
+(Seção~\ref{sec:energia}). Mais próximos do objeto estão os estudos que
 comparam formas de orquestrar o modelo na aplicação. \citeonline{matinpour2026}
 mostram que a escolha entre LangChain e LlamaIndex altera latência e energia
 independentemente do modelo: nas tarefas com recuperação, o LlamaIndex teve
@@ -137,13 +144,13 @@ a tarefa. Em trabalho anterior, do qual o autor é coautor,
 \citeonline{barros2026} compararam, por telemetria NVML (\textit{NVIDIA
 Management Library}; Seção~\ref{sec:energia}) em uma GPU H100, um
 \textit{prompt} único com um debate entre agentes em 100 tarefas de contexto
-longo; esse protocolo de medição é reaproveitado aqui.
+longo; esse protocolo de medição, que cobre a GPU, é reaproveitado aqui.
 
 Esses estudos sustentam a hipótese de que decisões tomadas na aplicação alteram
 o consumo de energia, mas comparam \textit{frameworks} inteiros, que diferem em
 muitas decisões ao mesmo tempo, ou topologias de agentes. Nenhum compara a
 mesma aplicação com e sem uma camada de integração, mantendo fixa a
-orquestração, nem avalia o esforço de trocar o provedor do modelo.
+orquestração, nem avalia o custo de substituir o provedor do modelo.
 
 % -----------------------------------------------------------------------------
 \section{Síntese e posicionamento}
@@ -167,7 +174,7 @@ topologias inteiros \cite{matinpour2026,tripathy2026,barros2026}.
     \scriptsize
     \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{1.9cm}|>{\raggedright\arraybackslash}p{1.4cm}|>{\raggedright\arraybackslash}p{1.6cm}|>{\raggedright\arraybackslash}p{1.2cm}|>{\raggedright\arraybackslash}p{1.4cm}|}
       \hline
-      \textbf{Trabalho} & \textbf{Objeto} & \textbf{Tipo de avaliação} & \textbf{Esforço de troca me\-dido} & \textbf{Manu\-tenibi\-lidade me\-dida} & \textbf{Energia medida} & \textbf{Compara com e sem a decisão} \\
+      \textbf{Trabalho} & \textbf{Objeto} & \textbf{Tipo de avaliação} & \textbf{Custo de subs\-ti\-tui\-ção me\-dido} & \textbf{Manu\-tenibi\-lidade me\-dida} & \textbf{Energia medida} & \textbf{Compara com e sem a decisão} \\
       \hline
       \citeonline{liu2025} & Padrões para agentes baseados em modelos de fundação & Catálogo derivado de revisão & Não & Qualitativo & Não & Não \\
       \hline
@@ -191,7 +198,7 @@ topologias inteiros \cite{matinpour2026,tripathy2026,barros2026}.
       \hline
       \citeonline{tripathy2026} & \textit{Frameworks} agênticos com modelos pequenos & Experimento & Não & Não & Sim & Não (\textit{frameworks} inteiros) \\
       \hline
-      \citeonline{barros2026} & Prompt único e debate multiagente & Experimento & Não & Não & Sim & Sim \\
+      \citeonline{barros2026} & \textit{Prompt} único e debate multiagente & Experimento & Não & Não & Sim & Não (topologias inteiras) \\
       \hline
       \textbf{Proposta deste trabalho} & \textbf{Camada de \harness{} entre aplicação \textit{web} e provedor de IA} & \textbf{Experimento} & \textbf{Sim} & \textbf{Sim} & \textbf{Sim} & \textbf{Sim} \\
       \hline
@@ -204,8 +211,8 @@ topologias inteiros \cite{matinpour2026,tripathy2026,barros2026}.
 No quadro, \textit{Não (resumo)} indica que o resumo do trabalho não relata a
 dimensão. Nenhum dos trabalhos reúne as três características que definem a
 contribuição da proposta: ter como objeto a camada entre a aplicação e o
-provedor do modelo, medir o esforço de trocar o provedor e medir a energia que a
-camada acrescenta, comparando a mesma aplicação com e sem ela. Dos trabalhos
+provedor do modelo, medir o custo de substituir o provedor e medir a energia que
+a camada acrescenta, comparando a mesma aplicação com e sem ela. Dos trabalhos
 analisados, a proposta herda o desenho com e sem a camada de
 \citeonline{mo2023}, a pergunta que confronta energia e manutenibilidade de
 \citeonline{xiao2025} e o protocolo de medição de \citeonline{barros2026}; o

@@ -42,6 +42,11 @@ O capítulo passou de 21 para 12 trabalhos e de quatro para duas seções; saiu 
 
 Também incorporado: Tripathy et al. com taxas de resolução de 4% e 0% (item "Fora da revisão").
 
+### Atualização de 15/11/2026
+
+- **T05: feita.** O capítulo diz que a sobrecarga descrita por Vellaisamy et al. ocorre fora da GPU e delimita o alcance da telemetria usada aqui, com remissão à Seção 3.5, e que o protocolo de Barros et al. cobre a GPU. Com a A11 decidida em 15/11 (GPU medida; custo direto da camada estimado por limite superior), as duas frases e a síntese são coerentes com a Fundamentação.
+- **T13: compilado.** O PDF foi gerado com `tectonic` (51 páginas). O quadro, agora com 13 linhas, não gerou aviso de flutuante grande demais; resta só o aviso de 4,75 pt de largura que já existia. A paginação não foi vista (não há leitor de PDF nesta máquina): conferir no Overleaf. A coluna "Esforço de troca medido" virou "Custo de substituição medido" (validação cruzada T07), e a célula de Barros et al. na última coluna virou "Não (topologias inteiras)" (validação cruzada T15c).
+
 ## Visão geral
 
 | ID | Título | Tipo | Severidade | Pontos | Esforço | Depende de |

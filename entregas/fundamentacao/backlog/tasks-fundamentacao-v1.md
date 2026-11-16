@@ -18,6 +18,24 @@ Total: 9 tasks (0 críticas, 0 altas, 4 médias, 5 baixas) | Pontos recuperávei
 
 Soma dos pontos: T01 (0,15) + T02 (0,15) + T03 (0,10) + T04 (0,10) + T05 (0,05) = **0,55**, igual ao total perdido na revisão.
 
+## Situação em 15/11/2026
+
+O backlog não tinha registro de execução. T04, T05, T08 e T09 foram aplicadas em 21/10/2026 (ver o cabeçalho de `2-textuais/2-fundamentacao-teorica.tex`). As demais foram tratadas em 15/11/2026, sem o autor presente. A Fundamentação é hoje o Capítulo 3; onde as tasks dizem "2.x", leia "3.x".
+
+| ID | Situação | O que foi feito / o que falta |
+|---|---|---|
+| T01 | Feita | Decisão do autor em 15/11/2026 (A11): o modelo roda no servidor e a aplicação com a camada, na máquina do autor. A 3.5 define a fronteira em dois parágrafos: a GPU do servidor é medida pela NVML e verifica se a camada altera a energia de inferência; o custo direto da camada, que ocorre na CPU da máquina da aplicação, é estimado por limite superior (diferença H−D no tempo de processamento × potência máxima do processador). O RAPL (Khan et al., 2018) aparece só como a medição direta que o arranjo não permite. A Introdução fala na "CPU da máquina que executa a aplicação", coerente com a estimativa de 1.1. A Metodologia traz o arranjo (atividade 2), a forma de medir o tempo (atividade 4), a linha nova no Quadro do *Benchmark* 2, o piloto, a coleta, a análise e as ameaças à validade. A confirmar: que a máquina da aplicação de fato não oferece RAPL (o texto afirma isso). |
+| T02 | Feita | Seção 3.6.3, "Confronto de atributos de qualidade e critério de decisão": compromisso entre atributos (Bass et al., 2021) e ATAM (Kazman et al., 1998), com a forma do critério (um limite por dimensão, sem soma nem ponderação; camada justificada quando os dois limites são atendidos). Linha nova no quadro-síntese, objetivo (e). Os valores dos limites são da atividade 4 (A30). A conferir: a frase atribuída a Bass et al. (não há cópia do livro no projeto); o conteúdo do ATAM foi conferido no relatório técnico de mesmo título, e não no artigo do ICECCS. |
+| T03 | Feita | Seção 3.6.2, "Variabilidade das medições e análise estatística": unidade amostral, repetições e tamanho de efeito, com Arcuri e Briand (2011, lido na íntegra), Ournani et al. (2020, resumo) e Wohlin et al. (2024). A conferir: "baixo poder estatístico" como ameaça à validade de conclusão em Wohlin et al. |
+| T04 | Feita (21/10) | Ver cabeçalho do `.tex`. |
+| T05 | Feita (21/10) | Ver cabeçalho do `.tex`. As remissões novas à Metodologia usam `\ref{}`. |
+| T06 | Feita | "Extensional/intensivo" trocados por "efeito de duração" e "efeito de potência". |
+| T07 | Feita | Seção 3.6.1, "Equivalência funcional por testes", com Yoo e Harman (2012): teste de regressão aplicado a duas versões, equivalência definida como aprovação das duas na mesma suíte, asserções sobre propriedades em vez de texto. |
+| T08 | Feita (21/10) | Ver cabeçalho do `.tex`. |
+| T09 | Feita (21/10) | Ver cabeçalho do `.tex`. |
+
+Referências novas no `.bib` (metadados conferidos no Crossref): `kazman1998`, `yoo2012`, `arcuri2011`, `ournani2020`, `khan2018`. Siglas novas: ATAM e RAPL.
+
 ## Detalhamento
 
 ### T01 — Fundamentar a fronteira da medição de energia (GPU × CPU)

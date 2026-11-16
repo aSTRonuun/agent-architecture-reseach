@@ -86,9 +86,9 @@ Capítulo~\ref{cap:fundamentacao} as apresenta, mostra até onde esse catálogo 
 sustenta e que outras fontes cobrem o que ele não cobre.
 
 Essa camada, contudo, pode ter um custo. Cada nível de indireção acrescenta
-trabalho a toda requisição (normalizar mensagens, serializar dados, orquestrar o
-ciclo de ferramentas, registrar eventos), e é razoável supor que esse trabalho
-consuma energia. O consumo dos centros de dados torna a questão relevante: a
+trabalho a toda requisição (normalizar mensagens, convertê-las de e para o
+formato de cada provedor, conduzir o ciclo de ferramentas por uma interface
+comum), e é razoável supor que esse trabalho consuma energia. O consumo dos centros de dados torna a questão relevante: a
 Agência Internacional de Energia estima que eles consumiram cerca de
 415~TWh em 2024, aproximadamente 1,5\% da eletricidade mundial, e projeta que
 esse consumo mais que dobre até 2030, chegando a cerca de 945~TWh, com a IA como
@@ -118,11 +118,12 @@ requisição isolada, o efeito direto tende a ser pequeno. Tomando como referên
 inferências de geração de texto citados acima \cite{luccioni2024} (cerca de
 170~J por requisição) e supondo, como premissa do autor, que o trabalho próprio
 da camada ocupe a unidade central de processamento
-(CPU)\glsadd{CPU} do servidor por até 10~ms a cerca de 100~W
-(aproximadamente 1~J), o acréscimo direto seria inferior a 1\% da energia da
-requisição. Em fluxos agênticos o efeito pode ser maior, pois a camada conduz o
-ciclo de ferramentas e pode alterar o número de chamadas e o tamanho do contexto
-enviado ao modelo. A estimativa é uma premissa, a confrontar com a medição.
+(CPU)\glsadd{CPU} da máquina que executa a aplicação por até 10~ms a cerca
+de 100~W (aproximadamente 1~J), o acréscimo direto seria inferior a 1\% da
+energia da requisição. Em fluxos agênticos o efeito pode ser maior, pois o
+trabalho da camada se repete a cada volta do ciclo de ferramentas, sobre um
+contexto que cresce a cada volta. A estimativa é uma premissa, a confrontar com
+a medição.
 
 \section{Problema e lacuna de pesquisa}
 \label{sec:problema}
@@ -138,8 +139,8 @@ A lacuna está na medição controlada desses \textit{trade-offs}. Nas buscas
 registradas no Apêndice~\ref{ap:busca}, entre publicações de 2023 a 2026, não
 foram encontrados estudos que comparem, sob as mesmas condições, uma aplicação
 com e sem a camada de integração, quantificando ao mesmo tempo o benefício mais
-alegado da camada, a facilidade de trocar de provedor, e o preço que ela possa
-cobrar em energia. Sem essa medição,
+alegado da camada, a redução do custo de trocar de provedor, e o preço que ela
+possa cobrar em energia. Sem essa medição,
 desenvolvedores e arquitetos que integram LLMs a aplicações \textit{web}
 decidem entre adotar ou não uma camada de \harness{} com base em argumentos de
 princípio ou em alegações de fornecedores.
@@ -159,7 +160,7 @@ A hipótese de partida, a ser testada, é que a camada reduz o custo de
 substituição e cobra por isso um custo energético. Os resultados que a
 contrariem também servem a quem precisa tomar a decisão arquitetural: a camada
 pode reduzir o custo de substituição sem acréscimo relevante de energia, ou
-acrescentar custo energético sem reduzir o esforço de substituição.
+acrescentar custo energético sem reduzir o custo de substituição.
 
 \section{Justificativa}
 \label{sec:justificativa}
@@ -187,14 +188,16 @@ sistematizados por \citeonline{wohlin2024}, comparando duas versões
 funcionalmente equivalentes de uma mesma aplicação: uma integrada ao provedor
 por meio da camada e outra integrada diretamente.
 
-O trabalho se restringe a duas dimensões: a substituibilidade do provedor, o
-benefício mais associado à camada, e o custo energético, o preço que ela pode
-cobrar. As duas avaliam a mesma decisão por lados opostos. Outros atributos
-usualmente atribuídos a uma camada desse tipo, como a recuperação de falhas e a
-auditabilidade, serão implementados por serem pré-requisitos técnicos do
-experimento, mas não serão avaliados. Por isso, a conclusão responde se a camada
-compensa pelo desacoplamento que proporciona; se ela compensa de modo geral fica
-fora do seu alcance.
+O trabalho se restringe a duas dimensões: o custo de substituição do provedor,
+cuja redução é o benefício mais associado à camada, e o custo energético, o
+preço que ela pode cobrar. As duas avaliam a mesma decisão por lados opostos.
+Outras funções usualmente atribuídas a uma camada desse tipo, como a gestão de
+contexto e estado, a recuperação de falhas e o registro de eventos para
+auditoria, serão implementadas nas duas versões da aplicação por serem
+pré-requisitos técnicos do experimento, mas os atributos de qualidade ligados a
+elas não serão avaliados. Por isso, a conclusão responde se a camada compensa
+pela redução do custo de substituição; se ela compensa de modo geral fica fora
+do seu alcance.
 
 Os modelos de IA integrados à aplicação são definidos desde já, para que o
 experimento seja replicável. Na avaliação do custo de substituição, a aplicação
@@ -208,7 +211,8 @@ mede o esforço de alterar o código, e não a qualidade das respostas.
 A medição energética será feita sobre um único modelo aberto, o Qwen3.6 de 27
 bilhões de parâmetros, integrado às duas versões da aplicação, com e sem a
 camada, e hospedado em servidor institucional com GPU NVIDIA H100, cuja
-telemetria é coletada por meio da biblioteca NVML. Entre os modelos abertos
+telemetria é coletada por meio da biblioteca NVML. Para a camada, esse servidor
+é um terceiro provedor, atendido por um adaptador próprio. Entre os modelos abertos
 hospedados no servidor, ele foi escolhido por reunir pesos abertos, suporte a
 chamada de ferramentas, necessário às requisições agênticas, e execução em uma
 única GPU, o que permite atribuir a energia medida a um único dispositivo. Os

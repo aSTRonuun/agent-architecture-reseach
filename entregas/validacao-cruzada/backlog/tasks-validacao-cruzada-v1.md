@@ -56,6 +56,28 @@ Aplicadas no texto as tasks que não dependiam de decisão. O PDF não foi compi
 
 Abertas, por dependerem de decisão, de fonte ou de reescrita mais ampla: T01, T04, T05, T06, T07, T10, T14.
 
+## Situação em 15/11/2026
+
+Sessão sem o autor presente. O PDF foi compilado nesta máquina com `tectonic` (51 páginas, sem erro, sem `\ref` nem `\cite` indefinidos). A lista de siglas não pôde ser conferida, porque o `tectonic` não executa o `makeglossaries`; conferir no Overleaf.
+
+| ID | Situação | O que foi feito / o que falta |
+|---|---|---|
+| T01 | Feita, a confirmar | Não houve decisão nova: a Metodologia (07/11) já dizia que a versão D usa "os mesmos *prompts*, ferramentas e parâmetros" e que as requisições agênticas com número de chamadas diferente do esperado são descartadas. A atividade 6 agora diz explicitamente que as duas versões enviam ao modelo as mesmas chamadas, com o mesmo contexto. A Introdução deixou de dizer que a camada "pode alterar o número de chamadas e o tamanho do contexto"; o efeito maior nos fluxos agênticos passou a ser atribuído ao trabalho da camada, que se repete a cada volta do ciclo. O TR já dizia "mantendo fixa a orquestração". **Confirmar com o orientador** ao fechar A07 e A19. Passo 4 (consequência para a Fund T01): com a A11 decidida em 15/11, a medição na GPU verifica se a camada altera a energia de inferência, e o custo direto é estimado por limite superior; ver a Fund T01 em `entregas/fundamentacao/backlog/`. |
+| T04 | Feita, a confirmar | A atividade 6 diz que a versão D executa as mesmas funções (ciclo de ferramentas, histórico de mensagens, nova tentativa e registro de eventos) no código de negócio ou pelos recursos do SDK, e que a energia delas não entra na diferença H−D. A Fundamentação (3.4.4) diz o mesmo. Decorre do que a Metodologia já exigia (sem registro não se associa a janela de telemetria à requisição; sem nova tentativa uma falha contamina a medição), mas é escolha de desenho: **confirmar** junto com A07. A lista de trabalho da indireção na Introdução (1.1) foi ajustada: saiu "registrar eventos". |
+| T05 | Feita | A Metodologia tem a Seção "Confronto dos resultados" (atividade 13) e a atividade 4 fixa o critério. A forma do critério está fundamentada na Seção 3.6.3 (Fund T02). Os valores dos limites continuam sendo decisão da atividade 4 (A30). |
+| T06 | Encerrada por conversão | A aplicação, o caso de uso, as ferramentas e a pilha de inferência viraram as atividades 1 e 2 da Metodologia, com critérios de escolha. A pilha de inferência (A29) segue aberta, como resultado da atividade 2. |
+| T07 | Feita | Custo de substituição: os *benchmarks* passaram a "Custo de substituição do provedor" e "Custo energético"; "facilidade de trocar", "esforço de substituição", "substituibilidade do provedor" e "desacoplamento" saíram da Introdução; no TR, "esforço de troca" virou "custo de substituição" (texto e coluna do quadro). Equivalência: "paridade funcional", "suíte de paridade" e "critério de corretude" viraram "equivalência funcional", "suíte de equivalência" e "taxa de sucesso na suíte de equivalência"; a atividade 6 mudou de nome no título, na figura e no cronograma. "Substituibilidade" ficou só com o sentido da ISO/IEC 25010 (Fundamentação) e nas palavras-chave do Resumo. Não alterado: Resumo e *Abstract* ("desacoplamento obtido"), que não entram na entrega parcial. |
+| T10 | Feita (opção conservadora) | A definição de requisição agêntica (3.1) ganhou uma frase dizendo que o adjetivo indica só a presença do ciclo de ferramentas e não remete à "IA agêntica" de Sapkota et al. A alternativa de trocar o termo nos objetivos (d) e (e) fica com o orientador. |
+| T13 | Feita | Passo 2: a Introdução (1.3) diz que, para a camada, o servidor institucional é um terceiro provedor, com adaptador próprio; a Metodologia já previa os três adaptadores. |
+| T14 | Feita | A Introdução cita as três funções (gestão de contexto e estado, recuperação de falhas, registro de eventos para auditoria); a Fundamentação fala nas responsabilidades 3, 4 e 5 e nos atributos ligados a elas. |
+| T15 | Feita | Item (c): a célula de Barros et al. na coluna "Compara com e sem a decisão" passou a "Não (topologias inteiras)", como o texto da seção e a síntese já diziam. É julgamento meu sobre o critério da coluna; o autor, que é coautor do artigo, deve conferir. |
+| T16 | Feita | Item (d): o *Tool/agent registry* ficou no Quadro com a marca "(aplicação limitada)", coerente com o Apêndice B. |
+| T02 | Parcial | Continua faltando só o passo 3 (redação do objetivo (a)), que é do orientador. O Apêndice B repete a mesma expressão ("com base em padrões arquiteturais publicados") e deve mudar junto. |
+
+Também resolvido: a `\pendencia` comentada da atividade 3 (onde fica a responsabilidade 3). O histórico de mensagens ficou no componente 2 (condução do ciclo de ferramentas). É decisão de projeto pequena, a confirmar.
+
+Abertas: só o passo 3 da T02. As confirmações pedidas acima (T01, T04, T15c, componente 2) não impedem a entrega.
+
 ## Detalhamento
 
 ### T01 — Declarar o que difere entre as versões H e D na orquestração
