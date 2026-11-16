@@ -336,3 +336,13 @@ Soma dos pontos: T01 (0,10) + T02 (0,15) + T10 (0,10) + T17 (0,15) + T18 (0,05) 
 Nenhum item.
 
 Premissas: severidade derivada das regras da skill. A severidade das tasks de um mesmo critério segue a perda do critério na revisão (Média para 1.2, 1.4 e 3.2; Alta para o critério 7), mesmo quando os pontos são atribuídos a uma única task. Itens "Não encontrado no texto" em seções não entregues (T20–T26) foram tratados como "Não atende" (Alta), e a falta de cronograma como Crítica; ambos valem 0 ponto porque a revisão não os pontuou. Esforço estimado. Pontos conforme a revisão; quando um critério gerou várias tasks, a perda foi atribuída a uma só (T01, T02, T10), e a divisão do critério 7 entre T17 (−0,15), T18 (−0,05) e T19 (−0,05) é estimativa a partir da revisão, que diz que a perda cai para ≈ −0,10 se os itens (i)–(iv) forem artefato de conversão. A nova nota depende de nova avaliação.
+
+## Situação em 15/11/2026
+
+Este backlog é da primeira entrega (só a Introdução). As tasks T01 a T16, T18 e T19 foram aplicadas entre 12/10 e 02/11/2026, e as T20 a T26 deixaram de ser pendência quando os capítulos de Trabalhos Relacionados, Fundamentação e Metodologia (com cronograma) foram escritos. Conferência feita nesta data contra o texto atual:
+
+- T01, T03, T05, T06, T13: atendidas no texto (definição do custo de substituição em 1.2; objetivo (b); pergunta neutra; parágrafo do modelo local em 1.3; público em 1.2).
+- T02: o objetivo (e) cita um critério de decisão definido antes da coleta, e a forma dele está na Seção 3.6.3. Os limites numéricos são da atividade 4 (A30).
+- T04: "custo energético" é o único termo para a dimensão; o *Benchmark* 2 deixou de se chamar "Eficiência energética".
+- T17: o PDF compila (`tectonic`), o sumário sai preenchido e a ordem das frases de 1.1 está correta no `.tex`. A lista de siglas não foi conferida aqui (depende do `makeglossaries`); conferir no Overleaf, agora com ATAM e RAPL.
+

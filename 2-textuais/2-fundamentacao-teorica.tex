@@ -81,6 +81,34 @@
 % revisado por pares do criador. Livro de Brown (O'Reilly, 2026) NÃO citado: ISBN
 % e data divergem entre as páginas da editora e dos varejistas.
 % Figura (a) produzida em TikZ (fig:harness-camadas, Seção 3.4).
+% -----------------------------------------------------------------------------
+% 15/11/2026: fechadas as tasks da Fundamentação que ainda estavam abertas.
+%   T01 (fronteira da medição): parágrafo novo na 3.5. Decisão do autor (A11,
+%     15/11/2026): o modelo roda no servidor e a aplicação com a camada, na
+%     máquina do autor. A GPU do servidor é medida (NVML); o custo direto da
+%     camada é ESTIMADO por limite superior (tempo de processamento na máquina
+%     da aplicação × potência máxima do processador). RAPL citado só como a
+%     medição direta que o arranjo não permite.
+%   T02 (critério de decisão): Seção 3.6.3, com Bass et al. e Kazman et al.
+%     (1998, ATAM). O artigo do ICECCS não foi obtido; o conteúdo atribuído
+%     (atributos interagem; análise de cada atributo em separado; pontos de
+%     compromisso = elementos que afetam mais de um atributo) foi conferido no
+%     relatório técnico de mesmo título e autores (CMU/SEI-98-TR-008).
+%   T03 (variabilidade e estatística): Seção 3.6.2. Arcuri e Briand (2011), lido
+%     na íntegra (cópia de curso da Univ. de Washington): muitas execuções,
+%     Mann-Whitney U, tamanho de efeito ao lado do valor-p. Ournani et al.
+%     (2020): só o resumo (Semantic Scholar). Wohlin et al.: baixo poder
+%     estatístico como ameaça à validade de conclusão, A CONFERIR no livro.
+%   T06: "extensional/intensivo" trocados por "efeito de duração/de potência".
+%   T07 (equivalência por testes): Seção 3.6.1, com Yoo e Harman (2012);
+%     definição de teste de regressão conferida no resumo e na introdução
+%     (versão de pré-publicação).
+%   Khan et al. (2018, RAPL): resumo e seção 2 lidos (repositório da Univ. de
+%     Helsinque).
+%   Bass et al. (2021), "atributos de qualidade não são alcançados
+%     isoladamente": A CONFERIR no livro (não há cópia no projeto).
+% Validação cruzada: T04 e T14 (o que a versão D executa; 3.4.4), T10 (frase
+% sobre "agêntica"; 3.1), T16(d) (Tool/agent registry no Quadro).
 % =============================================================================
 \chapter{Fundamentação Teórica}
 \label{cap:fundamentacao}
@@ -152,7 +180,9 @@ Protocol} (MCP)\glsadd{MCP} e o protocolo agente-agente A2A\glsadd{A2A}; este
 Dessa descrição decorre a distinção que o experimento usa. Chama-se aqui
 \textbf{requisição simples} a consulta ao modelo sem ferramentas, e
 \textbf{requisição agêntica} a que envolve o ciclo de ferramentas, com várias
-idas e vindas entre aplicação e modelo. A diferença importa por duas razões: o ciclo de
+idas e vindas entre aplicação e modelo. O adjetivo indica apenas a presença
+desse ciclo na requisição de um único agente; não remete à IA agêntica de
+\citeonline{sapkota2026}, que designa sistemas multiagente. A diferença importa por duas razões: o ciclo de
 ferramentas é parte do trabalho que uma camada intermediária pode orquestrar, e
 a quantidade de chamadas e o tamanho do contexto crescem a cada volta do ciclo,
 o que afeta o custo de cada requisição (Seção~\ref{sec:energia}).
@@ -396,7 +426,7 @@ fonte que as complementa.
         & Noção de \textit{middleware} \cite{issarny2007} \\
       \hline
       2. Orquestração de chamadas e execução controlada de ferramentas
-        & \textit{Agent adapter}; \textit{Tool/agent registry}; \textit{One-shot} e \textit{Incremental model querying} (estes, por analogia)
+        & \textit{Agent adapter}; \textit{Tool/agent registry} (aplicação limitada); \textit{One-shot} e \textit{Incremental model querying} (estes, por analogia)
         & Parcial
         & Nenhum \\
       \hline
@@ -458,7 +488,11 @@ o custo de substituição do provedor, associado à responsabilidade 1, e o cust
 energético da camada, que inclui a orquestração de ferramentas da
 responsabilidade 2. As
 responsabilidades 3, 4 e 5 são implementadas porque o experimento as exige, e
-ficam fora da avaliação (Seção~\ref{sec:justificativa}).
+os atributos de qualidade ligados a elas, como a recuperação de falhas e a
+auditabilidade, ficam fora da avaliação (Seção~\ref{sec:justificativa}). A
+versão sem a camada executa as mesmas funções por outros meios, no código de
+negócio ou pelos recursos do SDK, de modo que a energia delas não entra na
+diferença medida entre as duas versões.
 
 % -----------------------------------------------------------------------------
 \section{Energia em inferência de modelos de linguagem}
@@ -479,9 +513,8 @@ Duas grandezas precisam ser distinguidas. A \textbf{potência} é a taxa
 instantânea de consumo, em watts; a \textbf{energia} é a potência integrada no
 tempo, em joules. Uma requisição pode consumir mais energia por durar mais, com
 a mesma potência, ou por exigir mais potência no mesmo intervalo. Chamam-se aqui,
-respectivamente, de componente \textbf{extensional} e componente
-\textbf{intensivo} do custo; na prática, a distinção se faz relatando em
-separado a potência média e a duração.
+respectivamente, de \textbf{efeito de duração} e \textbf{efeito de potência}; a
+distinção se faz relatando em separado a duração e a potência média.
 
 O custo de uma camada de \textit{software} já foi decomposto em partes:
 \citeonline{vellaisamy2026} separam o tempo que o processador hospedeiro gasta
@@ -509,6 +542,30 @@ requisição pode, assim, ser obtida pela diferença entre duas leituras do
 contador ou pela integração no tempo das leituras de potência; a escolha entre
 as duas e a frequência de amostragem são decisões de protocolo.
 
+Esse instrumento delimita o que a medição alcança. No arranjo deste trabalho,
+o modelo é executado no servidor, e as duas versões da aplicação, em outra
+máquina, de onde o acessam pela rede. A energia de uma requisição tem, assim,
+duas parcelas: a da GPU do servidor, onde se concentra o consumo da inferência,
+e a da CPU da máquina da aplicação, onde ocorre o trabalho próprio da camada, a
+mesma sobrecarga do hospedeiro que \citeonline{vellaisamy2026} identificaram na
+latência. A NVML lê só a primeira. Como as duas versões enviam ao modelo as
+mesmas chamadas, a medição na GPU verifica se a camada altera a energia de
+inferência, por exemplo por aumentar o contexto ou a duração das chamadas.
+
+A segunda parcela não é medida: é estimada por um limite superior. Mede-se, em
+cada versão, o tempo de processamento na máquina da aplicação, isto é, a duração
+da requisição descontada a espera pelas respostas do servidor. A diferença entre
+as versões é o tempo que a camada acrescenta, e o produto desse tempo pela
+potência máxima do processador limita por cima a energia de CPU que ela
+consome. Ao contrário das estimativas que \citeonline{fernandez2025} mostraram
+subestimar o consumo, esta adota a potência máxima e, por construção, o
+superestima; serve apenas para dizer quanto o custo direto da camada pode
+representar diante da energia medida na inferência. A medição direta dessa
+parcela exigiria um instrumento próprio para a CPU, como a interface RAPL
+(\textit{Running Average Power Limit})\glsadd{RAPL} dos processadores Intel,
+que fornece leituras de energia da CPU e da memória \cite{khan2018}, de que a
+máquina prevista para a aplicação não dispõe.
+
 A unidade de medida é a requisição completa, e não a chamada isolada ao modelo,
 porque o fluxo agêntico encadeia várias chamadas e o custo de cada uma depende do
 que o ciclo anterior produziu (Seção~\ref{sec:llm-agentes}). Como a camada
@@ -527,7 +584,7 @@ Neste trabalho, a variável independente é a forma de integração com o proved
 com ou sem a camada de \harness{}, aplicada a duas versões funcionalmente
 equivalentes de uma mesma aplicação; as variáveis dependentes são o custo de
 substituição do provedor e o custo energético, medidos em dois
-\textit{benchmarks}, um para cada custo. Como as duas versões são
+\textit{benchmarks}, um para cada custo. Se as duas versões são
 funcionalmente equivalentes, a diferença observada pode ser atribuída à camada.
 
 Os mesmos autores classificam as ameaças à validade em quatro tipos: interna,
@@ -536,7 +593,87 @@ ameaças à validade. Duas decisões do desenho dependem desse referencial: o
 uso de métricas de estrutura de código entre as medidas do custo de
 substituição, com precedente em \citeonline{mo2023}, e o critério de decisão final, definido antes
 da coleta de dados, para que a conclusão não seja ajustada aos resultados
-(Seção~\ref{subsec:objetivos-especificos}).
+(Seção~\ref{subsec:objetivos-especificos}). As subseções seguintes tratam de
+três pontos de que o desenho depende: como a equivalência entre as versões é
+verificada, como a variação das medições é tratada e como os dois custos são
+confrontados.
+
+\subsection{Equivalência funcional por testes}
+\label{subsec:exp-equivalencia}
+
+A equivalência entre as duas versões é verificada por testes. O teste de
+regressão é a atividade realizada para dar confiança de que uma mudança não
+prejudicou o comportamento já existente do \textit{software} \cite{yoo2012}.
+Neste trabalho a ideia é aplicada a duas versões que diferem pela forma de
+integração: uma mesma suíte de testes, escrita contra o comportamento esperado
+da aplicação, é executada nas duas, e a \textbf{equivalência funcional} é
+definida operacionalmente como a aprovação de ambas nessa suíte. Como a saída de
+um LLM varia entre execuções, os testes não comparam textos; verificam
+propriedades do resultado, como o formato da resposta e as ferramentas chamadas.
+No \textit{benchmark} do custo de substituição, a mesma suíte cumpre o papel
+original do teste de regressão: executada depois da troca de provedor, conta os
+casos de uso que continuam funcionando.
+
+\subsection{Variabilidade das medições e análise estatística}
+\label{subsec:exp-estatistica}
+
+As medidas do experimento de energia variam entre execuções da mesma
+requisição. A saída do modelo muda de uma execução para outra, e a própria
+medição de energia oscila: em mais de mil experimentos com medições de CPU,
+\citeonline{ournani2020} mostram que fatores controláveis, como o protocolo
+experimental, os recursos do processador e o sistema operacional, alteram a
+variação das leituras, e propõem diretrizes a observar antes de qualquer
+comparação de eficiência energética. Estender esse cuidado à telemetria de GPU
+é transposição deste trabalho.
+
+Três conceitos tratam dessa variação. A \textbf{unidade amostral} é o que se
+conta como uma observação; aqui, a requisição completa executada em uma das
+versões. As \textbf{repetições} são as execuções da mesma requisição sob as
+mesmas condições. Uma execução isolada não separa o efeito da camada da variação
+entre execuções, e quanto menor o efeito esperado, mais repetições são
+necessárias para detectá-lo; \citeonline{wohlin2024} incluem o baixo poder
+estatístico entre as ameaças à validade de conclusão. Para resultados que mudam
+a cada execução, \citeonline{arcuri2011} recomendam coletar um número grande de
+execuções e comparar as amostras com o teste não paramétrico de
+Mann-Whitney~U. O terceiro conceito é o \textbf{tamanho de efeito}, medida
+padronizada da magnitude da diferença entre duas amostras. Os mesmos autores
+observam que, com execuções suficientes, uma diferença pode ser estatisticamente
+significativa sem ter valor prático, e por isso recomendam relatar sempre o
+tamanho de efeito ao lado do valor-$p$ \cite{arcuri2011}.
+
+A observação pesa neste trabalho porque o efeito direto esperado da camada é
+pequeno, inferior a 1\% da energia da requisição na estimativa da
+Seção~\ref{sec:contexto}. Interessa saber se a diferença tem tamanho relevante
+para a decisão arquitetural, mais do que saber se ela existe. Por isso o menor
+efeito de interesse prático é fixado antes da coleta e orienta o número de
+repetições.
+
+\subsection{Confronto de atributos de qualidade e critério de decisão}
+\label{subsec:exp-criterio}
+
+O quinto objetivo específico confronta dois custos de natureza diferente: o de
+substituição, expresso em alterações de código, e o energético, expresso em
+joules. A literatura de arquitetura trata essa situação como um compromisso
+(\textit{trade-off}) entre atributos de qualidade, que não são alcançados
+isoladamente: a decisão que favorece um deles costuma afetar outros
+\cite{bass2021}. O \textit{Architecture Tradeoff Analysis Method}
+(ATAM)\glsadd{ATAM} parte da mesma constatação, a de que os atributos interagem
+e de que melhorar um frequentemente piora outro. Nele, cada atributo é
+analisado primeiro em separado, com a sua própria medida, e só depois se
+identificam os pontos de compromisso, os elementos da arquitetura que afetam
+mais de um atributo \cite{kazman1998}.
+
+Este trabalho segue a mesma ordem. A camada de \harness{} é o ponto de
+compromisso, pois a mesma decisão afeta a modificabilidade da aplicação e o
+consumo de energia. Cada custo é medido em um experimento próprio, na sua
+unidade, e o confronto vem depois. Como não há conversão natural entre linhas de
+código alteradas e joules, o critério de decisão não soma nem pondera as duas
+medidas. Ele fixa um limite para cada dimensão, uma redução mínima do custo de
+substituição e um acréscimo máximo de energia, e considera a camada justificada,
+em cada tipo de requisição, quando os dois limites são atendidos. Do ATAM,
+método de avaliação conduzido com as partes interessadas de um sistema, retém-se
+só a estrutura da análise. Os valores dos limites são decisão de protocolo,
+tomada antes da coleta.
 
 % -----------------------------------------------------------------------------
 % Síntese: o quadro deriva só do próprio capítulo e dos objetivos da Introdução;
@@ -553,7 +690,8 @@ modificabilidade e o custo de substituição medem o acoplamento resultante
 o \harness{} aplica essa resposta aos provedores de modelos
 (Seção~\ref{sec:harness}). A medição de energia testa o custo da indireção que a
 camada introduz (Seção~\ref{sec:energia}), e a experimentação controlada permite
-atribuir à camada as diferenças observadas (Seção~\ref{sec:experimentacao}). O Quadro~\ref{qua:conceitos-uso}
+atribuir à camada as diferenças observadas e confrontar os dois custos por um
+critério fixado de antemão (Seção~\ref{sec:experimentacao}). O Quadro~\ref{qua:conceitos-uso}
 resume o papel de cada conceito no trabalho.
 
 \begin{quadro}[h!]
@@ -591,10 +729,16 @@ resume o papel de cada conceito no trabalho.
         & Grandezas e instrumento da medição do custo energético
         & (d), (e) \\
       \hline
-      Experimentação controlada (Seção~\ref{sec:experimentacao})
-        & Comparação entre as duas versões, ameaças à validade e critério de
-          decisão definido antes da coleta
-        & (b), (e) \\
+      Experimentação controlada, equivalência por testes e análise
+      estatística (Seções~\ref{sec:experimentacao} a~\ref{subsec:exp-estatistica})
+        & Comparação entre as duas versões, verificação da equivalência,
+          tratamento da variação das medidas e ameaças à validade
+        & (b), (c), (d) \\
+      \hline
+      Compromisso entre atributos de qualidade (Seção~\ref{subsec:exp-criterio})
+        & Forma do critério de decisão que confronta os dois custos, definido
+          antes da coleta
+        & (e) \\
       \hline
     \end{tabularx}
   }{
