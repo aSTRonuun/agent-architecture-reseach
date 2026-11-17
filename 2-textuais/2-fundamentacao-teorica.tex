@@ -292,6 +292,17 @@ própria do catálogo, 14 dos 18 padrões listam a sobrecarga (\textit{overhead}
 entre as desvantagens, e um décimo quinto, a sobrecarga de manutenção; nenhum a
 quantifica. A hipótese energética deste trabalho testa esse custo da indireção,
 e o custo de substituição mede o benefício da abstração.
+% 16/11/2026 (A31): limite da interface comum, base do cenário com recurso
+% específico de provedor do Benchmark 1. Fonte: relato de prática, rotulado.
+A abstração tem ainda um limite de alcance. Uma interface comum a vários
+provedores cobre o que eles oferecem de forma equivalente; o que só um oferece,
+ou que cada um oferece à sua maneira, fica fora dela ou entra como parâmetro
+próprio de um provedor, e nos dois casos o código consumidor volta a depender
+dele. Um relato de prática sobre uma camada desse tipo, não revisado por pares,
+descreve esse retorno do acoplamento quando as equipes passam a depender de
+recursos que diferenciam um provedor \cite{thoughtworkslitellm}. O experimento
+do custo de substituição inclui, por isso, um cenário com um recurso específico
+de provedor (Seção~\ref{sec:b1}).
 O conceito de \textit{middleware} explica por que uma camada intermediária
 absorve a heterogeneidade, mas não indica como projetá-la para provedores de
 modelos, o que cabe ao projeto da camada.

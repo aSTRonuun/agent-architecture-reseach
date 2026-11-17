@@ -34,6 +34,16 @@
 % texto: arranjo e sincronização de relógios na atividade 2; forma de medir o
 % tempo na atividade 4; linha nova no Quadro do Benchmark 2; piloto (9), coleta
 % (11) e análise (12); validade interna (rede) e de construto (estimativa).
+% 16/11/2026 (A31, decidida pelo autor; levar ao orientador): o Benchmark 1
+% passou a ter dois cenários, sem e com um recurso específico de provedor, para
+% testar o limite da camada em vez de só declará-lo como ameaça. Motivação: o
+% relato de prática do Technology Radar sobre o LiteLLM (thoughtworkslitellm).
+% Consequências no texto: critérios e candidato na atividade 1 (cache de
+% prompt, conferido nas documentações em 16/11/2026); ADR da forma de exposição
+% na atividade 3; cenários, provedor de origem e contagem por local na
+% atividade 4; atividades 5 a 8; Quadro do Benchmark 1; Benchmark 2 fica só no
+% cenário comum; atividade 13; validade interna, externa e de construto.
+% Nenhum nome de atividade mudou (REGRA acima preservada).
 % =============================================================================
 \chapter{Metodologia}
 \label{cap:metodologia}
@@ -145,8 +155,31 @@ modelo separável do restante.
 
 Serão definidos também o caso de uso que as duas versões implementarão e as
 duas ou três ferramentas determinísticas que o modelo poderá chamar, com a
-especificação de entrada e saída de cada uma. O resultado será o registro da
-aplicação escolhida, com a justificativa frente a cada critério.
+especificação de entrada e saída de cada uma.
+
+O caso de uso incluirá ainda um \textbf{recurso específico de provedor}: uma
+capacidade que os dois provedores comerciais oferecem por parâmetros ou
+comportamentos diferentes, de modo que o código que a utiliza em um deles não
+vale para o outro. Aplicações em produção costumam depender de recursos desse
+tipo, e relatos de prática, não revisados por pares, indicam que é neles que
+uma camada de abstração devolve à aplicação parte do acoplamento que deveria
+eliminar \cite{thoughtworkslitellm}. O recurso deverá: (i) ser acionado, em um
+dos provedores, por parâmetro próprio, sem equivalente direto na interface do
+outro; (ii) não alterar o comportamento funcional da aplicação, para que a
+suíte de equivalência continue aplicável depois da troca; (iii) ter efeito
+observável na resposta do provedor, para que se verifique se ele se mantém após
+a troca; e (iv) estar disponível nos dois modelos do \textit{Benchmark}~1. O
+candidato inicial é o cache de \textit{prompt}: na API da Anthropic ele é
+ativado por um campo próprio da requisição, na da OpenAI vem ativado por
+padrão, e as duas informam, nos dados de uso da resposta, quantos
+\textit{tokens} foram lidos do cache, segundo a documentação dos provedores,
+também não revisada por pares \cite{anthropiccache,openaicache}. A escolha será
+confirmada nesta atividade, com a verificação de que o \textit{prompt} do caso
+de uso atinge o comprimento mínimo que cada provedor exige para o cache.
+
+O resultado será o registro da aplicação escolhida, com a justificativa frente a
+cada critério, e do recurso específico de provedor, com a justificativa frente
+aos seus.
 %\pendencia{Definir se a aplicação será construída para o estudo ou adaptada de
 %um projeto existente.}
 
@@ -205,6 +238,16 @@ por outros meios na atividade 6. O projeto parte da delimitação das
 responsabilidades da camada, resumida no Quadro~\ref{qua:harness-liu} e
 detalhada no Apêndice~\ref{ap:delimitacao}.
 
+O projeto decidirá também como a interface trata o recurso específico de
+provedor definido na atividade 1. Há duas formas: expô-lo por um parâmetro
+próprio do provedor, que o código de negócio informa e a camada repassa ao
+adaptador, ou representá-lo por uma opção neutra, que cada adaptador traduz ou
+ignora. Na primeira, o código de negócio volta a conhecer o provedor; na
+segunda, a interface cresce a cada recurso novo, e um adaptador pode descartar
+a opção sem que a aplicação perceba. A forma escolhida e a sua justificativa
+serão registradas em um ADR antes da implementação, pois dela depende o que a
+troca de provedor exigirá do código de negócio na \versaoH.
+
 \subsection{Atividade 4 -- Planejar os experimentos e o critério de decisão}
 \label{subsec:at-planejamento}
 
@@ -213,16 +256,22 @@ implementação da \versaoD{} e de qualquer coleta, segundo o desenho de
 experimento controlado de \citeonline{wohlin2024}, para que a análise não seja
 ajustada aos resultados.
 
-O protocolo do \textit{Benchmark}~1 definirá: a política de implementação da
-\versaoD, que seguirá a documentação oficial de cada provedor, sem espalhar
-chamadas artificialmente e sem camada de abstração própria; o número de pontos
-do código de negócio que chamam o modelo, parâmetro que afeta o tamanho da
-diferença entre as versões; a lista de verificação dos passos da troca de
-provedor; a forma de contar as alterações de código, separando arquivos
-existentes modificados de código novo; e o procedimento de medição do tempo de
-implementação. Estimará também o custo das chamadas às APIs comerciais; se o
+O protocolo do \textit{Benchmark}~1 definirá: os dois cenários da troca, sem e
+com o recurso específico de provedor (Seção~\ref{sec:b1}); o provedor de
+origem, que será aquele em que o recurso exige código explícito, para que a
+troca tenha de lidar com esse código; a política de implementação da \versaoD,
+que seguirá a documentação oficial de cada provedor, inclusive no uso do
+recurso específico, sem espalhar chamadas artificialmente e sem camada de
+abstração própria; o número de pontos do código de negócio que chamam o modelo,
+parâmetro que afeta o tamanho da diferença entre as versões; a lista de
+verificação dos passos da troca de provedor; a forma de contar as alterações de
+código, separando arquivos existentes modificados de código novo e, na
+\versaoH, o código de negócio do código da camada; a ordem das quatro trocas; e
+o procedimento de medição do tempo de implementação. Estimará também o custo das chamadas às APIs comerciais; se o
 orçamento for limitante, a troca poderá usar um provedor simulado determinístico
-como segunda condição, o que será declarado.
+como segunda condição, o que será declarado; nesse caso, o cenário com recurso
+específico não seria executado, pois o efeito do recurso só é observável em um
+provedor real.
 
 O protocolo do \textit{Benchmark}~2 definirá: os parâmetros que tornam as
 requisições repetíveis (temperatura, semente, limite de \textit{tokens} de saída
@@ -258,8 +307,9 @@ registrados com data no repositório do trabalho.
 
 Serão implementados o \harness{} projetado na atividade 3, como biblioteca, e a
 \versaoH{} da aplicação, em que o código de negócio acessa o modelo apenas pela
-interface da camada, sem importar SDK de provedor. Nesta etapa a camada terá o
-adaptador de um dos provedores comerciais e o do modelo local; o do segundo
+interface da camada, sem importar SDK de provedor, e usa o recurso específico
+de provedor pela forma decidida na atividade 3. Nesta etapa a camada terá o
+adaptador do provedor comercial de origem e o do modelo local; o do segundo
 provedor comercial será escrito na atividade 7, como parte da troca medida.
 Cada componente terá testes de unidade, e o registro de eventos será conferido
 contra requisições de exemplo.
@@ -269,7 +319,8 @@ contra requisições de exemplo.
 
 A \versaoD{} implementará o mesmo caso de uso chamando diretamente o SDK do
 provedor, segundo a política fixada na atividade 4, com os mesmos
-\textit{prompts}, ferramentas e parâmetros da \versaoH. Ela executará, no código
+\textit{prompts}, ferramentas e parâmetros da \versaoH, e usará o recurso
+específico de provedor como a documentação do provedor indica. Ela executará, no código
 de negócio ou pelos recursos do próprio SDK, as funções que a camada oferece à
 \versaoH{} (ciclo de ferramentas, histórico de mensagens, nova tentativa e
 registro de eventos) e enviará ao modelo as mesmas chamadas, com o mesmo
@@ -292,7 +343,19 @@ Seção~\ref{sec:problema}: a extensão do código alterado (alteração no cód
 impacto estrutural e testes alterados), os pontos de dependência direta
 (dependência) e a preservação do comportamento (comportamento e testes
 quebrados). O tempo de implementação é métrica secundária e não integra a
-definição. O uso de métricas de estrutura de código como medida principal tem
+definição.
+
+A troca é medida em dois cenários, que formam um segundo fator do experimento.
+No cenário comum, o caso de uso emprega apenas o que os dois provedores
+oferecem de forma equivalente, a chamada de ferramentas. No cenário com recurso
+específico, emprega também o recurso definido na atividade 1. O primeiro mede a
+troca na condição mais favorável à camada, em que um adaptador basta para
+traduzir um provedor no outro. O segundo a mede na condição em que a prática
+relata o retorno do acoplamento \cite{thoughtworkslitellm}, e mostra quanto da
+redução do custo de substituição se mantém quando a aplicação depende de algo
+que só um provedor oferece daquela forma. Na \versaoH, um parâmetro próprio de
+provedor que o código de negócio repasse pela camada é contado como ponto de
+dependência, pois prende esse código ao provedor mesmo sem importar o SDK. O uso de métricas de estrutura de código como medida principal tem
 precedente em \citeonline{mo2023}, que comparam funções \textit{serverless}
 escritas com uma biblioteca de abstração e com as APIs nativas de cada
 plataforma.
@@ -306,13 +369,13 @@ plataforma.
       \hline
       \textbf{Dimensão} & \textbf{Métrica} & \textbf{Papel} \\
       \hline
-      Comportamento       & Casos de uso que continuam funcionando após a troca & Primária \\
+      Comportamento       & Casos de uso que continuam funcionando após a troca; no cenário com recurso específico, se o efeito do recurso se mantém & Primária \\
       \hline
-      Alteração no código & Arquivos, linhas e módulos alterados               & Primária \\
+      Alteração no código & Arquivos, linhas e módulos alterados, separados entre código de negócio e código da camada & Primária \\
       \hline
       Impacto estrutural  & Componentes ou interfaces afetados                  & Primária \\
       \hline
-      Dependência         & Referências diretas ao SDK do provedor              & Primária \\
+      Dependência         & Referências diretas ao SDK do provedor e, na \versaoH, a parâmetros próprios de provedor no código de negócio & Primária \\
       \hline
       Testes              & Testes alterados ou quebrados                       & Primária \\
       \hline
@@ -327,24 +390,37 @@ plataforma.
 \subsection{Atividade 7 -- Executar a troca de provedor (\textit{Benchmark}~1)}
 \label{subsec:at-troca}
 
-O provedor comercial será substituído pelo outro nas duas versões, seguindo a
-lista de verificação da atividade 4. Na \versaoH, a troca consiste em escrever
-o adaptador do novo provedor e alterar a configuração; na \versaoD, em
-reescrever as chamadas ao SDK onde quer que estejam. Ao fim de cada troca, a
-suíte de equivalência será executada para contar os casos de uso que continuam
-funcionando. As alterações de código serão extraídas do controle de versões,
-pela comparação dos estados anterior e posterior à troca. O tempo de
-implementação, a ordem das trocas e as condições da medição serão registrados.
+O provedor comercial de origem será substituído pelo outro nas duas versões e
+nos dois cenários, seguindo a lista de verificação da atividade 4. São quatro
+trocas, cada uma a partir de um estado próprio do repositório; os dois estados
+de uma mesma versão diferem apenas pelo uso do recurso específico de provedor.
+Na \versaoH, a troca consiste em escrever o adaptador do novo provedor e
+alterar a configuração; no cenário com recurso específico, inclui o que a forma
+de exposição decidida na atividade 3 exigir do código de negócio. Na \versaoD,
+consiste em reescrever as chamadas ao SDK onde quer que estejam. O adaptador
+escrito na primeira troca da \versaoH{} será reaproveitado na segunda e contado
+nas duas.
+
+Ao fim de cada troca, a suíte de equivalência será executada para contar os
+casos de uso que continuam funcionando; no cenário com recurso específico, os
+dados de uso da resposta do novo provedor indicarão se o efeito do recurso se
+manteve, foi perdido ou teve de ser reimplementado. As alterações de código
+serão extraídas do controle de versões, pela comparação dos estados anterior e
+posterior à troca. O tempo de implementação, a ordem das trocas e as condições
+da medição serão registrados.
 
 \subsection{Atividade 8 -- Consolidar e analisar os dados do \textit{Benchmark}~1}
 \label{subsec:at-analise-b1}
 
 Os valores das métricas do Quadro~\ref{qua:b1-metricas} serão consolidados em
-uma tabela por versão. Como cada versão passa por uma única troca, a comparação
-será descritiva: diferença absoluta e relativa entre a \versaoH{} e a \versaoD{}
-em cada métrica, com a descrição qualitativa do que foi alterado em cada uma. O
-resultado será interpretado à luz do número de pontos de integração da
-aplicação, pois a diferença entre as versões tende a crescer com ele.
+uma tabela por versão e por cenário. Como cada versão passa por uma única troca
+em cada cenário, a comparação será descritiva: diferença absoluta e relativa
+entre a \versaoH{} e a \versaoD{} em cada métrica, com a descrição qualitativa
+do que foi alterado em cada uma. A comparação entre os cenários indicará quanto
+da diferença entre as versões se mantém com o recurso específico de provedor e
+em que parte do código, de negócio ou da camada, a \versaoH{} teve de ser
+alterada. O resultado será interpretado à luz do número de pontos de integração
+da aplicação, pois a diferença entre as versões tende a crescer com ele.
 
 % -----------------------------------------------------------------------------
 \section{\textit{Benchmark} 2 --- Custo energético}
@@ -355,9 +431,11 @@ execução de requisições ao modelo local. A matriz experimental tem quatro
 células: as duas versões cruzadas com dois níveis de requisição. O nível~1,
 requisição simples, sem ferramenta, isola o custo de a camada estar no caminho;
 o nível~2, requisição agêntica, com um ciclo de duas chamadas de ferramenta,
-mede o custo de a camada orquestrar ferramentas. A unidade de medida é a
-requisição completa, incluído o ciclo de ferramentas, e as métricas estão no
-Quadro~\ref{qua:b2-metricas}. A energia será medida por telemetria do
+mede o custo de a camada orquestrar ferramentas. O experimento é executado
+apenas no cenário comum: o recurso específico de provedor pertence aos
+provedores comerciais e não é usado nas requisições ao modelo local. A unidade
+de medida é a requisição completa, incluído o ciclo de ferramentas, e as
+métricas estão no Quadro~\ref{qua:b2-metricas}. A energia será medida por telemetria do
 \textit{hardware}, e não estimada, pois estimativas baseadas em operações de
 ponto flutuante subestimam o consumo real \cite{fernandez2025}. A telemetria
 cobre a GPU do servidor. O trabalho próprio da camada ocorre na máquina da
@@ -481,10 +559,13 @@ GPU e como fração dela, sem teste de hipótese, por ser estimativa.
 O critério de decisão fixado na atividade 4 será aplicado aos resultados das
 atividades 8 e 12, separadamente para requisições simples e agênticas. Para cada
 nível, o resultado responderá à pergunta do quinto objetivo específico: se a
-redução do custo de substituição compensa ou não o acréscimo de energia. A
-discussão apontará as condições em que cada resposta vale, como o número de
-pontos de integração da aplicação, e os limites de generalização impostos pelas
-ameaças à validade.
+redução do custo de substituição compensa ou não o acréscimo de energia. O
+critério será aplicado com a redução obtida em cada cenário do
+\textit{Benchmark}~1, de modo que a resposta é dada por tipo de requisição e
+por cenário. A discussão apontará as condições em que cada resposta vale, como
+o número de pontos de integração da aplicação e a dependência de recursos
+específicos de provedor, e os limites de generalização impostos pelas ameaças à
+validade.
 
 % -----------------------------------------------------------------------------
 \section{Ameaças à validade}
@@ -496,7 +577,13 @@ revistas ao fim da coleta, com o que de fato tiver ocorrido.
 \paragraph{Validade interna.} O autor implementa as duas versões conhecendo a
 hipótese. Para reduzir esse viés no \textit{Benchmark}~1, as métricas primárias
 são estruturais e comportamentais, independentes de julgamento; o tempo, mais
-sujeito ao viés, é secundário, e a ordem das trocas será declarada. A falta de
+sujeito ao viés, é secundário, e a ordem das trocas será declarada. O mesmo
+viés alcança a forma como a camada expõe o recurso específico de provedor, da
+qual depende o resultado do cenário com recurso: ela será fixada em um ADR
+antes da implementação, e a alternativa preterida será discutida com os
+resultados. Como as trocas são feitas em sequência pela mesma pessoa, as
+últimas se beneficiam do aprendizado das primeiras e, na \versaoH, do adaptador
+já escrito; isso afeta o tempo, e não as métricas estruturais. A falta de
 equivalência funcional faria os dois experimentos compararem objetos
 diferentes, o que a suíte comum, executada antes de cada coleta, evita. No \textit{Benchmark}~2, a leitura
 de potência pode ser contaminada por outros processos na GPU e variar entre
@@ -510,7 +597,11 @@ entre as duas versões.
 \paragraph{Validade externa.} O estudo usa uma única aplicação, de um único
 domínio, e deve ser lido como estudo de caso. O resultado do
 \textit{Benchmark}~1 depende do número de pontos de integração da aplicação, que
-será declarado. O \textit{Benchmark}~2 usa um único modelo, em um único
+será declarado. O cenário com recurso específico usa um único recurso,
+escolhido por não alterar o comportamento funcional; o resultado não se estende,
+sem ressalva, a recursos que o alteram, como saídas estruturadas ou ferramentas
+executadas pelo próprio provedor, em que a troca pode custar mais. O
+\textit{Benchmark}~2 usa um único modelo, em um único
 equipamento, e não permite afirmar se o custo da camada muda com o tamanho do
 modelo ou com outro \textit{hardware}. O \harness{} e os protocolos serão
 publicados para permitir a replicação.
@@ -524,7 +615,10 @@ reportadas separadamente. A telemetria da GPU não alcança o trabalho que a
 camada executa na CPU da máquina da aplicação: essa parcela é estimada por um
 limite superior, e o valor real pode ser bem menor. A conclusão sobre o custo
 direto da camada será apresentada como limite, e a medida propriamente dita
-vale para o efeito da camada sobre a energia de inferência.
+vale para o efeito da camada sobre a energia de inferência. O custo energético
+é medido apenas no cenário comum; o confronto do cenário com recurso específico
+usa essa mesma medida, o que supõe que tratar o recurso não altera de forma
+relevante o trabalho da camada.
 
 \paragraph{Validade de conclusão.} Com amostras grandes, diferenças pequenas
 tornam-se estatisticamente significativas sem ter importância prática. Por isso
