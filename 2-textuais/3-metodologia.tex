@@ -44,6 +44,9 @@
 % atividade 4; atividades 5 a 8; Quadro do Benchmark 1; Benchmark 2 fica só no
 % cenário comum; atividade 13; validade interna, externa e de construto.
 % Nenhum nome de atividade mudou (REGRA acima preservada).
+% 18/11/2026 (revisão completa v1, T05): os quatro \paragraph das ameaças à
+% validade viraram negrito no início do parágrafo; como \paragraph, entravam no
+% sumário numerados como "4.5.0.0.1".
 % =============================================================================
 \chapter{Metodologia}
 \label{cap:metodologia}
@@ -574,7 +577,7 @@ validade.
 As ameaças previstas seguem os quatro tipos de \citeonline{wohlin2024} e serão
 revistas ao fim da coleta, com o que de fato tiver ocorrido.
 
-\paragraph{Validade interna.} O autor implementa as duas versões conhecendo a
+\textbf{Validade interna.} O autor implementa as duas versões conhecendo a
 hipótese. Para reduzir esse viés no \textit{Benchmark}~1, as métricas primárias
 são estruturais e comportamentais, independentes de julgamento; o tempo, mais
 sujeito ao viés, é secundário, e a ordem das trocas será declarada. O mesmo
@@ -594,7 +597,7 @@ da rede entra na duração da requisição e varia; o tempo de processamento
 desconta a espera pelo servidor, e a intercalação distribui a variação da rede
 entre as duas versões.
 
-\paragraph{Validade externa.} O estudo usa uma única aplicação, de um único
+\textbf{Validade externa.} O estudo usa uma única aplicação, de um único
 domínio, e deve ser lido como estudo de caso. O resultado do
 \textit{Benchmark}~1 depende do número de pontos de integração da aplicação, que
 será declarado. O cenário com recurso específico usa um único recurso,
@@ -606,7 +609,7 @@ equipamento, e não permite afirmar se o custo da camada muda com o tamanho do
 modelo ou com outro \textit{hardware}. O \harness{} e os protocolos serão
 publicados para permitir a replicação.
 
-\paragraph{Validade de construto.} As métricas estruturais medem o custo de
+\textbf{Validade de construto.} As métricas estruturais medem o custo de
 substituição de forma indireta e podem não captar o esforço de entender o
 código, limitação também reconhecida por \citeonline{mo2023}; por isso são
 combinadas com a métrica comportamental e com o tempo. O consumo agregado de
@@ -620,7 +623,7 @@ vale para o efeito da camada sobre a energia de inferência. O custo energético
 usa essa mesma medida, o que supõe que tratar o recurso não altera de forma
 relevante o trabalho da camada.
 
-\paragraph{Validade de conclusão.} Com amostras grandes, diferenças pequenas
+\textbf{Validade de conclusão.} Com amostras grandes, diferenças pequenas
 tornam-se estatisticamente significativas sem ter importância prática. Por isso
 o tamanho de efeito será reportado ao lado do valor-$p$, com correção para
 comparações múltiplas e com o limiar de efeito fixado antes da coleta.

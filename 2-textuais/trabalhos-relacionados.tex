@@ -27,6 +27,10 @@
 % 15/11/2026: "esforço de troca" passou a "custo de substituição" (validação
 % cruzada T07); célula de Barros et al. na última coluna alinhada ao texto
 % (T15c); frase sobre o alcance da telemetria depois de Vellaisamy et al. (T05).
+% 18/11/2026 (revisão completa v1, T15 e T12): na linha da proposta,
+% "Manutenibilidade medida" passou de "Sim" a "Em parte" (mede só a
+% modificabilidade), com nota abaixo do quadro; larguras das colunas e
+% \tabcolsep refeitos para que nenhuma palavra seja partida (conferido no PDF).
 % =============================================================================
 \chapter{Trabalhos Relacionados}
 \label{cap:trabalhos-relacionados}
@@ -172,9 +176,10 @@ topologias inteiros \cite{matinpour2026,tripathy2026,barros2026}.
   relacionados e a proposta quanto ao objeto e às dimensões avaliadas}
   \UFCqua{}{
     \scriptsize
-    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{1.9cm}|>{\raggedright\arraybackslash}p{1.4cm}|>{\raggedright\arraybackslash}p{1.6cm}|>{\raggedright\arraybackslash}p{1.2cm}|>{\raggedright\arraybackslash}p{1.4cm}|}
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.0cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{1.95cm}|>{\raggedright\arraybackslash}p{1.8cm}|>{\raggedright\arraybackslash}p{2.45cm}|>{\raggedright\arraybackslash}p{1.8cm}|>{\raggedright\arraybackslash}p{1.9cm}|}
       \hline
-      \textbf{Trabalho} & \textbf{Objeto} & \textbf{Tipo de avaliação} & \textbf{Custo de subs\-ti\-tui\-ção me\-dido} & \textbf{Manu\-tenibi\-lidade me\-dida} & \textbf{Energia medida} & \textbf{Compara com e sem a decisão} \\
+      \textbf{Trabalho} & \textbf{Objeto} & \textbf{Tipo de avaliação} & \textbf{Custo de substituição medido} & \textbf{Manutenibilidade medida} & \textbf{Energia medida} & \textbf{Compara com e sem a decisão} \\
       \hline
       \citeonline{liu2025} & Padrões para agentes baseados em modelos de fundação & Catálogo derivado de revisão & Não & Qualitativo & Não & Não \\
       \hline
@@ -186,7 +191,7 @@ topologias inteiros \cite{matinpour2026,tripathy2026,barros2026}.
       \hline
       \citeonline{zhu2026} & \textit{Frameworks} e protocolos multiagente & \textit{Survey} & Não & Qualitativo & Não & Não \\
       \hline
-      \citeonline{mo2023} & Biblioteca de abstração e APIs nativas em funções \textit{serverless} & Experimento (42 estudantes) & Sim & Sim & Não (desem\-penho) & Sim \\
+      \citeonline{mo2023} & Biblioteca de abstração e APIs nativas em funções \textit{serverless} & Experimento (42 estudantes) & Sim & Sim & Não (\mbox{desempenho}) & Sim \\
       \hline
       \citeonline{feitosa2017} & Padrões de projeto GoF e alternativas sem o padrão & Experimento & Não & Não & Sim & Sim \\
       \hline
@@ -200,7 +205,7 @@ topologias inteiros \cite{matinpour2026,tripathy2026,barros2026}.
       \hline
       \citeonline{barros2026} & \textit{Prompt} único e debate multiagente & Experimento & Não & Não & Sim & Não (topologias inteiras) \\
       \hline
-      \textbf{Proposta deste trabalho} & \textbf{Camada de \harness{} entre aplicação \textit{web} e provedor de IA} & \textbf{Experimento} & \textbf{Sim} & \textbf{Sim} & \textbf{Sim} & \textbf{Sim} \\
+      \textbf{Proposta deste trabalho} & \textbf{Camada de \harness{} entre aplicação \textit{web} e provedor de IA} & \textbf{Experimento} & \textbf{Sim} & \textbf{Em parte} & \textbf{Sim} & \textbf{Sim} \\
       \hline
     \end{tabularx}
   }{
@@ -209,13 +214,15 @@ topologias inteiros \cite{matinpour2026,tripathy2026,barros2026}.
 \end{quadro}
 
 No quadro, \textit{Não (resumo)} indica que o resumo do trabalho não relata a
-dimensão. Nenhum dos trabalhos reúne as três características que definem a
+dimensão, e \textit{Em parte}, na linha da proposta, indica que ela mede só a
+modificabilidade, por meio do custo de substituição, e não a manutenibilidade
+como um todo (Seção~\ref{subsec:arq-conceitos}). Nenhum dos trabalhos reúne as três características que definem a
 contribuição da proposta: ter como objeto a camada entre a aplicação e o
 provedor do modelo, medir o custo de substituir o provedor e medir a energia que
 a camada acrescenta, comparando a mesma aplicação com e sem ela. Dos trabalhos
 analisados, a proposta herda o desenho com e sem a camada de
-\citeonline{mo2023}, a pergunta que confronta energia e manutenibilidade de
-\citeonline{xiao2025} e o protocolo de medição de \citeonline{barros2026}; o
+\citeonline{mo2023}, a pergunta que confronta, na mesma decisão arquitetural, a
+energia e um atributo de manutenibilidade, de \citeonline{xiao2025} e o protocolo de medição de \citeonline{barros2026}; o
 catálogo de \citeonline{liu2025} serve de referência para delimitar as
 responsabilidades da camada, que são definidas pelo autor. Os conceitos que sustentam
 essas escolhas são apresentados no Capítulo~\ref{cap:fundamentacao}.

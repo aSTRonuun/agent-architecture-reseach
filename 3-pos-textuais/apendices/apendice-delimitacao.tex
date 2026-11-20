@@ -7,6 +7,8 @@
 % conteúdo dos parágrafos não foi alterado; só a abertura foi adaptada.
 % Resumo no Quadro qua:harness-liu (Cap. 3). Bases: A28 e
 % context/planning/mapeamento-harness-liu2025.md.
+% 18/11/2026 (revisão completa v1, T05): \paragraph -> negrito no início do
+% parágrafo, para que as seis entradas "B.0.0.0.n" saiam do sumário.
 \apendice{Delimitação das responsabilidades do \textit{harness}}
 \label{ap:delimitacao}
 
@@ -17,7 +19,7 @@ objetivo específico, que delimita as responsabilidades da camada com base em
 padrões arquiteturais publicados, e é o ponto de partida do projeto da camada
 (Seção~\ref{subsec:at-projeto}).
 
-\paragraph{Responsabilidade 1.} O \textit{Agent adapter} converte as mensagens do
+\textbf{Responsabilidade 1.} O \textit{Agent adapter} converte as mensagens do
 agente para o formato exigido por ferramentas externas e vice-versa, e o
 \textit{Prompt/response optimiser} padroniza \textit{prompts} e respostas por
 meio de modelos de texto (\textit{templates}) \cite{liu2025}. Nenhum dos dois
@@ -31,7 +33,7 @@ o conceito explica por que uma camada intermediária absorve a heterogeneidade,
 mas não indica como projetá-la para provedores de modelos, e essa transposição é
 do autor.
 
-\paragraph{Responsabilidade 2.} O \textit{Agent adapter} invoca e gerencia as
+\textbf{Responsabilidade 2.} O \textit{Agent adapter} invoca e gerencia as
 interfaces das ferramentas e devolve ao modelo os resultados da execução
 \cite{liu2025}, o que cobre parte da função. O \textit{Tool/agent registry} trata
 da seleção entre muitas ferramentas e agentes, problema que pouco se coloca
@@ -41,7 +43,7 @@ neste trabalho. Já os padrões \textit{One-shot model querying} e
 para gerar um plano; relacioná-los ao ciclo de ferramentas é uma analogia do
 autor.
 
-\paragraph{Responsabilidade 3.} O \textit{Passive goal creator} recupera da
+\textbf{Responsabilidade 3.} O \textit{Passive goal creator} recupera da
 memória o histórico de conversas, os artefatos em edição e as ferramentas usadas
 recentemente, e os anexa ao \textit{prompt} do usuário; o \textit{Incremental
 model querying} divide o contexto em vários \textit{prompts} para contornar o
@@ -60,7 +62,7 @@ responsabilidade 4 limita-se às de transporte e de protocolo.
 %com o orientador que a recuperação de falhas se limita a transporte e protocolo
 %e que a compensação semântica fica explicitamente fora do escopo.}
 
-\paragraph{Responsabilidade 4.} A tolerância a falhas (\textit{fault tolerance})
+\textbf{Responsabilidade 4.} A tolerância a falhas (\textit{fault tolerance})
 aparece no catálogo apenas como força e benefício da cooperação baseada em
 papéis, no sentido de substituir agentes indisponíveis, e a seção 5.3 cita a
 identificação e o tratamento de exceções em tempo real como trabalho em
@@ -78,7 +80,7 @@ questão deste trabalho: os próprios padrões de resiliência introduzem atraso
 invocação, e o efeito desses atrasos sobre o desempenho da aplicação ainda era
 pouco estudado \cite{aderaldo2025}.
 
-\paragraph{Responsabilidade 5.} Também não há padrão entre os 18. Ao discutir a
+\textbf{Responsabilidade 5.} Também não há padrão entre os 18. Ao discutir a
 integração do catálogo com padrões existentes, \citeonline{liu2025} citam padrões
 de IA responsável publicados em outra obra do mesmo grupo, entre eles o
 \textit{black box}, que coleta as entradas e saídas do agente em tempo de
@@ -94,7 +96,7 @@ foi emitido \cite{opentelemetrylogs}. Trata-se de documento técnico, não revis
 por pares, usado apenas para fixar o conceito de registro estruturado e
 correlacionado.
 
-\paragraph{Risco da própria camada.} O catálogo registra, por fim, um risco que
+\textbf{Risco da própria camada.} O catálogo registra, por fim, um risco que
 interessa diretamente a este trabalho. Entre as desvantagens do
 \textit{Tool/agent registry}, os autores apontam que ele pode se tornar uma
 solução de aprisionamento a fornecedor (\textit{vendor lock-in}) e um ponto único

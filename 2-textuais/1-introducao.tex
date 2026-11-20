@@ -14,6 +14,11 @@
 % Números de contexto (Stack Overflow, Menlo, IEA): relatórios, acesso 09/10/2026.
 % T09 (02/11/2026): a frase da lacuna em 1.2 passou a citar bases e período; as
 % strings e as contagens estão no cabeçalho de trabalhos-relacionados.tex.
+% 18/11/2026 (revisão completa v1, entregas/revisao-completa): T10, saíram as
+% afirmações de frequência sem fonte ("costuma ocorrer", "benefício mais
+% alegado/associado"); o benefício passou a ser o que as propostas de camada
+% atribuem (Kandogan; Morais). T14: a hipótese diz como cada parte é examinada.
+% T12: "multiagentes" -> "multiagente".
 % =============================================================================
 \chapter{Introdução}
 \label{cap:introducao}
@@ -38,15 +43,16 @@ APIs)\glsadd{API} de LLMs mais que dobrou em seis meses, de 3,5 bilhões de
 dólares em novembro de 2024 para 8,4 bilhões em meados de 2025
 \cite{menlo2025}.
 
-Em uma aplicação \textit{web}, essa incorporação costuma ocorrer da forma mais
-direta possível: o código de negócio importa o kit de desenvolvimento
+Em uma aplicação \textit{web}, a forma mais direta de fazer essa incorporação é
+o código de negócio importar o kit de desenvolvimento
 (\textit{Software Development Kit}, SDK)\glsadd{SDK} do provedor escolhido e
-chama o modelo nos pontos em que precisa dele. Cada provedor, porém, define o
+chamar o modelo nos pontos em que precisa dele; é essa a integração que serve de
+termo de comparação neste trabalho. Cada provedor, porém, define o
 próprio formato de mensagens, de declaração e de chamada de ferramentas, de
 erros e de limites de uso. À medida que as integrações deixam de ser uma
 pergunta isolada ao modelo e passam a executar ferramentas externas em ciclos
 de várias etapas (o que \citeonline{sapkota2026} chamam de agentes de IA, em
-contraste com os sistemas multiagentes da \textit{IA agêntica}), cresce a
+contraste com os sistemas multiagente da \textit{IA agêntica}), cresce a
 quantidade de código que depende dessas convenções. Esse
 acoplamento a um pacote de terceiros é um caso conhecido de dívida técnica em
 sistemas de aprendizado de máquina \cite{sculley2015}.
@@ -138,9 +144,9 @@ proposta.
 A lacuna está na medição controlada desses \textit{trade-offs}. Nas buscas
 registradas no Apêndice~\ref{ap:busca}, entre publicações de 2023 a 2026, não
 foram encontrados estudos que comparem, sob as mesmas condições, uma aplicação
-com e sem a camada de integração, quantificando ao mesmo tempo o benefício mais
-alegado da camada, a redução do custo de trocar de provedor, e o preço que ela
-possa cobrar em energia. Sem essa medição,
+com e sem a camada de integração, quantificando ao mesmo tempo o benefício que
+as propostas de camada lhe atribuem \cite{kandogan2025,morais2026}, a redução do
+custo de trocar de provedor, e o preço que ela possa cobrar em energia. Sem essa medição,
 desenvolvedores e arquitetos que integram LLMs a aplicações \textit{web}
 decidem entre adotar ou não uma camada de \harness{} com base em argumentos de
 princípio ou em alegações de fornecedores.
@@ -156,8 +162,11 @@ Diante disso, este trabalho busca responder à seguinte questão de pesquisa:
 aplicação \textit{web} e um provedor de IA reduz o custo de substituição do
 provedor, e qual é o custo energético associado a essa camada?}
 
-A hipótese de partida, a ser testada, é que a camada reduz o custo de
-substituição e cobra por isso um custo energético. Os resultados que a
+A hipótese de partida é que a camada reduz o custo de substituição e cobra por
+isso um custo energético. As duas partes são examinadas de formas diferentes: a
+primeira por comparação descritiva, pois cada versão da aplicação passa por uma
+única troca de provedor em cada cenário; a segunda por teste estatístico sobre
+medições repetidas (Capítulo~\ref{cap:metodologia}). Os resultados que a
 contrariem também servem a quem precisa tomar a decisão arquitetural: a camada
 pode reduzir o custo de substituição sem acréscimo relevante de energia, ou
 acrescentar custo energético sem reduzir o custo de substituição.
@@ -189,8 +198,8 @@ funcionalmente equivalentes de uma mesma aplicação: uma integrada ao provedor
 por meio da camada e outra integrada diretamente.
 
 O trabalho se restringe a duas dimensões: o custo de substituição do provedor,
-cuja redução é o benefício mais associado à camada, e o custo energético, o
-preço que ela pode cobrar. As duas avaliam a mesma decisão por lados opostos.
+cuja redução é o benefício que as propostas de camada lhe atribuem
+(Seção~\ref{sec:problema}), e o custo energético, o preço que ela pode cobrar. As duas avaliam a mesma decisão por lados opostos.
 Outras funções usualmente atribuídas a uma camada desse tipo, como a gestão de
 contexto e estado, a recuperação de falhas e o registro de eventos para
 auditoria, serão implementadas nas duas versões da aplicação por serem
