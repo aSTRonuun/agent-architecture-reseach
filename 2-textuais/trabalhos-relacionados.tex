@@ -31,6 +31,9 @@
 % "Manutenibilidade medida" passou de "Sim" a "Em parte" (mede só a
 % modificabilidade), com nota abaixo do quadro; larguras das colunas e
 % \tabcolsep refeitos para que nenhuma palavra seja partida (conferido no PDF).
+% 20/11/2026 (feedback do orientador): saiu a seção "Síntese e posicionamento".
+% O quadro comparativo ficou ao fim da Seção 2.2, apresentado na abertura do
+% capítulo; o posicionamento já constava dos parágrafos de cada trabalho.
 % =============================================================================
 \chapter{Trabalhos Relacionados}
 \label{cap:trabalhos-relacionados}
@@ -39,8 +42,8 @@ Este capítulo compara a proposta com os trabalhos que compartilham a sua
 motivação, o seu objeto ou o seu método, em dois grupos: as camadas propostas
 para integrar modelos de linguagem e reduzir a dependência de fornecedor
 (Seção~\ref{sec:tr-arquiteturas}) e o custo energético de decisões
-arquiteturais e de orquestração (Seção~\ref{sec:tr-energia}). A
-Seção~\ref{sec:tr-sintese} reúne as diferenças em um quadro comparativo. O
+arquiteturais e de orquestração (Seção~\ref{sec:tr-energia}). O Quadro~\ref{qua:trabalhos-relacionados}, ao
+final do capítulo, compara os trabalhos com a proposta. O
 protocolo da busca está no Apêndice~\ref{ap:busca}.
 
 % -----------------------------------------------------------------------------
@@ -156,19 +159,12 @@ muitas decisões ao mesmo tempo, ou topologias de agentes. Nenhum compara a
 mesma aplicação com e sem uma camada de integração, mantendo fixa a
 orquestração, nem avalia o custo de substituir o provedor do modelo.
 
-% -----------------------------------------------------------------------------
-\section{Síntese e posicionamento}
-\label{sec:tr-sintese}
-
-O Quadro~\ref{qua:trabalhos-relacionados} resume a comparação. As propostas
-arquiteturais \cite{liu2025,bucaioni2025,kandogan2025,morais2026,zhu2026}
-discutem ou demonstram os benefícios de uma camada de integração sem medi-los
-contra a integração direta. Fora da IA, \citeonline{mo2023} mediram o
-benefício e o custo de uma abstração, mas em desempenho e sobre serviços de
-nuvem, e \citeonline{xiao2025} confrontaram energia e manutenibilidade sem
-modelo de linguagem. Os estudos de latência e de energia com LLMs caracterizam
-a pilha de inferência \cite{vellaisamy2026} ou comparam \textit{frameworks} e
-topologias inteiros \cite{matinpour2026,tripathy2026,barros2026}.
+O Quadro~\ref{qua:trabalhos-relacionados} compara os trabalhos discutidos nas
+duas seções com a proposta quanto ao objeto e às dimensões avaliadas. Nele,
+\textit{Não (resumo)} indica que o resumo do trabalho não relata a dimensão, e
+\textit{Em parte}, na linha da proposta, indica que ela mede só a
+modificabilidade, por meio do custo de substituição, e não a manutenibilidade
+como um todo (Seção~\ref{subsec:arq-conceitos}).
 
 \begin{quadro}[h!]
   \centering
@@ -212,17 +208,3 @@ topologias inteiros \cite{matinpour2026,tripathy2026,barros2026}.
     \Fonte{Elaborado pelo autor}
   }
 \end{quadro}
-
-No quadro, \textit{Não (resumo)} indica que o resumo do trabalho não relata a
-dimensão, e \textit{Em parte}, na linha da proposta, indica que ela mede só a
-modificabilidade, por meio do custo de substituição, e não a manutenibilidade
-como um todo (Seção~\ref{subsec:arq-conceitos}). Nenhum dos trabalhos reúne as três características que definem a
-contribuição da proposta: ter como objeto a camada entre a aplicação e o
-provedor do modelo, medir o custo de substituir o provedor e medir a energia que
-a camada acrescenta, comparando a mesma aplicação com e sem ela. Dos trabalhos
-analisados, a proposta herda o desenho com e sem a camada de
-\citeonline{mo2023}, a pergunta que confronta, na mesma decisão arquitetural, a
-energia e um atributo de manutenibilidade, de \citeonline{xiao2025} e o protocolo de medição de \citeonline{barros2026}; o
-catálogo de \citeonline{liu2025} serve de referência para delimitar as
-responsabilidades da camada, que são definidas pelo autor. Os conceitos que sustentam
-essas escolhas são apresentados no Capítulo~\ref{cap:fundamentacao}.

@@ -70,7 +70,14 @@
 
 \usepackage[font=singlespacing,format=plain,justification=justified,skip=0pt,singlelinecheck = false]{caption}            % Altera o comportamento da tag caption
 
-\usepackage[alf, abnt-emphasize=bf, recuo=0cm, abnt-etal-cite=2, abnt-etal-list=0, abnt-etal-text=it]{abntex2cite}  % Citações padrão ABNT
+% abnt-cite-style=NBR10520-2023 (entrada @ABNT-options no início de
+% 3-pos-textuais/referencias.bib, equivalente a AuthorYEAR; a chave original
+% colide com AUTHORYEAR, pois o BibTeX ignora a caixa): autor em caixa alta e baixa nas citações entre
+% parênteses, como pede a NBR 10520:2023 -- (Arcuri; Briand, 2011), e não mais
+% (ARCURI; BRIAND, 2011). A lista de referências segue a NBR 6023:2018, com o
+% sobrenome em maiúsculas. Autores institucionais no .bib usam {\relax Nome}
+% para sair em maiúsculas só na referência.
+\usepackage[alf, abnt-emphasize=bf, recuo=0cm, abnt-etal-cite=2, abnt-etal-list=0, abnt-etal-text=it, abnt-cite-style=NBR10520-2023]{abntex2cite}  % Citações: NBR 10520:2023
 %\usepackage[bottom]{footmisc}                      % Mantém as notas de rodapé sempre na mesma posição
 %\usepackage{times}                                 % Usa a fonte Times
 %%%%%%%%%%%%%%%%%%% AVISO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

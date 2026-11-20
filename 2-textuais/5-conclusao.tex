@@ -6,3 +6,64 @@
 \label{cap:conclusao}
 
 \pendencia{Redigir por último.}
+
+% -----------------------------------------------------------------------------
+% ANOTAÇÃO PARA AS LIMITAÇÕES (não compila; retirada da Metodologia em
+% 20/11/2026 por orientação do orientador). Ameaças à validade previstas, na
+% taxonomia de Wohlin et al. (wohlin2024): rever com o que de fato ocorrer na
+% coleta e converter em texto da seção de limitações. A Introdução (Seção
+% Justificativa) também menciona o limite de generalização do Benchmark 2.
+% -----------------------------------------------------------------------------
+% As ameaças previstas seguem os quatro tipos de \citeonline{wohlin2024} e serão
+% revistas ao fim da coleta, com o que de fato tiver ocorrido.
+%
+% \textbf{Validade interna.} O autor implementa as duas versões conhecendo a
+% hipótese. Para reduzir esse viés no \textit{Benchmark}~1, as métricas primárias
+% são estruturais e comportamentais, independentes de julgamento; o tempo, mais
+% sujeito ao viés, é secundário, e a ordem das trocas será declarada. O mesmo
+% viés alcança a forma como a camada expõe o recurso específico de provedor, da
+% qual depende o resultado do cenário com recurso: ela será fixada em um ADR
+% antes da implementação, e a alternativa preterida será discutida com os
+% resultados. Como as trocas são feitas em sequência pela mesma pessoa, as
+% últimas se beneficiam do aprendizado das primeiras e, na \versaoH, do adaptador
+% já escrito; isso afeta o tempo, e não as métricas estruturais. A falta de
+% equivalência funcional faria os dois experimentos compararem objetos
+% diferentes, o que a suíte comum, executada antes de cada coleta, evita. No \textit{Benchmark}~2, a leitura
+% de potência pode ser contaminada por outros processos na GPU e variar entre
+% sessões; as medidas são a exclusividade verificada a cada sessão, o congelamento
+% de \textit{driver} e modelo, a intercalação das versões e a potência ociosa
+% medida em cada sessão. Como a aplicação acessa o servidor pela rede, a latência
+% da rede entra na duração da requisição e varia; o tempo de processamento
+% desconta a espera pelo servidor, e a intercalação distribui a variação da rede
+% entre as duas versões.
+%
+% \textbf{Validade externa.} O estudo usa uma única aplicação, de um único
+% domínio, e deve ser lido como estudo de caso. O resultado do
+% \textit{Benchmark}~1 depende do número de pontos de integração da aplicação, que
+% será declarado. O cenário com recurso específico usa um único recurso,
+% escolhido por não alterar o comportamento funcional; o resultado não se estende,
+% sem ressalva, a recursos que o alteram, como saídas estruturadas ou ferramentas
+% executadas pelo próprio provedor, em que a troca pode custar mais. O
+% \textit{Benchmark}~2 usa um único modelo, em um único
+% equipamento, e não permite afirmar se o custo da camada muda com o tamanho do
+% modelo ou com outro \textit{hardware}. O \harness{} e os protocolos serão
+% publicados para permitir a replicação.
+%
+% \textbf{Validade de construto.} As métricas estruturais medem o custo de
+% substituição de forma indireta e podem não captar o esforço de entender o
+% código, limitação também reconhecida por \citeonline{mo2023}; por isso são
+% combinadas com a métrica comportamental e com o tempo. O consumo agregado de
+% energia esconde a relação entre potência e duração, e por isso as duas serão
+% reportadas separadamente. A telemetria da GPU não alcança o trabalho que a
+% camada executa na CPU da máquina da aplicação: essa parcela é estimada por um
+% limite superior, e o valor real pode ser bem menor. A conclusão sobre o custo
+% direto da camada será apresentada como limite, e a medida propriamente dita
+% vale para o efeito da camada sobre a energia de inferência. O custo energético
+% é medido apenas no cenário comum; o confronto do cenário com recurso específico
+% usa essa mesma medida, o que supõe que tratar o recurso não altera de forma
+% relevante o trabalho da camada.
+%
+% \textbf{Validade de conclusão.} Com amostras grandes, diferenças pequenas
+% tornam-se estatisticamente significativas sem ter importância prática. Por isso
+% o tamanho de efeito será reportado ao lado do valor-$p$, com correção para
+% comparações múltiplas e com o limiar de efeito fixado antes da coleta.
