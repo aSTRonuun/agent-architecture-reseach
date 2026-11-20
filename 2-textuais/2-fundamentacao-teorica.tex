@@ -109,6 +109,10 @@
 %     isoladamente": A CONFERIR no livro (não há cópia no projeto).
 % Validação cruzada: T04 e T14 (o que a versão D executa; 3.4.4), T10 (frase
 % sobre "agêntica"; 3.1), T16(d) (Tool/agent registry no Quadro).
+% 20/11/2026 (feedback do orientador): saíram as sínteses (3.4.4 e 3.7, com o
+% Quadro conceitos-uso). O que só existia nelas foi para a 3.4.1 (o que as
+% responsabilidades têm a ver com o experimento) e para a 3.4.3 (nenhuma fonte
+% sustenta sozinha a definição). A estrutura acima (3.7) ficou histórica.
 % =============================================================================
 \chapter{Fundamentação Teórica}
 \label{cap:fundamentacao}
@@ -120,9 +124,7 @@ que dão sentido ao custo de substituição do provedor
 (Seções~\ref{sec:arquitetura} e~\ref{sec:abstracao}); define a camada estudada,
 o \harness{} (Seção~\ref{sec:harness}); apresenta os dois fundamentos do
 experimento, a medição de energia em inferência (Seção~\ref{sec:energia}) e a
-experimentação controlada (Seção~\ref{sec:experimentacao}); e fecha com uma
-síntese que liga cada conceito ao seu uso no trabalho
-(Seção~\ref{sec:fundamentacao-sintese}).
+experimentação controlada (Seção~\ref{sec:experimentacao}).
 
 Duas convenções valem para todo o capítulo. A primeira trata das fontes: os
 documentos técnicos, isto é, a documentação da Anthropic, da OpenAI, da NVIDIA e
@@ -380,11 +382,20 @@ Atribuem-se à camada cinco responsabilidades: (1) abstração e padronização 
 comunicação com os provedores; (2) orquestração de chamadas e execução
 controlada de ferramentas; (3) gerenciamento de contexto e estado da interação;
 (4) tratamento e recuperação de falhas; e (5) registro estruturado de eventos e
-auditoria. Como a lista não vem da literatura, as subseções seguintes a
-confrontam com publicações:
-apresentam o catálogo de padrões de \citeonline{liu2025} e verificam,
-responsabilidade a responsabilidade, o quanto ele a sustenta e que outra fonte
-cobre o que ele não cobre.
+auditoria. Duas delas se ligam aos efeitos medidos no experimento: o custo de substituição do provedor, associado à responsabilidade 1, e o custo
+energético da camada, que inclui a orquestração de ferramentas da
+responsabilidade 2. As
+responsabilidades 3, 4 e 5 são implementadas porque o experimento as exige, e
+os atributos de qualidade ligados a elas, como a recuperação de falhas e a
+auditabilidade, ficam fora da avaliação (Seção~\ref{sec:justificativa}). A
+versão sem a camada executa as mesmas funções por outros meios, no código de
+negócio ou pelos recursos do SDK, de modo que a energia delas não entra na
+diferença medida entre as duas versões.
+
+Como a lista não vem da literatura, as subseções seguintes a confrontam com
+publicações: apresentam o catálogo de padrões de \citeonline{liu2025} e
+verificam, responsabilidade a responsabilidade, o quanto ele a sustenta e que
+outra fonte cobre o que ele não cobre.
 
 \subsection{O catálogo de padrões de Liu et al. (2025)}
 \label{subsec:harness-catalogo}
@@ -467,7 +478,9 @@ do catálogo, e a terceira, também parcial, só quanto ao contexto; a primeira
 corresponde por analogia, e a quarta e a quinta não têm correspondência nos 18
 padrões, o que decorre do escopo do catálogo, centrado no projeto interno do
 agente (Seção~\ref{subsec:harness-catalogo}). O exame de cada correspondência, com os padrões e as fontes de
-complemento, está no Apêndice~\ref{ap:delimitacao}.
+complemento, está no Apêndice~\ref{ap:delimitacao}. Nenhuma fonte sustenta
+sozinha a definição inteira, e as correspondências por analogia continuam
+sendo hipóteses de projeto.
 
 Duas lacunas pedem fontes próprias. Na responsabilidade 4, o \textit{Retry} (nova
 tentativa após falha transitória) e o \textit{Circuit Breaker} (interrupção
@@ -479,31 +492,6 @@ do OpenTelemetry, projeto de padronização de telemetria, segundo a qual o
 registro (\textit{log}) estruturado pode carregar o identificador do rastreio e
 do segmento da requisição (\textit{TraceId} e \textit{SpanId}), que o associam à
 requisição em cujo processamento foi emitido \cite{opentelemetrylogs}.
-
-\subsection{Síntese e relação com o trabalho}
-\label{subsec:harness-sintese}
-
-A literatura sustenta a definição de \harness{} adotada em parte e por fontes
-diferentes. O catálogo de
-\citeonline{liu2025} fundamenta, com as ressalvas indicadas, a responsabilidade
-2 e o contexto da 3; a responsabilidade 1 apoia-se no conceito de
-\textit{middleware} (Seção~\ref{sec:abstracao}); o estado, na 3, em
-\citeonline{chang2025}; a 4, em padrões de resiliência de microsserviços
-\cite{mendonca2020,sedghpour2022,aderaldo2025}; e a 5, em documentação técnica
-de telemetria \cite{opentelemetrylogs}. Nenhuma fonte sustenta sozinha a
-definição inteira, e as correspondências por analogia continuam sendo hipóteses
-de projeto.
-
-Das cinco responsabilidades, duas se ligam aos efeitos medidos no experimento:
-o custo de substituição do provedor, associado à responsabilidade 1, e o custo
-energético da camada, que inclui a orquestração de ferramentas da
-responsabilidade 2. As
-responsabilidades 3, 4 e 5 são implementadas porque o experimento as exige, e
-os atributos de qualidade ligados a elas, como a recuperação de falhas e a
-auditabilidade, ficam fora da avaliação (Seção~\ref{sec:justificativa}). A
-versão sem a camada executa as mesmas funções por outros meios, no código de
-negócio ou pelos recursos do SDK, de modo que a energia delas não entra na
-diferença medida entre as duas versões.
 
 % -----------------------------------------------------------------------------
 \section{Energia em inferência de modelos de linguagem}
@@ -599,8 +587,7 @@ substituição do provedor e o custo energético, medidos em dois
 funcionalmente equivalentes, a diferença observada pode ser atribuída à camada.
 
 Os mesmos autores classificam as ameaças à validade em quatro tipos: interna,
-externa, de construto e de conclusão, taxonomia que o trabalho adota para analisar as
-ameaças à validade. Duas decisões do desenho dependem desse referencial: o
+externa, de construto e de conclusão. Duas decisões do desenho dependem desse referencial: o
 uso de métricas de estrutura de código entre as medidas do custo de
 substituição, com precedente em \citeonline{mo2023}, e o critério de decisão final, definido antes
 da coleta de dados, para que a conclusão não seja ajustada aos resultados
@@ -685,74 +672,3 @@ em cada tipo de requisição, quando os dois limites são atendidos. Do ATAM,
 método de avaliação conduzido com as partes interessadas de um sistema, retém-se
 só a estrutura da análise. Os valores dos limites são decisão de protocolo,
 tomada antes da coleta.
-
-% -----------------------------------------------------------------------------
-% Síntese: o quadro deriva só do próprio capítulo e dos objetivos da Introdução;
-% não traz dado novo.
-\section{Síntese do capítulo}
-\label{sec:fundamentacao-sintese}
-
-Os conceitos deste capítulo giram em torno de uma mesma decisão arquitetural.
-O ciclo de ferramentas dos agentes (Seção~\ref{sec:llm-agentes}) aumenta a
-quantidade de código que depende das convenções de um provedor. A
-modificabilidade e o custo de substituição medem o acoplamento resultante
-(Seção~\ref{sec:arquitetura}). A camada de abstração, na forma de
-\textit{middleware}, responde a esse acoplamento (Seção~\ref{sec:abstracao}), e
-o \harness{} aplica essa resposta aos provedores de modelos
-(Seção~\ref{sec:harness}). A medição de energia testa o custo da indireção que a
-camada introduz (Seção~\ref{sec:energia}), e a experimentação controlada permite
-atribuir à camada as diferenças observadas e confrontar os dois custos por um
-critério fixado de antemão (Seção~\ref{sec:experimentacao}). O Quadro~\ref{qua:conceitos-uso}
-resume o papel de cada conceito no trabalho.
-
-\begin{quadro}[h!]
-  \centering
-  \Caption{\label{qua:conceitos-uso}Conceitos da fundamentação e o seu uso no
-  trabalho}
-  \UFCqua{}{
-    \small
-    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.2cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{2.4cm}|}
-      \hline
-      \textbf{Conceito} & \textbf{Uso no trabalho} & \textbf{Objetivo específico} \\
-      \hline
-      LLM, agente e chamada de ferramentas (Seção~\ref{sec:llm-agentes})
-        & Distinção entre requisição simples e agêntica, que forma um dos
-          fatores da medição de energia
-        & (d), (e) \\
-      \hline
-      Modificabilidade, acoplamento e substituibilidade (Seção~\ref{subsec:arq-conceitos})
-        & Definição e métricas do custo de substituição do provedor
-        & (c), (e) \\
-      \hline
-      ADRs e modelo C4 (Seção~\ref{subsec:arq-documentacao})
-        & Documentação das decisões e da arquitetura da camada
-        & (a) \\
-      \hline
-      Camada de abstração e \textit{middleware} (Seção~\ref{sec:abstracao})
-        & Fundamento da responsabilidade 1 e da versão com a camada
-        & (a), (b) \\
-      \hline
-      \harness{} e catálogo de padrões (Seção~\ref{sec:harness})
-        & Definição da camada e delimitação das suas responsabilidades
-        & (a) \\
-      \hline
-      Energia, potência e telemetria por NVML (Seção~\ref{sec:energia})
-        & Grandezas e instrumento da medição do custo energético
-        & (d), (e) \\
-      \hline
-      Experimentação controlada, equivalência por testes e análise
-      estatística (Seções~\ref{sec:experimentacao} a~\ref{subsec:exp-estatistica})
-        & Comparação entre as duas versões, verificação da equivalência,
-          tratamento da variação das medidas e ameaças à validade
-        & (b), (c), (d) \\
-      \hline
-      Compromisso entre atributos de qualidade (Seção~\ref{subsec:exp-criterio})
-        & Forma do critério de decisão que confronta os dois custos, definido
-          antes da coleta
-        & (e) \\
-      \hline
-    \end{tabularx}
-  }{
-    \Fonte{Elaborado pelo autor}
-  }
-\end{quadro}

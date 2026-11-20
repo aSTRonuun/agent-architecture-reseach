@@ -1,3 +1,9 @@
+% Estilo de citação da NBR 10520:2023: autor em caixa alta e baixa entre
+% parênteses. Ativada em lib/preambulo.tex (opção abnt-cite-style=NBR10520-2023).
+@ABNT-options{abnt-cite-style=NBR10520-2023,
+ abnt-cite-style="(Author, YEAR)",
+ key="aaaa"}
+
 % =============================================================================
 % Bibliografia (BibTeX, estilo abntex2-alf).
 % Fonte de verdade dos metadados: context/planning/consolidated_references.md
@@ -207,7 +213,7 @@
 % o "]" de [s.d.] fechava o bibitem[...] do abntex2-alf e quebrava a citação.
 
 @misc{opentelemetrylogs,
-  author        = {{OPENTELEMETRY}},
+  author        = {{\relax OpenTelemetry}},
   title         = {Logs},
   year          = {{[s.d.]}},
   url           = {https://opentelemetry.io/docs/concepts/signals/logs/},
@@ -400,7 +406,7 @@
 % rotulada como tal no texto, no mesmo critério do OpenTelemetry. Lidas em
 % 17/10/2026.
 @misc{anthropictools,
-  author        = {{ANTHROPIC}},
+  author        = {{\relax Anthropic}},
   title         = {Tool use with {Claude}},
   year          = {{[s.d.]}},
   url           = {https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview},
@@ -408,7 +414,7 @@
 }
 
 @misc{openaifunctions,
-  author        = {{OPENAI}},
+  author        = {{\relax OpenAI}},
   title         = {Function calling},
   year          = {{[s.d.]}},
   url           = {https://developers.openai.com/api/docs/guides/function-calling},
@@ -421,7 +427,7 @@
 % Technology Radar, a observação sobre o acoplamento está na entrada de
 % abr. 2026 do histórico do blip.
 @misc{anthropiccache,
-  author        = {{ANTHROPIC}},
+  author        = {{\relax Anthropic}},
   title         = {Prompt caching},
   year          = {{[s.d.]}},
   url           = {https://platform.claude.com/docs/en/build-with-claude/prompt-caching},
@@ -429,7 +435,7 @@
 }
 
 @misc{openaicache,
-  author        = {{OPENAI}},
+  author        = {{\relax OpenAI}},
   title         = {Prompt caching},
   year          = {{[s.d.]}},
   url           = {https://developers.openai.com/api/docs/guides/prompt-caching},
@@ -437,7 +443,7 @@
 }
 
 @misc{thoughtworkslitellm,
-  author        = {{THOUGHTWORKS}},
+  author        = {{\relax Thoughtworks}},
   title         = {Technology Radar: {LiteLLM}},
   year          = {2026},
   url           = {https://www.thoughtworks.com/radar/platforms/litellm},
@@ -455,7 +461,7 @@
 % --- Relatórios (números de contexto da Introdução) -------------------------
 
 @techreport{iea2025,
-  author        = {{INTERNATIONAL ENERGY AGENCY}},
+  author        = {{\relax International Energy Agency}},
   title         = {Energy and {AI}},
   institution   = {IEA},
   address       = {Paris},
@@ -466,7 +472,7 @@
 }
 
 @misc{stackoverflow2025,
-  author        = {{STACK OVERFLOW}},
+  author        = {{\relax Stack Overflow}},
   title         = {2025 Developer Survey: {AI}},
   year          = {2025},
   url           = {https://survey.stackoverflow.co/2025/ai},
@@ -474,7 +480,7 @@
 }
 
 @misc{menlo2025,
-  author        = {{MENLO VENTURES}},
+  author        = {{\relax Menlo Ventures}},
   title         = {2025 Mid-Year {LLM} Market Update},
   year          = {2025},
   url           = {https://menlovc.com/perspective/2025-mid-year-llm-market-update/},
