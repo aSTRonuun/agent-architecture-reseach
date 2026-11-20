@@ -49,6 +49,7 @@
 | A28 | Fazer o mapeamento responsabilidades do harness × padrões de R21 | P2 | mês 1–2 | Cap. 2; contribuição 1 | em análise (D5a decidida; D5b–D5d abertas) |
 | A29 | Escolher o modelo local e a stack de serving do B2 (pendência §12.3) | P2 | mês 3 (stack) / mês 6 (modelo) | MVP (mês 4); Piloto | em análise (modelo decidido; stack aberta) |
 | A30 | Definir o critério de decisão de "compensa" (objetivo específico d) | P1 | mês 3 | Protocolo B1/B2; Cap. 3 (T25) | aberto |
+| A31 | Incluir no B1 um cenário com recurso específico de provedor | P1 | atividades 1, 3 e 4 (dez/2026–fev/2027) | Protocolo B1; ADR da interface | decidido (autor); falta o orientador |
 
 ## 2. Gate de abertura da redação da introdução
 
@@ -268,6 +269,14 @@ O objetivo (d) da Introdução passou a dizer "determinar, para requisições si
 **Definition of done:** regra de decisão registrada no plano/protocolo e na metodologia, coerente com A17, A18 e A21, e idêntica ao que o objetivo (d) promete.
 **Revisão 15/11/2026 (Fund T02):** a forma do critério está fundamentada na Seção 3.6.3 da Fundamentação (compromisso entre atributos, Bass et al.; ATAM, Kazman et al., 1998): um limite por dimensão, sem soma nem ponderação, e a camada é considerada justificada, em cada tipo de requisição, quando a redução mínima do custo de substituição e o acréscimo máximo de energia são atendidos. Faltam os valores dos dois limites, a fixar na atividade 4, coerentes com A17, A18 e A21.
 **Decisão:** —
+
+### Itens adicionados em 16/11/2026
+
+#### A31 — Incluir no B1 um cenário com recurso específico de provedor
+**Origem:** leitura do Technology Radar vol. 35 da Thoughtworks (16/11/2026), blip do LiteLLM · **P1** · **atividades 1, 3 e 4** · **Afeta:** Cap. 4 (atividades 1, 3 a 8 e 13, Quadro do B1, ameaças); Cap. 3 (Seção de camadas de abstração); `referencias.bib`; A07, A08, A09, A30
+O caso de uso do B1 usava só chamada de ferramentas, que os dois provedores oferecem de forma equivalente. Nessa condição a versão H ganha quase por construção: um adaptador traduz um provedor no outro e o código de negócio não muda (o mesmo risco que A07 trata pelo lado da versão D). O relato de prática do Radar sobre o LiteLLM (entrada de abr/2026) diz que equipes que dependem de recursos que diferenciam um provedor acabam com parâmetros específicos de provedor, o que reintroduz o acoplamento que a camada deveria eliminar. Havia duas saídas: declarar o limite como ameaça à validade externa ou testá-lo.
+**Decisão:** ✔ **Decidida pelo autor em 16/11/2026: testar o limite.** O B1 passa a ter dois cenários, **comum** (só chamada de ferramentas) e **com recurso específico de provedor**, cruzados com as duas versões: quatro trocas. O recurso é escolhido na atividade 1 por quatro critérios (parâmetro próprio em um provedor; não altera o comportamento funcional; efeito observável na resposta; disponível nos dois modelos). **Candidato inicial: cache de prompt**, conferido nas documentações em 16/11/2026: na Anthropic é ativado pelo campo `cache_control` (mínimo de 512 tokens no Claude Haiku 5.5); na OpenAI vem ativado por padrão (mínimo de 1.024 tokens a partir do GPT-5.6, com pontos de quebra explícitos opcionais); as duas informam os tokens lidos do cache nos dados de uso. O provedor de origem é aquele em que o recurso exige código explícito. O B2 fica só no cenário comum. Aplicado em `2-textuais/3-metodologia.tex`, `2-textuais/2-fundamentacao-teorica.tex` (Seção de camadas de abstração) e `referencias.bib` (`anthropiccache`, `openaicache`, `thoughtworkslitellm`). Introdução, resumo e objetivos não mudaram.
+**Em aberto:** (a) **levar ao orientador**, pois dobra as trocas do B1; (b) a forma como a interface expõe o recurso (parâmetro próprio repassado ou opção neutra) é decisão da atividade 3, em ADR, e é o ponto mais sujeito a viés, pois define o resultado do cenário; (c) confirmar que o `gpt-6-luna` segue o comportamento de cache descrito para "GPT-5.6 e posteriores" e que o prompt do caso de uso atinge os mínimos; (d) se o cache se mostrar pouco discriminante (na OpenAI ele continua funcionando sem código), avaliar um segundo recurso que altere o comportamento, como saídas estruturadas, hoje declarado como limite na validade externa; (e) o critério de A30 passa a ser aplicado por tipo de requisição e por cenário; (f) a energia é medida só no cenário comum, com a suposição declarada na validade de construto.
 
 ---
 

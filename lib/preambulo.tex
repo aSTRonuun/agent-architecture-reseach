@@ -95,7 +95,11 @@
 \usepackage{pdfpages}         % Incluir pdf no documento
 \usepackage{amsmath}          % Usar equacoes matematicas
 
-\makeglossaries % Organiza e gera a lista de abreviaturas, simbolos e glossario
+% Ordenação e lista de siglas feitas pelo próprio LaTeX (sem makeglossaries/
+% makeindex externos), para que a lista saia igual no Overleaf e no tectonic.
+% A lista de símbolos e o glossário (desativados em documento.tex) usam
+% \printglossary e voltariam a exigir \makeglossaries.
+\makenoidxglossaries
 \makeindex      % Gera o Indice do documento
 
 % --- Macros específicas do TCC (harness arquitetural) ------------------------
