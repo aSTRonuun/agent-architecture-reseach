@@ -151,13 +151,10 @@ biblioteca não se confunda com o efeito da camada.
 
 Será escolhida a aplicação \textit{web} sobre a qual os dois experimentos serão
 conduzidos. Ela é o objeto em que a camada é avaliada, e não a contribuição do
-trabalho, de modo que a simplicidade do domínio é critério de escolha. A
-aplicação deverá: (i) ter ao menos um fluxo com chamada de ferramentas, exigido
+trabalho, de modo que a simplicidade do domínio é critério de escolha. A aplicação deverá: (i) ter ao menos um fluxo com chamada de ferramentas, exigido
 pelas requisições agênticas do \textit{Benchmark}~2; (ii) permitir repetir as
-mesmas requisições sob os mesmos parâmetros; (iii) permitir simular falhas
-(esgotamento de tempo, erro de conexão, limite de uso e resposta inválida),
-condição do plano alternativo da atividade 10; (iv) não exigir dados sensíveis;
-e (v) ter lógica de negócio simples, que deixe o código de integração com o
+mesmas requisições sob os mesmos parâmetros; (iii) não exigir dados sensíveis;
+e (iv) ter lógica de negócio simples, que deixe o código de integração com o
 modelo separável do restante.
 
 Serão definidos também o caso de uso que as duas versões implementarão e as
@@ -165,24 +162,29 @@ duas ou três ferramentas determinísticas que o modelo poderá chamar, com a
 especificação de entrada e saída de cada uma.
 
 O caso de uso incluirá ainda um \textbf{recurso específico de provedor}: uma
-capacidade que os dois provedores comerciais oferecem por parâmetros ou
-comportamentos diferentes, de modo que o código que a utiliza em um deles não
-vale para o outro. Aplicações em produção costumam depender de recursos desse
-tipo, e relatos de prática, não revisados por pares, indicam que é neles que
-uma camada de abstração devolve à aplicação parte do acoplamento que deveria
-eliminar \cite{thoughtworkslitellm}. O recurso deverá: (i) ser acionado, em um
-dos provedores, por parâmetro próprio, sem equivalente direto na interface do
-outro; (ii) não alterar o comportamento funcional da aplicação, para que a
-suíte de equivalência continue aplicável depois da troca; (iii) ter efeito
-observável na resposta do provedor, para que se verifique se ele se mantém após
-a troca; e (iv) estar disponível nos dois modelos do \textit{Benchmark}~1. O
-candidato inicial é o cache de \textit{prompt}: na API da Anthropic ele é
-ativado por um campo próprio da requisição, na da OpenAI vem ativado por
-padrão, e as duas informam, nos dados de uso da resposta, quantos
-\textit{tokens} foram lidos do cache, segundo a documentação dos provedores,
-também não revisada por pares \cite{anthropiccache,openaicache}. A escolha será
-confirmada nesta atividade, com a verificação de que o \textit{prompt} do caso
-de uso atinge o comprimento mínimo que cada provedor exige para o cache.
+capacidade que os dois provedores comerciais oferecem por parâmetros,
+restrições de esquema ou formas de extração de resposta diferentes, de modo que
+o código que a utiliza em um deles não vale diretamente para o outro. Um relato
+de prática sobre uma camada desse tipo, não revisado por pares, indica que é em
+recursos específicos de provedor que a abstração devolve à aplicação parte do
+acoplamento que deveria eliminar \cite{thoughtworkslitellm}. O recurso deverá:
+(i) exigir configuração, restrições de esquema ou extração de resposta distintas
+entre os dois provedores; (ii) impor uma restrição estrutural verificável
+diretamente pela suíte de equivalência; (iii) alterar o contrato de entrada e
+saída entre a aplicação e o provedor, expondo eventual vazamento de abstração;
+e (iv) estar disponível nos dois modelos do \textit{Benchmark}~1. O recurso
+adotado são as \textbf{saídas estruturadas com esquema estrito}
+(\textit{structured outputs}): segundo a documentação técnica dos dois
+provedores, também não revisada por pares, na API da Anthropic o esquema JSON é
+passado em \texttt{output\_config.format} (com \texttt{strict: true} no uso
+estrito de ferramentas) e o JSON validado retorna no bloco de texto da resposta
+\cite{anthropicstructured}, enquanto na OpenAI o esquema é declarado em
+\texttt{response\_format} com \texttt{type: "json\_schema"}, exigindo
+\texttt{strict: true}, \texttt{additionalProperties: false} em cada objeto
+aninhado, obrigatoriedade de todas as propriedades declaradas e tratamento
+explícito de recusa (\texttt{refusal}) na resposta \cite{openaistructured}. O
+esquema JSON do caso de uso e a sua aderência aos dois provedores serão
+confirmados nesta atividade.
 
 O resultado será o registro da aplicação escolhida, com a justificativa frente a
 cada critério, e do recurso específico de provedor, com a justificativa frente
@@ -198,22 +200,25 @@ Os modelos já estão definidos (Seção~\ref{sec:justificativa}): Claude Haiku 
 servidor institucional com GPU NVIDIA H100, no \textit{Benchmark}~2. Esta
 atividade escolherá o restante da pilha: a linguagem e o \textit{framework} da
 aplicação; os SDKs oficiais dos dois provedores comerciais; o servidor de
-inferência do modelo local, com a quantização e a identificação exata do
-modelo; a forma de acesso à NVML para a telemetria da GPU \cite{nvml}; e as
-bibliotecas de análise estatística. As duas versões da aplicação serão
-executadas em uma mesma máquina do autor, fora do servidor, e acessarão o
-modelo pela rede. Por isso a atividade definirá também como sincronizar os
-relógios das duas máquinas, ou medir a diferença entre eles, para associar a
-telemetria do servidor às requisições.
+inferência do modelo auto-hospedado, com a quantização e a identificação exata
+do modelo; a forma de acesso à NVML para leitura do contador acumulado de
+energia (\texttt{nvmlDevice\-GetTotalEnergy\-Consumption}) e da potência da GPU
+(\texttt{nvmlDevice\-GetPowerUsage}) \cite{nvml}; e as bibliotecas de análise
+estatística. As duas versões da aplicação serão executadas em uma mesma máquina
+do autor, fora do servidor institucional, e acessarão o modelo auto-hospedado
+pela rede. Por isso a atividade definirá também como sincronizar os relógios das
+duas máquinas, ou medir a diferença entre eles, para associar a telemetria do
+servidor às requisições.
 
 Os critérios serão: SDKs oficiais dos dois provedores na linguagem escolhida,
-com suporte a chamada de ferramentas; servidor de inferência que execute o
-modelo em uma única GPU e atenda chamadas de ferramentas; a mesma pilha nas duas
-versões, para que a única diferença entre elas seja a camada; e preferência por
-\textit{software} aberto. O servidor de inferência define também como a
-\versaoD{} acessará o modelo local: se ele expuser interface compatível com a da
-OpenAI, a \versaoD{} poderá usar o SDK desse provedor apontado para o servidor
-local. O resultado será a lista de tecnologias, com as versões a congelar.
+com suporte a chamada de ferramentas e a saídas estruturadas; servidor de
+inferência que execute o modelo em uma única GPU e atenda chamadas de
+ferramentas; a mesma pilha nas duas versões, para que a única diferença entre
+elas seja a camada; e preferência por \textit{software} aberto. O servidor de
+inferência define também como a \versaoD{} acessará o modelo auto-hospedado: se
+ele expuser interface compatível com a da OpenAI, a \versaoD{} poderá usar o SDK
+desse provedor apontado para o servidor institucional. O resultado será a lista
+de tecnologias, com as versões a congelar.
 
 \subsection{Atividade 3 -- Projetar a arquitetura do \harness}
 \label{subsec:at-projeto}
@@ -230,14 +235,16 @@ terá cinco componentes: (1) interface abstrata com um adaptador por provedor;
 (2) condução do ciclo de ferramentas, com a execução das ferramentas definidas
 na atividade 1 e a manutenção do histórico de mensagens da interação, que é o
 contexto e o estado da responsabilidade 3; (3) normalização de requisições e
-respostas; (4) política de nova tentativa (\textit{retry}) para
-falhas transitórias; e (5) registro estruturado de eventos. Os componentes 4 e
-5 não serão avaliados, mas o experimento depende deles: sem a nova tentativa,
-uma falha de rede contaminaria a medição de energia; sem o registro, não seria
-possível associar cada janela de telemetria à sua requisição nem conferir os
-casos de uso após a troca de provedor. Cada um será justificado em um ADR. Ao
-final do trabalho, a camada terá três adaptadores: um para cada provedor
-comercial e um para o modelo local.
+respostas; (4) política de nova tentativa (\textit{retry}) para falhas transitórias
+(padrão de resiliência retido no produto mínimo, permanecendo o \textit{Circuit
+Breaker} documentado como extensão fora do experimento); e (5) registro
+estruturado de eventos. Os componentes 4 e 5 não serão avaliados, mas o
+experimento depende deles: sem a nova tentativa, uma falha de rede contaminaria
+a medição de energia; sem o registro, não seria possível associar cada janela de
+telemetria à sua requisição nem conferir os casos de uso após a troca de
+provedor. Cada um será justificado em um ADR. Ao final do trabalho, a camada
+terá três adaptadores: um para cada provedor comercial e um para o modelo
+auto-hospedado no servidor institucional.
 
 Será fixado ainda o contrato da interface (operações e formatos das mensagens,
 das declarações de ferramenta e dos erros), que a \versaoD{} terá de reproduzir
@@ -264,50 +271,72 @@ experimento controlado de \citeonline{wohlin2024}, para que a análise não seja
 ajustada aos resultados.
 
 O protocolo do \textit{Benchmark}~1 definirá: os dois cenários da troca, sem e
-com o recurso específico de provedor (Seção~\ref{sec:b1}); o provedor de
-origem, que será aquele em que o recurso exige código explícito, para que a
-troca tenha de lidar com esse código; a política de implementação da \versaoD,
-que seguirá a documentação oficial de cada provedor, inclusive no uso do
-recurso específico, sem espalhar chamadas artificialmente e sem camada de
-abstração própria; o número de pontos do código de negócio que chamam o modelo,
-parâmetro que afeta o tamanho da diferença entre as versões; a lista de
-verificação dos passos da troca de provedor; a forma de contar as alterações de
-código, separando arquivos existentes modificados de código novo e, na
-\versaoH, o código de negócio do código da camada; a ordem das quatro trocas; e
-o procedimento de medição do tempo de implementação. Estimará também o custo das chamadas às APIs comerciais; se o
-orçamento for limitante, a troca poderá usar um provedor simulado determinístico
-como segunda condição, o que será declarado; nesse caso, o cenário com recurso
-específico não seria executado, pois o efeito do recurso só é observável em um
-provedor real.
+com o recurso específico de provedor --- saídas estruturadas com esquema estrito
+(Seção~\ref{sec:b1}); o provedor de origem; a política de implementação da
+\versaoD, que seguirá a documentação oficial de cada provedor, inclusive no uso
+de saídas estruturadas, sem espalhar chamadas artificialmente e sem camada de
+abstração própria; o roteiro de revisão independente do código da \versaoD{}
+(por orientador ou par técnico, antes do início da troca) para verificar a
+aderência idiomática ao SDK e mitigar o viés do experimentador; o número de
+pontos do código de negócio que chamam o modelo, parâmetro que afeta o tamanho
+da diferença entre as versões; a lista de verificação dos passos da troca de
+provedor; a forma de registrar tanto o custo inicial de construção da \versaoH{}
+(aplicação e camada) frente à \versaoD{} quanto as alterações de código da
+troca, separando arquivos existentes modificados de código novo e, na \versaoH,
+o código de negócio do código da camada; a ordem das quatro trocas; e o
+procedimento de medição do tempo de implementação. Estimará também o custo das
+chamadas às APIs comerciais; se o orçamento for limitante, a troca poderá usar
+um provedor simulado determinístico apenas para o cenário comum, declarando o
+cenário com recurso específico como não executado, pois a conformidade ao
+esquema estrito só é observável em provedor real.
 
 O protocolo do \textit{Benchmark}~2 definirá: os parâmetros que tornam as
 requisições repetíveis (temperatura, semente, limite de \textit{tokens} de saída
 e modo de raciocínio), ressalvado que, em GPU, parâmetros fixos não garantem
-saídas idênticas; a regra de descarte das requisições agênticas em que o número
-de chamadas de ferramenta diferir do esperado; a unidade amostral; a forma de
+saídas idênticas; a regra de descarte e de registro obrigatório da taxa de
+descarte por versão nas requisições agênticas em que o número de chamadas de
+ferramenta diferir do esperado; a unidade amostral e a estrutura de pares
+intercalados por sessão (com ordem aleatorizada dentro de cada par); a forma de
 medir o tempo de processamento na máquina da aplicação e a potência adotada para
 estimar, a partir dele, o limite superior do custo direto da camada
-(Seção~\ref{sec:energia}); o pacote estatístico definitivo;
-a margem de não inferioridade que operacionaliza um consumo ``comparável''; o
-limiar do tamanho de efeito; o menor efeito de interesse prático, base do
-cálculo do tamanho da amostra no piloto; e a regra de verificação do orçamento
-de horas de GPU, usada na atividade 10.
+(Seção~\ref{sec:energia}); o pacote estatístico definitivo de análise pareada e
+não inferioridade; a margem de não inferioridade $\Delta_0 = 5\%$ da energia
+média da \versaoD{} --- ancorada na ordem de grandeza dos efeitos arquiteturais
+práticos relatados na literatura \cite{xiao2025,matinpour2026} e na tolerância
+típica dos sensores NVML em GPUs de alta potência; o poder estatístico alvo
+($\ge 80\%$, $\alpha = 0{,}05$) que orienta o cálculo do número de pares no
+piloto; e os parâmetros da contingência energética da atividade 10 (modelo
+aberto menor disponível no servidor e teto mais enxuto de \textit{tokens} de
+saída).
 
-Dois critérios comuns aos dois experimentos serão fixados. O critério de
-equivalência funcional (Seção~\ref{subsec:exp-equivalencia}), usado na
-atividade 6, não exigirá texto idêntico, pois a
-saída do modelo varia entre execuções, e sim asserções funcionais: resultado de
-negócio correto, resposta em formato válido e as mesmas ferramentas chamadas com
-argumentos equivalentes. O critério de decisão do quinto objetivo específico
-dirá, para requisições simples e agênticas, se a redução do custo de
-substituição justifica o acréscimo de energia; como os dois custos têm unidades
-diferentes, sem conversão natural entre elas, o critério combinará um limite
-para cada dimensão, em vez de somá-las (Seção~\ref{subsec:exp-criterio}).
+Dois critérios comuns aos dois experimentos ficam fixados antes da coleta. O
+critério de equivalência funcional (Seção~\ref{subsec:exp-equivalencia}), usado
+na atividade 6, não exigirá texto idêntico, pois a saída do modelo varia entre
+execuções, e sim asserções funcionais: resultado de negócio correto, resposta em
+formato válido (e aderente ao esquema JSON estrito no cenário com recurso
+específico) e as mesmas ferramentas chamadas com argumentos equivalentes. O
+\textbf{critério de decisão} do quinto objetivo específico, aplicado na
+atividade 13 para cada combinação de nível de requisição (simples ou agêntica) e
+cenário do \textit{Benchmark}~1 (comum ou com saídas estruturadas), considera a
+camada justificada pelo desacoplamento se e somente se duas condições forem
+atendidas simultaneamente (Seção~\ref{subsec:exp-criterio}):
+\begin{enumerate}
+  \item \textbf{Condição de substituição (\textit{Benchmark}~1):} a \versaoH{}
+        preserva 100\% dos casos de uso na suíte de equivalência após a troca
+        (incluindo a conformidade ao esquema JSON no cenário com recurso
+        específico) e reduz em pelo menos 50\% tanto o número de arquivos
+        alterados quanto os pontos de dependência direta ao provedor no código
+        de negócio, em relação à \versaoD{};
+  \item \textbf{Condição energética (\textit{Benchmark}~2):} a \versaoH{} é
+        aprovada no teste unilateral de não inferioridade na GPU
+        ($\alpha = 0{,}05$), e a soma do limite superior do intervalo de
+        confiança unilateral de 95\% para a diferença relativa na GPU com a cota
+        superior de custo direto na CPU não ultrapassa 5\% da energia média da
+        \versaoD{} ($\mathrm{IC}_{95\%,\mathrm{sup}}(\Delta E_{\mathrm{GPU}}/E_D) + \mathrm{cota\_CPU}/E_D \le 5\%$).
+\end{enumerate}
 
-Por fim, será redigido o protocolo de um terceiro \textit{benchmark}, de
-recuperação de falhas, mantido em reserva para o caso previsto na atividade 10.
-O resultado da atividade serão os três protocolos e os dois critérios,
-registrados com data no repositório do trabalho.
+O resultado da atividade serão os dois protocolos congelados e o registro
+datado desses critérios no repositório do trabalho.
 
 \subsection{Atividade 5 -- Implementar o \harness{} e a \versaoH}
 \label{subsec:at-versao-h}
@@ -316,27 +345,32 @@ Serão implementados o \harness{} projetado na atividade 3, como biblioteca, e a
 \versaoH{} da aplicação, em que o código de negócio acessa o modelo apenas pela
 interface da camada, sem importar SDK de provedor, e usa o recurso específico
 de provedor pela forma decidida na atividade 3. Nesta etapa a camada terá o
-adaptador do provedor comercial de origem e o do modelo local; o do segundo
-provedor comercial será escrito na atividade 7, como parte da troca medida.
-Cada componente terá testes de unidade, e o registro de eventos será conferido
-contra requisições de exemplo.
+adaptador do provedor comercial de origem e o do modelo auto-hospedado no
+servidor institucional; o do segundo provedor comercial será escrito na
+atividade 7, como parte da troca medida. Cada componente terá testes de
+unidade, o registro de eventos será conferido contra requisições de exemplo e o
+tamanho inicial do código (arquivos, linhas e componentes da aplicação e da
+camada) será registrado para compor a análise do custo inicial.
 
 \subsection{Atividade 6 -- Implementar a \versaoD{} e a suíte de equivalência}
 \label{subsec:at-versao-d}
 
 A \versaoD{} implementará o mesmo caso de uso chamando diretamente o SDK do
 provedor, segundo a política fixada na atividade 4, com os mesmos
-\textit{prompts}, ferramentas e parâmetros da \versaoH, e usará o recurso
-específico de provedor como a documentação do provedor indica. Ela executará, no código
-de negócio ou pelos recursos do próprio SDK, as funções que a camada oferece à
-\versaoH{} (ciclo de ferramentas, histórico de mensagens, nova tentativa e
-registro de eventos) e enviará ao modelo as mesmas chamadas, com o mesmo
-contexto. As duas versões diferem, assim, apenas pela interposição da camada, e
-a energia dessas funções não entra na diferença medida entre elas. Em seguida
-será escrita uma suíte de testes comum às duas versões, com as asserções do
-critério de equivalência funcional. A suíte terá de passar nas duas versões
-antes de cada coleta, e a sua taxa de sucesso condiciona a análise energética
-(atividade 12).
+\textit{prompts} de negócio, ferramentas e parâmetros da \versaoH, e usará as
+saídas estruturadas conforme a documentação oficial do provedor. Ela executará,
+no código de negócio ou pelos recursos do próprio SDK, as funções que a camada
+oferece à \versaoH{} (ciclo de ferramentas, histórico de mensagens, nova
+tentativa e registro de eventos), mantendo equivalência de tarefa e parâmetros
+para que as duas versões difiram apenas pela interposição da camada. Ao fim da
+implementação, serão registrados o tamanho inicial do código da \versaoD{} e o
+resultado de uma revisão independente do seu código (pelo orientador ou por um
+par técnico que desconheça detalhes internos do \harness{}), verificando que a
+integração direta segue de forma idiomática a documentação oficial do SDK. Em
+seguida será escrita uma suíte de testes comum às duas versões, com as
+asserções do critério de equivalência funcional. A suíte terá de passar nas
+duas versões antes de cada coleta, e a sua taxa de sucesso condiciona a análise
+energética (atividade 12).
 
 % -----------------------------------------------------------------------------
 \section{\textit{Benchmark} 1 --- Custo de substituição do provedor}
@@ -355,17 +389,19 @@ definição.
 A troca é medida em dois cenários, que formam um segundo fator do experimento.
 No cenário comum, o caso de uso emprega apenas o que os dois provedores
 oferecem de forma equivalente, a chamada de ferramentas. No cenário com recurso
-específico, emprega também o recurso definido na atividade 1. O primeiro mede a
-troca na condição mais favorável à camada, em que um adaptador basta para
-traduzir um provedor no outro. O segundo a mede na condição em que a prática
-relata o retorno do acoplamento \cite{thoughtworkslitellm}, e mostra quanto da
-redução do custo de substituição se mantém quando a aplicação depende de algo
-que só um provedor oferece daquela forma. Na \versaoH, um parâmetro próprio de
-provedor que o código de negócio repasse pela camada é contado como ponto de
-dependência, pois prende esse código ao provedor mesmo sem importar o SDK. O uso de métricas de estrutura de código como medida principal tem
-precedente em \citeonline{mo2023}, que comparam funções \textit{serverless}
-escritas com uma biblioteca de abstração e com as APIs nativas de cada
-plataforma.
+específico, emprega também as saídas estruturadas com esquema estrito definidas
+na atividade 1. O primeiro mede a troca na condição mais favorável à camada, em
+que um adaptador basta para traduzir um provedor no outro. O segundo a mede na
+condição em que o contrato estrutural difere entre provedores e a prática
+relata o retorno do acoplamento \cite{thoughtworkslitellm}, mostrando quanto da
+redução do custo de substituição se mantém quando a aplicação depende de
+restrições de esquema e tratamento de recusa próprios de cada provedor. Na
+\versaoH, um parâmetro ou restrição própria de provedor que o código de negócio
+repasse pela camada é contado como ponto de dependência, pois prende esse código
+ao provedor mesmo sem importar o SDK. O uso de métricas de estrutura de código
+como medida principal tem precedente em \citeonline{mo2023}, que comparam
+funções \textit{serverless} escritas com uma biblioteca de abstração e com as
+APIs nativas de cada plataforma.
 
 \begin{quadro}[h!]
   \centering
@@ -376,15 +412,17 @@ plataforma.
       \hline
       \textbf{Dimensão} & \textbf{Métrica} & \textbf{Papel} \\
       \hline
-      Comportamento       & Casos de uso que continuam funcionando após a troca; no cenário com recurso específico, se o efeito do recurso se mantém & Primária \\
+      Comportamento       & Casos de uso que continuam funcionando após a troca; no cenário com saídas estruturadas, conformidade ao esquema JSON estrito e tratamento de recusa & Primária \\
       \hline
       Alteração no código & Arquivos, linhas e módulos alterados, separados entre código de negócio e código da camada & Primária \\
       \hline
       Impacto estrutural  & Componentes ou interfaces afetados                  & Primária \\
       \hline
-      Dependência         & Referências diretas ao SDK do provedor e, na \versaoH, a parâmetros próprios de provedor no código de negócio & Primária \\
+      Dependência         & Referências diretas ao SDK do provedor e, na \versaoH, a parâmetros ou restrições próprias de provedor no código de negócio & Primária \\
       \hline
       Testes              & Testes alterados ou quebrados                       & Primária \\
+      \hline
+      Custo inicial       & Arquivos, linhas e componentes da implementação inicial da \versaoH{} (aplicação e camada) frente à \versaoD{} & Secundária \\
       \hline
       Esforço             & Tempo de implementação da substituição              & Secundária \\
       \hline
@@ -400,21 +438,21 @@ plataforma.
 O provedor comercial de origem será substituído pelo outro nas duas versões e
 nos dois cenários, seguindo a lista de verificação da atividade 4. São quatro
 trocas, cada uma a partir de um estado próprio do repositório; os dois estados
-de uma mesma versão diferem apenas pelo uso do recurso específico de provedor.
-Na \versaoH, a troca consiste em escrever o adaptador do novo provedor e
-alterar a configuração; no cenário com recurso específico, inclui o que a forma
-de exposição decidida na atividade 3 exigir do código de negócio. Na \versaoD,
-consiste em reescrever as chamadas ao SDK onde quer que estejam. O adaptador
-escrito na primeira troca da \versaoH{} será reaproveitado na segunda e contado
-nas duas.
+de uma mesma versão diferem apenas pelo uso de saídas estruturadas com esquema
+estrito. Na \versaoH, a troca consiste em escrever o adaptador do novo provedor
+e alterar a configuração; no cenário com recurso específico, inclui o que a
+forma de exposição decidida na atividade 3 exigir do código de negócio. Na
+\versaoD, consiste em reescrever as chamadas ao SDK e as definições de esquema
+e tratamento de recusa onde quer que estejam. O adaptador escrito na primeira
+troca da \versaoH{} será reaproveitado na segunda e contado nas duas.
 
 Ao fim de cada troca, a suíte de equivalência será executada para contar os
-casos de uso que continuam funcionando; no cenário com recurso específico, os
-dados de uso da resposta do novo provedor indicarão se o efeito do recurso se
-manteve, foi perdido ou teve de ser reimplementado. As alterações de código
-serão extraídas do controle de versões, pela comparação dos estados anterior e
-posterior à troca. O tempo de implementação, a ordem das trocas e as condições
-da medição serão registrados.
+casos de uso que continuam funcionando; no cenário com saídas estruturadas, a
+validação do esquema JSON e o tratamento de recusa indicarão se o contrato
+estrutural se manteve, foi perdido ou teve de ser reimplementado. As alterações
+de código serão extraídas do controle de versões, pela comparação dos estados
+anterior e posterior à troca. O tempo de implementação, a ordem das trocas e as
+condições da medição serão registrados.
 
 \subsection{Atividade 8 -- Consolidar e analisar os dados do \textit{Benchmark}~1}
 \label{subsec:at-analise-b1}
@@ -423,36 +461,38 @@ Os valores das métricas do Quadro~\ref{qua:b1-metricas} serão consolidados em
 uma tabela por versão e por cenário. Como cada versão passa por uma única troca
 em cada cenário, a comparação será descritiva: diferença absoluta e relativa
 entre a \versaoH{} e a \versaoD{} em cada métrica, com a descrição qualitativa
-do que foi alterado em cada uma. A comparação entre os cenários indicará quanto
-da diferença entre as versões se mantém com o recurso específico de provedor e
-em que parte do código, de negócio ou da camada, a \versaoH{} teve de ser
-alterada. O resultado será interpretado à luz do número de pontos de integração
-da aplicação, pois a diferença entre as versões tende a crescer com ele.
+do que foi alterado em cada uma, acompanhada da comparação do custo inicial de
+construção (arquivos, linhas e componentes iniciais da \versaoH{} e da camada
+frente à \versaoD{}) para contextualizar o investimento inicial diante da
+economia por troca. A comparação entre os cenários indicará quanto da diferença
+entre as versões se mantém com as saídas estruturadas e em que parte do código,
+de negócio ou da camada, a \versaoH{} teve de ser alterada. O resultado será
+interpretado à luz do número de pontos de integração da aplicação, pois a
+diferença entre as versões tende a crescer com ele.
 
 % -----------------------------------------------------------------------------
 \section{\textit{Benchmark} 2 --- Custo energético}
 \label{sec:b2}
 
-O segundo experimento mede o custo energético que a camada acrescenta à
-execução de requisições ao modelo local. A matriz experimental tem quatro
-células: as duas versões cruzadas com dois níveis de requisição. O nível~1,
-requisição simples, sem ferramenta, isola o custo de a camada estar no caminho;
-o nível~2, requisição agêntica, com um ciclo de duas chamadas de ferramenta,
-mede o custo de a camada orquestrar ferramentas. O experimento é executado
-apenas no cenário comum: o recurso específico de provedor pertence aos
-provedores comerciais e não é usado nas requisições ao modelo local. A unidade
-de medida é a requisição completa, incluído o ciclo de ferramentas, e as
-métricas estão no Quadro~\ref{qua:b2-metricas}. A energia será medida por telemetria do
-\textit{hardware}, e não estimada, pois estimativas baseadas em operações de
-ponto flutuante subestimam o consumo real \cite{fernandez2025}. A telemetria
-cobre a GPU do servidor. O trabalho próprio da camada ocorre na máquina da
-aplicação, fora do alcance dessa telemetria, e o seu custo é estimado por um
-limite superior, a partir do tempo de processamento
-(Seção~\ref{sec:energia}). O protocolo de telemetria e o pacote
-estatístico reaproveitam os de trabalho anterior, do qual o autor é coautor
-\cite{barros2026}, com uma diferença: lá a coleta ocorreu em GPU dedicada e
-contínua; aqui, o acesso exclusivo se dá em janelas recorrentes de poucas horas,
-o que obriga a fragmentar a coleta.
+O segundo experimento avalia o efeito energético da interposição da camada na
+execução de requisições ao modelo aberto auto-hospedado no servidor
+institucional. A matriz experimental tem quatro células: as duas versões
+cruzadas com dois níveis de requisição. O nível~1, requisição simples, sem
+ferramenta, isola o efeito de a camada estar no caminho; o nível~2, requisição
+agêntica, com um ciclo de duas chamadas de ferramenta, avalia o efeito de a
+camada orquestrar ferramentas. O experimento é executado apenas no cenário
+comum, sem o recurso específico dos provedores comerciais. A unidade de medida é
+a requisição completa, incluído o ciclo de ferramentas, e as métricas estão no
+Quadro~\ref{qua:b2-metricas}. A energia de inferência na GPU será medida por
+telemetria do \textit{hardware} (NVML), pois estimativas baseadas em operações
+de ponto flutuante subestimam o consumo real \cite{fernandez2025}; já o trabalho
+próprio da camada ocorre na máquina da aplicação, fora do alcance dessa
+telemetria, e o seu custo direto é estimado à parte por um limite superior a
+partir do tempo de processamento local (Seção~\ref{sec:energia}). O protocolo de
+telemetria reaproveita a instrumentação NVML de trabalho anterior, do qual o
+autor é coautor \cite{barros2026}, adaptada ao acesso exclusivo em janelas
+recorrentes de poucas horas e a um desenho estatístico pareado de não
+inferioridade.
 
 \begin{quadro}[h!]
   \centering
@@ -463,15 +503,15 @@ o que obriga a fragmentar a coleta.
       \hline
       \textbf{Dimensão} & \textbf{Métrica} & \textbf{Papel} \\
       \hline
-      Energia por requisição & Joules por requisição, pela integração da potência instantânea lida pela NVML & Primária \\
+      Energia por requisição & Joules líquidos por requisição, pela diferença do contador acumulado de energia da NVML, descontada a energia ociosa do intervalo & Primária \\
       \hline
-      Energia por \textit{token} & Joules por \textit{token} de saída & Primária \\
+      Energia por \textit{token} & Joules líquidos por \textit{token} de saída & Primária \\
       \hline
-      Potência da GPU & Potência média e de pico, em watts & Primária \\
+      Potência da GPU & Potência média e de pico, em watts (leitura de potência da NVML), para distinguir efeito de potência e efeito de duração & Secundária \\
       \hline
-      Latência & Percentis 50, 95 e 99 do tempo de resposta & Primária \\
+      Latência & Percentis 50, 95 e 99 do tempo de resposta & Secundária \\
       \hline
-      Tempo de processamento na aplicação & Duração da requisição descontada a espera pelo servidor, em cada versão; base do limite superior do custo direto da camada & Secundária \\
+      Tempo de processamento na aplicação & Duração da requisição descontada a espera pelo servidor, em cada versão; base do limite superior do custo direto da camada na CPU & Secundária \\
       \hline
       Utilização da GPU & Percentual de utilização & Secundária \\
       \hline
@@ -487,32 +527,38 @@ o que obriga a fragmentar a coleta.
 \label{subsec:at-piloto}
 
 Em uma janela curta de uso exclusivo do servidor, as duas versões serão
-executadas nos dois níveis, com poucas repetições. O piloto verificará se a
-leitura da NVML a cada 100~ms funciona e se cada janela de telemetria pode ser
-associada à sua requisição pelo registro de eventos, dada a diferença entre os
-relógios da máquina da aplicação e do servidor. Medirá também o tempo médio por
-requisição em cada nível, o tempo de processamento na máquina da aplicação em
-cada versão, o tempo de estabilização térmica da GPU, a
-variação residual das saídas sob parâmetros fixos e se a diferença de energia
-entre as versões supera o ruído da medição. Com o menor efeito de interesse
-prático fixado na atividade 4, será calculado o número de repetições por célula
-e, a partir dele, o orçamento de horas de GPU exigido pela matriz completa. O
-piloto confirmará ainda que o Qwen3.6 27B é aprovado na suíte de equivalência
-com chamada de ferramentas; se não passar, será substituído, antes do congelamento,
+executadas em pares intercalados nos dois níveis, com poucas repetições. O
+piloto verificará se a leitura do contador acumulado de energia da NVML
+(\texttt{nvmlDevice\-GetTotalEnergy\-Consumption}) e da potência a cada 100~ms
+(\texttt{nvmlDevice\-GetPowerUsage}) é consistente e se cada janela de telemetria
+pode ser associada à sua requisição pelo registro de eventos, dada a diferença
+entre os relógios da máquina da aplicação e do servidor. Medirá também o tempo
+médio por requisição em cada nível, o tempo de processamento na máquina da
+aplicação em cada versão, o tempo de estabilização térmica da GPU, a variação
+residual das saídas sob parâmetros fixos e a variância pareada dentro de sessão.
+A partir dessa variância pareada e da margem de não inferioridade
+$\Delta_0 = 5\%$ fixada na atividade 4, será calculado o número de pares por
+nível necessário para poder estatístico $\ge 80\%$ ($\alpha = 0{,}05$) e, a
+partir dele, o orçamento de horas de GPU exigido pela matriz completa. O piloto
+confirmará ainda que o Qwen3.6 27B é aprovado na suíte de equivalência com
+chamada de ferramentas; se não passar, será substituído, antes do congelamento,
 pelo gpt-oss 20B, também hospedado no servidor.
 
 \subsection{Atividade 10 -- Verificar o orçamento de horas de GPU}
 \label{subsec:at-orcamento}
 
-O orçamento calculado no piloto será comparado com as janelas de uso exclusivo
-confirmadas ou previstas até o fim da coleta, segundo a regra fixada na
-atividade 4. Se as janelas o cobrirem, o trabalho segue para a atividade 11.
-Caso contrário, o \textit{Benchmark}~2 será substituído pelo \textit{benchmark}
-de recuperação de falhas, que não depende de GPU: um injetor de falhas
-configurável será acoplado às duas versões, e as atividades 11 e 12 darão lugar,
-no mesmo período, à execução e à análise desse experimento. Nesse caso, o quarto
-objetivo específico e a parte energética do quinto deixarão de ser atendidos, e
-o escopo será revisto com o orientador.
+O orçamento de horas calculado no piloto será comparado com as janelas de uso
+exclusivo confirmadas ou previstas até o fim da coleta. Se as janelas o
+cobrirem, o trabalho segue para a atividade 11 com o Qwen3.6 27B e o protocolo
+completo. Caso contrário, aplica-se uma contingência em duas etapas que preserva
+a questão de pesquisa, os cinco objetivos específicos e o recorte energético:
+(i) substituir o modelo pelo modelo aberto menor com suporte a chamada de
+ferramentas disponível no mesmo servidor (a começar pelo gpt-oss 20B ou um
+modelo da faixa de 7B a 14B), reduzindo o tempo por requisição e o consumo de
+horas de GPU; e (ii) se ainda necessário, adotar um teto mais enxuto de
+\textit{tokens} de saída (\texttt{max\_tokens}) no protocolo congelado,
+diminuindo simultaneamente a duração média e a variância entre execuções para
+reduzir o número de pares exigido pelo teste de não inferioridade.
 
 \subsection{Atividade 11 -- Executar a coleta energética (\textit{Benchmark}~2)}
 \label{subsec:at-coleta}
@@ -522,39 +568,52 @@ coleta se estende por semanas, o \textit{driver} e o \textit{firmware} da GPU e
 a versão do modelo ficarão congelados, para que uma atualização não se torne
 variável de confusão entre sessões. Cada sessão seguirá o mesmo roteiro:
 conferir que nenhum outro processo usa a GPU, pois a NVML lê o dispositivo
-inteiro; executar a suíte de equivalência nas duas versões; medir a potência ociosa,
-a ser subtraída na análise; aguardar a estabilização térmica; e executar as
-requisições intercalando a \versaoH{} e a \versaoD{} na mesma janela, para que
-temperatura e estado do servidor afetem as duas igualmente. Serão registrados,
-por sessão, a data, a versão do \textit{driver}, a diferença entre os relógios
-das duas máquinas e a temperatura ambiente aproximada. Sessões sem exclusividade garantida da GPU serão descartadas ou
-declaradas como amostra degradada.
+inteiro; executar a suíte de equivalência nas duas versões; medir a potência
+ociosa, a ser descontada na análise; aguardar a estabilização térmica; e
+executar as requisições em pares intercalados (\versaoH{} e \versaoD{}, com
+ordem aleatorizada dentro de cada par) na mesma janela, para que temperatura,
+estado do servidor e variações de rede afetem as duas versões igualmente. Serão
+registrados, por sessão, a data, a versão do \textit{driver}, a diferença entre
+os relógios das duas máquinas, a temperatura ambiente aproximada e a taxa de
+descarte por versão nas requisições agênticas. Sessões sem exclusividade
+garantida da GPU serão descartadas ou declaradas como amostra degradada.
 
 \subsection{Atividade 12 -- Consolidar e analisar os dados do \textit{Benchmark}~2}
 \label{subsec:at-analise-b2}
 
-A energia de cada requisição será obtida pela integração da potência
-instantânea na janela da requisição, descontada a potência ociosa. Antes de
-qualquer comparação energética, será conferida a taxa de sucesso na suíte de
-equivalência: se a da \versaoH{} for menor que a da \versaoD{} em um nível, a análise
-energética daquele nível será descartada, pois economizar energia perdendo
-funcionalidade não é eficiência. Para os níveis aprovados, o pacote estatístico
-previsto, a confirmar na atividade 4, é o desse trabalho anterior
-\cite{barros2026}, com os conceitos da
-Seção~\ref{subsec:exp-estatistica}: teste de Shapiro-Wilk para normalidade; teste de
-Mann-Whitney~U ($\alpha = 0{,}05$) em caso de rejeição; delta de Cliff como
-tamanho de efeito; e correção de Holm-Bonferroni para as duas comparações
-(\versaoH{} contra \versaoD{} em cada nível) de cada métrica primária. A
-potência média será reportada separadamente da duração, para identificar se o
-custo da camada vem de manter a GPU ocupada por mais tempo ou de exigir mais
-potência a cada instante \cite{vellaisamy2026}, e a variância entre sessões,
+A energia líquida de cada requisição na GPU será obtida pela diferença do
+contador acumulado da NVML na janela da requisição, descontada a energia ociosa
+correspondente ao intervalo (produto da potência ociosa da sessão pela duração
+da janela). Antes de qualquer comparação energética, será conferida de forma
+simétrica a taxa de sucesso na suíte de equivalência e a taxa de descarte nas
+requisições agênticas: se houver divergência na taxa de sucesso entre a
+\versaoH{} e a \versaoD{} em um nível (em qualquer direção), ou descarte
+diferencial relevante entre as versões, a comparação energética daquele nível
+será invalidada ou sinalizada como comprometida, pois economizar energia
+perdendo funcionalidade não é eficiência.
+
+Para os níveis aprovados, a análise estatística utiliza as diferenças pareadas
+dentro de cada bloco de sessão (Seção~\ref{subsec:exp-estatistica}): teste
+unilateral dos postos sinalizados de Wilcoxon ($\alpha = 0{,}05$) e intervalo
+de confiança unilateral de 95\% pelo estimador de Hodges-Lehmann (ou
+\textit{bootstrap} pareado por bloco) para verificar a não inferioridade frente
+à margem $\Delta_0 = 5\%$ da energia média da \versaoD{}; delta de Cliff e
+deslocamento relativo mediano como tamanhos de efeito; e correção de
+Holm-Bonferroni aplicada às quatro comparações primárias (duas métricas
+primárias do Quadro~\ref{qua:b2-metricas} cruzadas com os dois níveis de
+requisição). A potência média da GPU será reportada separadamente da duração da
+requisição para distinguir o efeito de duração do efeito de potência
+(Seção~\ref{sec:energia}), e a variância entre sessões será relatada
 separadamente da variância dentro de cada sessão.
 
-O custo direto da camada será estimado à parte. A diferença entre as versões no
-tempo de processamento na máquina da aplicação, multiplicada pela potência
-máxima do processador, dará um limite superior da energia de CPU que a camada
-consome por requisição. Esse limite será relatado ao lado da energia medida na
-GPU e como fração dela, sem teste de hipótese, por ser estimativa.
+O custo direto da camada na máquina da aplicação será estimado à parte: a
+diferença entre as versões no tempo de processamento local, multiplicada pela
+potência máxima do processador, fornece o limite superior da energia de CPU
+consumida por requisição. Essa cota superior será relatada em joules e como
+fração da energia média da \versaoD{}, sem teste de hipótese por ser estimativa
+de pior caso, e somada ao limite superior do intervalo de confiança unilateral de
+95\% da GPU para avaliar a condição energética do critério de decisão
+(Seção~\ref{subsec:at-planejamento}).
 
 % -----------------------------------------------------------------------------
 \section{Confronto dos resultados}
@@ -563,15 +622,19 @@ GPU e como fração dela, sem teste de hipótese, por ser estimativa.
 \subsection{Atividade 13 -- Confrontar os resultados dos dois \textit{benchmarks}}
 \label{subsec:at-confronto}
 
-O critério de decisão fixado na atividade 4 será aplicado aos resultados das
-atividades 8 e 12, separadamente para requisições simples e agênticas. Para cada
-nível, o resultado responderá à pergunta do quinto objetivo específico: se a
-redução do custo de substituição compensa ou não o acréscimo de energia. O
-critério será aplicado com a redução obtida em cada cenário do
-\textit{Benchmark}~1, de modo que a resposta é dada por tipo de requisição e
-por cenário. A discussão apontará as condições em que cada resposta vale, como
-o número de pontos de integração da aplicação e a dependência de recursos
-específicos de provedor, e os limites de generalização do estudo.
+O critério de decisão pré-registrado na atividade 4 será aplicado aos resultados
+das atividades 8 e 12, separadamente para requisições simples e agênticas e
+para cada cenário do \textit{Benchmark}~1 (comum e com saídas estruturadas).
+Para cada combinação, o resultado responderá de forma refutável à pergunta do
+quinto objetivo específico: a camada compensa pelo desacoplamento se e somente
+se atender simultaneamente à condição de substituição e à condição energética.
+Como o \textit{Benchmark}~2 é coletado apenas no cenário comum, o confronto do
+cenário com saídas estruturadas reutiliza essa medição energética como
+aproximação, ressalva que será declarada na discussão. A análise discutirá ainda
+as condições práticas de validade de cada resposta --- entre elas o número de
+pontos de integração da aplicação, a amortização do custo inicial de construção
+da camada frente às economias por troca e a dependência de recursos específicos
+de provedor --- bem como os limites de generalização do estudo.
 
 % -----------------------------------------------------------------------------
 \section{Cronograma}
