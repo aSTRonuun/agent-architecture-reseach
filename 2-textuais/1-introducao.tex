@@ -128,8 +128,11 @@ da camada ocupe a unidade central de processamento
 de 100~W (aproximadamente 1~J), o acréscimo direto seria inferior a 1\% da
 energia da requisição. Em fluxos agênticos o efeito pode ser maior, pois o
 trabalho da camada se repete a cada volta do ciclo de ferramentas, sobre um
-contexto que cresce a cada volta. A estimativa é uma premissa, a confrontar com
-a medição.
+contexto que cresce a cada volta. Como o modelo de inferência executa no
+servidor com GPU e a camada executa na máquina da aplicação, avaliar esse efeito
+exige combinar a medição direta da energia de inferência na GPU com uma
+estimativa de limite superior para o custo direto na CPU da máquina da
+aplicação, premissa a confrontar com os dados do experimento.
 
 \section{Problema e lacuna de pesquisa}
 \label{sec:problema}
@@ -162,14 +165,18 @@ Diante disso, este trabalho busca responder à seguinte questão de pesquisa:
 aplicação \textit{web} e um provedor de IA reduz o custo de substituição do
 provedor, e qual é o custo energético associado a essa camada?}
 
-A hipótese de partida é que a camada reduz o custo de substituição e cobra por
-isso um custo energético. As duas partes são examinadas de formas diferentes: a
-primeira por comparação descritiva, pois cada versão da aplicação passa por uma
-única troca de provedor em cada cenário; a segunda por teste estatístico sobre
-medições repetidas (Capítulo~\ref{cap:metodologia}). Os resultados que a
-contrariem também servem a quem precisa tomar a decisão arquitetural: a camada
-pode reduzir o custo de substituição sem acréscimo relevante de energia, ou
-acrescentar custo energético sem reduzir o custo de substituição.
+A hipótese de partida é que a camada reduz o custo de substituição sem
+acrescentar custo energético relevante à execução das requisições,
+operacionalizado como não inferioridade energética na GPU dentro de uma margem
+pré-registrada, somada a um limite superior para o custo direto na máquina da
+aplicação. As duas partes são examinadas de formas diferentes: a primeira por
+comparação descritiva, pois cada versão da aplicação passa por uma única troca
+de provedor em cada cenário; a segunda por teste estatístico de não
+inferioridade sobre medições pareadas repetidas, acompanhado do limite superior
+de CPU (Capítulo~\ref{cap:metodologia}). Os resultados que a contrariem também
+servem a quem precisa tomar a decisão arquitetural: a camada pode acrescentar
+sobrecarga energética acima da margem aceitável, ou deixar de reduzir de forma
+relevante o custo de substituição.
 
 \section{Justificativa}
 \label{sec:justificativa}
@@ -217,10 +224,13 @@ meados de 2025 \cite{menlo2025}, e os modelos foram escolhidos na faixa de menor
 custo de cada um, com suporte a chamada de ferramentas, porque essa avaliação
 mede o esforço de alterar o código, e não a qualidade das respostas.
 
-A medição energética será feita sobre um único modelo aberto, o Qwen3.6 de 27
+A avaliação energética será feita sobre um único modelo aberto, o Qwen3.6 de 27
 bilhões de parâmetros, integrado às duas versões da aplicação, com e sem a
 camada, e hospedado em servidor institucional com GPU NVIDIA H100, cuja
-telemetria é coletada por meio da biblioteca NVML. Para a camada, esse servidor
+telemetria é coletada por meio da biblioteca NVML; como a aplicação e a camada
+executam em outra máquina e acessam o servidor pela rede, o custo direto da
+camada na CPU é estimado à parte por um limite superior
+(Seção~\ref{sec:energia}). Para a camada, esse servidor
 é um terceiro provedor, atendido por um adaptador próprio. Entre os modelos abertos
 hospedados no servidor, ele foi escolhido por reunir pesos abertos, suporte a
 chamada de ferramentas, necessário às requisições agênticas, e execução em uma
@@ -230,7 +240,8 @@ terceiros, o consumo da inferência não é observável; em ambiente controlado,
 possível comparar, sob as mesmas condições, a energia das requisições com e sem
 a camada. Os resultados caracterizam, assim, o
 efeito da camada sobre a energia de inferência de um modelo e de um
-\textit{hardware} específicos, e não se estendem, sem ressalva, a outros modelos,
+\textit{hardware} específicos (junto à cota superior de CPU na máquina cliente),
+e não se estendem, sem ressalva, a outros modelos,
 outros equipamentos ou a provedores em nuvem.
 
 Por fim, o trabalho é viável no prazo de um trabalho de conclusão de curso. A
@@ -255,23 +266,38 @@ camada, em comparação com a integração direta ao provedor.
 
 \begin{alineas}
   \item projetar uma camada de \harness{} para a integração de modelos de IA em
-        aplicações \textit{web}, delimitando suas responsabilidades com base em
-        padrões arquiteturais publicados;
+        aplicações \textit{web}, delimitando suas responsabilidades a partir de
+        padrões arquiteturais publicados e fontes técnicas complementares;
   \item implementar duas versões funcionalmente equivalentes de uma mesma
         aplicação \textit{web}, uma com a camada de \harness{} e outra com
         integração direta ao provedor, verificando a equivalência por meio de
         testes comuns às duas;
   \item quantificar o custo de substituição do provedor de IA em uma aplicação
-        \textit{web} com e sem a camada de \harness{};
-  \item mensurar o custo energético que a camada de \harness{} acrescenta à
-        execução de requisições simples e agênticas a um modelo de IA;
+        \textit{web} com e sem a camada de \harness{}, registrando também o
+        custo inicial de construção da camada;
+  \item avaliar o efeito energético da interposição da camada de \harness{} na
+        execução de requisições simples e agênticas a um modelo de IA, medindo a
+        energia de inferência na GPU e estimando por limite superior o custo
+        direto na máquina da aplicação;
   \item determinar, para requisições simples e agênticas, se a redução do custo
         de substituição proporcionada pela camada de \harness{} justifica o seu
-        custo energético, segundo um critério de decisão definido antes da
+        efeito energético, segundo um critério de decisão definido antes da
         coleta de dados.
 \end{alineas}
 
-% \section{Estrutura do trabalho}
-% \label{sec:estrutura}
-% Fonte: plano §8. Redigir quando os demais capítulos estiverem estáveis
-% (um parágrafo por capítulo, com \ref{cap:...}).
+\section{Estrutura do trabalho}
+\label{sec:estrutura}
+
+O restante deste trabalho está organizado em três capítulos e dois apêndices,
+que compõem o projeto de pesquisa. O Capítulo~\ref{cap:trabalhos-relacionados}
+posiciona a proposta diante dos trabalhos relacionados sobre camadas de
+integração, dependência de fornecedor e custo energético de decisões
+arquiteturais e de orquestração, apoiado pelo protocolo de busca registrado no
+Apêndice~\ref{ap:busca}. O Capítulo~\ref{cap:fundamentacao} apresenta os
+conceitos de agentes com chamada de ferramentas, arquitetura de
+\textit{software}, \textit{middleware}, \harness{} (com o detalhamento das
+responsabilidades no Apêndice~\ref{ap:delimitacao}), energia em inferência e
+experimentação controlada. O Capítulo~\ref{cap:metodologia} descreve as treze
+atividades do estudo, os protocolos dos dois \textit{benchmarks}, o critério de
+decisão pré-registrado e o cronograma de execução; os capítulos de Resultados e
+Análise e de Conclusão serão incorporados na etapa de execução experimental.

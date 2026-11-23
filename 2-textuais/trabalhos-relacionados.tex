@@ -87,7 +87,10 @@ sustentados por avaliação revisada por pares, o que reforça a motivação par
 medir. Este trabalho não compara \textit{frameworks}: implementa uma camada
 própria para que a única diferença entre as duas versões da aplicação seja a
 presença dela, o que um \textit{framework} completo, com decisões de projeto
-próprias, não permitiria isolar.
+próprias, não permitiria isolar. Em linha distinta, \citeonline{lin2026}
+auditam \textit{gateways} comerciais de APIs de LLMs mantidos por terceiros
+quanto à consistência comportamental, faturamento e transparência, problema
+distinto da interposição de uma camada própria na aplicação.
 
 Fora da IA, o precedente empírico mais próximo é o de \citeonline{mo2023}, que
 comparam funções \textit{serverless} na AWS e no Google Cloud escritas sobre a
@@ -119,10 +122,13 @@ e este trabalho, uma camada arquitetural diante de um serviço externo. Por
 analogia, este trabalho supõe que o peso da camada diminua diante do custo de
 uma requisição a um LLM, hipótese que os autores não testam.
 
-\citeonline{xiao2025} avaliam, sobre o sistema de microsserviços Online
-Boutique, três táticas arquiteturais (decisões de projeto tomadas para
-influenciar um atributo de qualidade \cite{bass2021}) e três padrões voltados a
-reduzir o consumo de energia, sob três níveis de carga. Todas as técnicas reduziram o
+No domínio de sistemas com aprendizado de máquina, \citeonline{jarvenpaa2024}
+sintetizam um catálogo de 30 táticas arquiteturais verdes voltadas à eficiência
+energética, mas sem avaliação experimental controlada. Já \citeonline{xiao2025}
+avaliam, sobre o sistema de microsserviços Online Boutique, três táticas
+arquiteturais (decisões de projeto tomadas para influenciar um atributo de
+qualidade \cite{bass2021}) e três padrões voltados a reduzir o consumo de
+energia, sob três níveis de carga. Todas as técnicas reduziram o
 consumo em ao menos um nível, em até 5,6\%, mas três prejudicaram a
 manutenibilidade, uma a favoreceu e duas não a alteraram. É o trabalho mais
 próximo quanto à forma da pergunta, pois confronta energia e manutenibilidade
@@ -141,9 +147,10 @@ da camada de aplicação. A sobrecarga que descrevem ocorre fora da GPU, o que
 delimita o alcance da telemetria usada neste trabalho
 (Seção~\ref{sec:energia}). Mais próximos do objeto estão os estudos que
 comparam formas de orquestrar o modelo na aplicação. \citeonline{matinpour2026}
-mostram que a escolha entre LangChain e LlamaIndex altera latência e energia
-independentemente do modelo: nas tarefas com recuperação, o LlamaIndex teve
-latência 3\% a 15\% menor e energia 2\% a 4\% maior.
+mostram, segundo o resumo do trabalho, que a escolha entre LangChain e
+LlamaIndex altera latência e energia independentemente do modelo: nas tarefas
+com recuperação, o LlamaIndex teve latência 3\% a 15\% menor e energia 2\% a
+4\% maior.
 \citeonline{tripathy2026} mostram que, entre quatro \textit{frameworks}
 agênticos de correção de \textit{issues}, o mais custoso consumiu, em média, 9,4
 vezes a energia do menos custoso, embora quase nenhuma execução tenha resolvido
@@ -195,7 +202,7 @@ como um todo (Seção~\ref{subsec:arq-conceitos}).
       \hline
       \citeonline{vellaisamy2026} & Sobrecarga do hospedeiro na inferência de LLMs & Caracterização & Não & Não & Não (latência) & Não \\
       \hline
-      \citeonline{matinpour2026} & \textit{Frameworks} de orquestração (LangChain e LlamaIndex) & Experimento & Não & Não & Sim & Não (\textit{frameworks} inteiros) \\
+      \citeonline{matinpour2026} & \textit{Frameworks} de orquestração (LangChain e LlamaIndex) & Experimento & Não (resumo) & Não (resumo) & Sim & Não (\textit{frameworks} inteiros) \\
       \hline
       \citeonline{tripathy2026} & \textit{Frameworks} agênticos com modelos pequenos & Experimento & Não & Não & Sim & Não (\textit{frameworks} inteiros) \\
       \hline
@@ -208,3 +215,13 @@ como um todo (Seção~\ref{subsec:arq-conceitos}).
     \Fonte{Elaborado pelo autor}
   }
 \end{quadro}
+
+Em conjunto, os trabalhos comparados no Quadro~\ref{qua:trabalhos-relacionados}
+mostram que a literatura já documenta padrões e arquiteturas para isolar
+provedores de modelos e já mede a energia de inferência e de \textit{frameworks}
+inteiros, mas ainda carece de avaliação controlada que confronte, sobre a mesma
+aplicação com e sem camada intermediária, o custo de substituição do provedor e
+o efeito energético da interposição. Para sustentar o desenho experimental que
+aborda essa lacuna, o Capítulo~\ref{cap:fundamentacao} apresenta a base
+conceitual de agentes, arquitetura de \textit{software}, \harness{}, energia em
+inferência e experimentação controlada.

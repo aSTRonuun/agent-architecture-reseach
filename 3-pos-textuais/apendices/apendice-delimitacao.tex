@@ -54,9 +54,10 @@ estado, recorre-se a \citeonline{chang2025}, cujo SagaLLM integra o padrão
 transacional \textit{Saga} a memória persistente e compensação automática, para
 tratar a perda de contexto e a ausência de reversão no planejamento multiagente.
 O escopo multiagente está fora deste trabalho, e o que se retém é a separação
-entre dois problemas: preservar contexto e estado ao longo das etapas, e
-desfazer ou compensar etapas já executadas. A segunda, por ser compensação
-semântica, não é tratada pela camada; o tratamento de falhas da
+entre dois problemas: preservar contexto e estado ao longo das etapas (atendida
+no produto mínimo pelo histórico de mensagens da interação, componente 2 da
+atividade 3), e desfazer ou compensar etapas já executadas. A segunda, por ser
+compensação semântica, não é tratada pela camada; o tratamento de falhas da
 responsabilidade 4 limita-se às de transporte e de protocolo.
 %\pendencia{Confirmar
 %com o orientador que a recuperação de falhas se limita a transporte e protocolo
@@ -78,7 +79,9 @@ chamadas entre microsserviços para as chamadas a provedores de modelos é uma
 analogia do autor: as fontes não tratam de IA. Há ainda uma indicação útil para a
 questão deste trabalho: os próprios padrões de resiliência introduzem atrasos de
 invocação, e o efeito desses atrasos sobre o desempenho da aplicação ainda era
-pouco estudado \cite{aderaldo2025}.
+pouco estudado \cite{aderaldo2025}. No produto mínimo projetado na atividade 3,
+adota-se apenas o padrão \textit{Retry}, permanecendo o \textit{Circuit Breaker}
+documentado como extensão fora do escopo mínimo do experimento.
 
 \textbf{Responsabilidade 5.} Também não há padrão entre os 18. Ao discutir a
 integração do catálogo com padrões existentes, \citeonline{liu2025} citam padrões
