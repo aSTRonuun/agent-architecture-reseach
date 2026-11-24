@@ -127,9 +127,12 @@ experimento, a medição de energia em inferência (Seção~\ref{sec:energia}) e
 experimentação controlada (Seção~\ref{sec:experimentacao}).
 
 Duas convenções valem para todo o capítulo. A primeira trata das fontes: os
-documentos técnicos, isto é, a documentação da Anthropic, da OpenAI, da NVIDIA e
-do OpenTelemetry e o \textit{site} do modelo C4, não são revisados por pares e
-servem só para descrever mecanismos, instrumentos e notações, nunca para
+documentos técnicos e publicações não revisadas por pares --- isto é, as
+documentações da Anthropic, da OpenAI, da NVIDIA e do OpenTelemetry, o
+\textit{site} do modelo C4, o relato de prática do \textit{Technology Radar} e
+a publicação oficial de fatores de emissão do Ministério da Ciência, Tecnologia
+e Inovação (MCTI) --- servem apenas para descrever mecanismos, instrumentos,
+notações, cenários de prática e parâmetros oficiais da rede elétrica, nunca para
 sustentar afirmação empírica. A segunda
 trata das definições: as distinções e classificações operacionais, como a de
 requisição simples e agêntica, a lista de responsabilidades do \harness{} e a
@@ -176,8 +179,22 @@ provedor: na API da Anthropic, a solicitação chega em blocos
 \cite{anthropictools}, enquanto a OpenAI estrutura o mesmo ciclo em torno de
 chamadas de função (\textit{function calling}) \cite{openaifunctions}. Quanto à interface entre agente e ferramenta,
 \citeonline{zhu2026} comparam o protocolo \textit{Model Context
-Protocol} (MCP)\glsadd{MCP} e o protocolo agente-agente A2A\glsadd{A2A}; este
-último trata de sistemas multiagente e, portanto, também fica de fora.
+Protocol} (MCP)\glsadd{MCP} e o protocolo agente-agente A2A\glsadd{A2A}; o
+protocolo A2A trata de sistemas multiagente e o MCP também fica fora do escopo
+experimental, pois as ferramentas são funções locais determinísticas definidas
+na própria aplicação.
+
+Outro mecanismo recorrente nas APIs comerciais é o \textbf{cache de
+\textit{prompt}} (\textit{prompt caching}), pelo qual o provedor reutiliza o
+processamento de prefixos repetidos de contexto (como instruções de sistema e
+definições de ferramentas) acima de um comprimento mínimo, reduzindo latência e
+custo por \textit{token} \cite{anthropiccache,openaicache}. Segundo a
+documentação técnica dos provedores, a exposição desse recurso é assimétrica:
+na API da Anthropic, o cache exige marcação explícita por meio de campo próprio
+na requisição \cite{anthropiccache}, ao passo que na da OpenAI ele é aplicado
+automaticamente aos prefixos elegíveis \cite{openaicache}. Essa assimetria
+fundamenta o cenário de recurso específico de provedor avaliado neste trabalho
+(Seção~\ref{sec:abstracao} e Capítulo~\ref{cap:metodologia}).
 
 Dessa descrição decorre a distinção que o experimento usa. Chama-se aqui
 \textbf{requisição simples} a consulta ao modelo sem ferramentas, e
@@ -436,7 +453,7 @@ fonte que as complementa.
   \centering
   \Caption{\label{qua:harness-liu}Correspondência entre as responsabilidades do
   \harness{} e os padrões de Liu et al. (2025)}
-  \UFCqua{}{
+  \UFCqua{}{%
     \small
     \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.4cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{2.1cm}|>{\raggedright\arraybackslash}X|}
       \hline
@@ -467,7 +484,7 @@ fonte que as complementa.
         & Nenhuma
         & Documentação do OpenTelemetry \cite{opentelemetrylogs} \\
       \hline
-    \end{tabularx}
+    \end{tabularx}%
   }{
     \Fonte{Elaborado pelo autor, com base em \citeonline{liu2025}}
   }
@@ -487,7 +504,11 @@ tentativa após falha transitória) e o \textit{Circuit Breaker} (interrupção
 temporária das chamadas a um serviço que falha repetidamente) são padrões de
 resiliência usados em microsserviços \cite{aderaldo2025}, já analisados por meio
 de modelos \cite{mendonca2020} e avaliados experimentalmente
-\cite{sedghpour2022,aderaldo2025}. Na responsabilidade 5, adota-se a documentação
+\cite{sedghpour2022,aderaldo2025}. Embora ambos integrem o repertório conceitual
+de resiliência, o produto mínimo do \harness{} implementado neste trabalho adota
+apenas o \textit{Retry}, pois, em baterias experimentais controladas, a
+indisponibilidade persistente do provedor deve interromper e invalidar a sessão
+em vez de acionar degradação em circuito aberto. Na responsabilidade 5, adota-se a documentação
 do OpenTelemetry, projeto de padronização de telemetria, segundo a qual o
 registro (\textit{log}) estruturado pode carregar o identificador do rastreio e
 do segmento da requisição (\textit{TraceId} e \textit{SpanId}), que o associam à
@@ -500,7 +521,7 @@ requisição em cujo processamento foi emitido \cite{opentelemetrylogs}.
 A área de \textit{Green AI} nasce de uma crítica à avaliação de modelos apenas
 pela acurácia: \citeonline{schwartz2020} defendem que o custo computacional seja
 relatado ao lado dela e propõem, como indicador, o número de operações de ponto
-flutuante (\textit{floating point operations}, FPO). Esse alerta tem como
+flutuante (\textit{floating point operations}, FPO)\glsadd{FPO}. Esse alerta tem como
 antecedente a estimativa do custo energético e ambiental do treinamento de
 modelos de linguagem feita por \citeonline{strubell2019}. Este trabalho se
 concentra na inferência, fase em que o custo se repete a cada requisição.
@@ -513,7 +534,15 @@ instantânea de consumo, em watts; a \textbf{energia} é a potência integrada n
 tempo, em joules. Uma requisição pode consumir mais energia por durar mais, com
 a mesma potência, ou por exigir mais potência no mesmo intervalo. Chamam-se aqui,
 respectivamente, de \textbf{efeito de duração} e \textbf{efeito de potência}; a
-distinção se faz relatando em separado a duração e a potência média.
+distinção se faz relatando em separado a duração e a potência média. Quando se
+deseja expressar o consumo em emissões de carbono equivalentes ($\text{gCO}_2\text{e}$),
+a energia em joules convertida para quilowatt-hora
+($1\text{ kWh} = 3{,}6 \times 10^6\text{ J}$) é multiplicada pelo fator médio
+de emissão da matriz elétrica que alimenta o equipamento \cite{luccioni2024}; no
+Brasil, esse fator é publicado para o Sistema Interligado Nacional
+(SIN)\glsadd{SIN} pelo Ministério da Ciência, Tecnologia e Inovação
+\cite{mcti_sirene}, servindo aqui como conversão proporcional secundária da
+energia medida.
 
 O custo de uma camada de \textit{software} já foi decomposto em partes:
 \citeonline{vellaisamy2026} separam o tempo que o processador hospedeiro gasta
@@ -562,8 +591,9 @@ superestima; serve apenas para dizer quanto o custo direto da camada pode
 representar diante da energia medida na inferência. A medição direta dessa
 parcela exigiria um instrumento próprio para a CPU, como a interface RAPL
 (\textit{Running Average Power Limit})\glsadd{RAPL} dos processadores Intel,
-que fornece leituras de energia da CPU e da memória \cite{khan2018}, de que a
-máquina prevista para a aplicação não dispõe.
+que fornece leituras de energia da CPU e da memória \cite{khan2018}, da qual a
+máquina prevista para a aplicação --- um computador Mac com processador Apple M1
+(arquitetura ARM) --- não dispõe.
 
 A unidade de medida é a requisição completa, e não a chamada isolada ao modelo,
 porque o fluxo agêntico encadeia várias chamadas e o custo de cada uma depende do
@@ -632,19 +662,36 @@ entre execuções, e quanto menor o efeito esperado, mais repetições são
 necessárias para detectá-lo; \citeonline{wohlin2024} incluem o baixo poder
 estatístico entre as ameaças à validade de conclusão. Para resultados que mudam
 a cada execução, \citeonline{arcuri2011} recomendam coletar um número grande de
-execuções e comparar as amostras com o teste não paramétrico de
-Mann-Whitney~U. O terceiro conceito é o \textbf{tamanho de efeito}, medida
-padronizada da magnitude da diferença entre duas amostras. Os mesmos autores
-observam que, com execuções suficientes, uma diferença pode ser estatisticamente
-significativa sem ter valor prático, e por isso recomendam relatar sempre o
-tamanho de efeito ao lado do valor-$p$ \cite{arcuri2011}.
+execuções e aplicar diretamente o teste não paramétrico de Mann-Whitney~U, sem
+condicionar a escolha a um pré-teste de normalidade. O terceiro conceito é o
+\textbf{tamanho de efeito}, medida padronizada da magnitude da diferença entre
+duas amostras. Os mesmos autores observam que, com execuções suficientes, uma
+diferença pode ser estatisticamente significativa sem ter valor prático, e por
+isso recomendam relatar sempre o tamanho de efeito ao lado do valor-$p$
+\cite{arcuri2011}.
 
-A observação pesa neste trabalho porque o efeito direto esperado da camada é
-pequeno, inferior a 1\% da energia da requisição na estimativa da
-Seção~\ref{sec:contexto}. Interessa saber se a diferença tem tamanho relevante
-para a decisão arquitetural, mais do que saber se ela existe. Por isso o menor
-efeito de interesse prático é fixado antes da coleta e orienta o número de
-repetições.
+Para quantificar esse tamanho de efeito sem suposição de normalidade, adota-se
+o \textbf{delta de Cliff} ($\delta$), estatística de dominância ordinal que
+mede a diferença entre a probabilidade de uma observação da primeira amostra
+superar uma da segunda e a probabilidade inversa, variando de $-1$ a $+1$
+\cite{cliff1993}. Na interpretação usual proposta por \citeonline{romano2006},
+valores de $|\delta|$ abaixo de $0{,}147$ são considerados desprezíveis; de
+$0{,}147$ a $0{,}33$, pequenos; de $0{,}33$ a $0{,}474$, médios; e iguais ou
+superiores a $0{,}474$, grandes. Quando várias comparações ou métricas são
+testadas na mesma família experimental, aplica-se a \textbf{correção de
+Holm-Bonferroni}, um procedimento sequencial (\textit{step-down}) que controla a
+taxa de erro familiar em nível $\alpha$ com maior poder estatístico que a
+correção clássica de Bonferroni \cite{holm1979}.
+
+Por fim, como a camada pode não alterar de modo apreciável o consumo de energia
+na GPU, um teste clássico de diferença que resulte em $p \ge \alpha$ não basta
+para afirmar que os consumos são equivalentes ou comparáveis. A literatura de
+testes de equivalência e não inferioridade mostra que essa conclusão exige
+inverter a hipótese nula e verificar se o limite superior do intervalo de
+confiança da diferença entre os grupos fica abaixo de uma margem de tolerância
+$\Delta$ definida \textit{a priori} \cite{wellek2010}. Neste trabalho, adota-se
+a mesma margem $\Delta$ como o menor efeito de interesse prático, que orienta o
+cálculo do número de repetições a partir da variância observada no piloto.
 
 \subsection{Confronto de atributos de qualidade e critério de decisão}
 \label{subsec:exp-criterio}

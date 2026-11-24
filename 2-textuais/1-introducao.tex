@@ -165,8 +165,10 @@ provedor, e qual é o custo energético associado a essa camada?}
 A hipótese de partida é que a camada reduz o custo de substituição e cobra por
 isso um custo energético. As duas partes são examinadas de formas diferentes: a
 primeira por comparação descritiva, pois cada versão da aplicação passa por uma
-única troca de provedor em cada cenário; a segunda por teste estatístico sobre
-medições repetidas (Capítulo~\ref{cap:metodologia}). Os resultados que a
+única troca de provedor em cada cenário; a segunda combinando teste estatístico
+sobre medições repetidas da energia de inferência na GPU com a estimativa, por
+limite superior, do custo direto da camada na CPU da aplicação
+(Capítulo~\ref{cap:metodologia}). Os resultados que a
 contrariem também servem a quem precisa tomar a decisão arquitetural: a camada
 pode reduzir o custo de substituição sem acréscimo relevante de energia, ou
 acrescentar custo energético sem reduzir o custo de substituição.
@@ -224,7 +226,12 @@ telemetria é coletada por meio da biblioteca NVML. Para a camada, esse servidor
 é um terceiro provedor, atendido por um adaptador próprio. Entre os modelos abertos
 hospedados no servidor, ele foi escolhido por reunir pesos abertos, suporte a
 chamada de ferramentas, necessário às requisições agênticas, e execução em uma
-única GPU, o que permite atribuir a energia medida a um único dispositivo. Os
+única GPU, o que permite atribuir a energia medida a um único dispositivo. Como a
+aplicação é executada em máquina separada (computador Mac com processador Apple
+M1) e aciona o servidor pela rede, a telemetria NVML mensura o efeito da camada
+sobre a energia de inferência na GPU, enquanto o trabalho próprio da camada na
+CPU cliente é delimitado por um limite superior baseado no tempo de
+processamento (Seção~\ref{sec:energia}). Os
 provedores comerciais ficam fora dessa medição porque, em modelos hospedados por
 terceiros, o consumo da inferência não é observável; em ambiente controlado, é
 possível comparar, sob as mesmas condições, a energia das requisições com e sem
@@ -263,15 +270,41 @@ camada, em comparação com a integração direta ao provedor.
         testes comuns às duas;
   \item quantificar o custo de substituição do provedor de IA em uma aplicação
         \textit{web} com e sem a camada de \harness{};
-  \item mensurar o custo energético que a camada de \harness{} acrescenta à
-        execução de requisições simples e agênticas a um modelo de IA;
+  \item mensurar o efeito da camada de \harness{} sobre a energia de inferência
+        na GPU e estimar, por limite superior, o seu custo energético direto na
+        CPU da aplicação, em requisições simples e agênticas a um modelo de IA;
   \item determinar, para requisições simples e agênticas, se a redução do custo
-        de substituição proporcionada pela camada de \harness{} justifica o seu
-        custo energético, segundo um critério de decisão definido antes da
-        coleta de dados.
+        de substituição proporcionada pela camada de \harness{} justifica o
+        custo energético a ela associado, segundo um critério de decisão
+        definido antes da coleta de dados.
 \end{alineas}
 
-% \section{Estrutura do trabalho}
-% \label{sec:estrutura}
-% Fonte: plano §8. Redigir quando os demais capítulos estiverem estáveis
-% (um parágrafo por capítulo, com \ref{cap:...}).
+\section{Estrutura do trabalho}
+\label{sec:estrutura}
+
+\ifentregaparcial
+O restante deste projeto organiza-se em três capítulos e dois apêndices. O
+Capítulo~\ref{cap:trabalhos-relacionados} compara a proposta com trabalhos
+relacionados sobre camadas de integração, dependência de fornecedor e custo
+energético, enquanto o protocolo da busca bibliográfica consta do
+Apêndice~\ref{ap:busca}. O Capítulo~\ref{cap:fundamentacao} apresenta a
+fundamentação teórica sobre LLMs e agentes, modificabilidade e acoplamento,
+camadas de abstração, definição e delimitação do \harness{} (detalhada no
+Apêndice~\ref{ap:delimitacao}), energia em inferência e experimentação
+controlada. Por fim, o Capítulo~\ref{cap:metodologia} descreve os procedimentos
+metodológicos, o planejamento dos dois experimentos, o critério de decisão e o
+cronograma de execução.
+\else
+O restante deste trabalho organiza-se em cinco capítulos e apêndices. O
+Capítulo~\ref{cap:trabalhos-relacionados} compara a proposta com trabalhos
+relacionados sobre camadas de integração, dependência de fornecedor e custo
+energético, com o protocolo de busca registrado no Apêndice~\ref{ap:busca}. O
+Capítulo~\ref{cap:fundamentacao} apresenta a fundamentação teórica sobre LLMs e
+agentes, modificabilidade e acoplamento, camadas de abstração, definição e
+delimitação do \harness{} (detalhada no Apêndice~\ref{ap:delimitacao}), energia
+em inferência e experimentação controlada. O Capítulo~\ref{cap:metodologia}
+descreve os procedimentos metodológicos e o desenho dos dois experimentos. O
+Capítulo~\ref{cap:resultados} relata e analisa os resultados obtidos, e o
+Capítulo~\ref{cap:conclusao} sintetiza as conclusões, limitações e trabalhos
+futuros.
+\fi

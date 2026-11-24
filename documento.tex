@@ -244,11 +244,15 @@
 \newif\ifentregaparcial
 \entregaparcialtrue
 
+\ifentregaparcial
+\preambulo{Projeto de Trabalho de Conclusão de Curso apresentado ao Curso de Graduação em \imprimirgraduacaoem\ do \imprimircentro\ da \imprimiries, como requisito parcial para aprovação na disciplina de Trabalho de Conclusão de Curso I.}
+\fi
+
 \begin{document}
 
 	% Elementos pré-textuais
 	\imprimircapa
-	%\imprimirfolhaderosto{}
+	\imprimirfolhaderosto{}
 	% Ficha catalográfica: a do template era um exemplo de outro trabalho; a
 	% definitiva é gerada pela Biblioteca da UFC no depósito final.
 	%\imprimirfichacatalografica{1-pre-textuais/ficha-catalografica}
@@ -259,8 +263,8 @@
 	%\imprimirdedicatoria{1-pre-textuais/dedicatoria}
 	%\imprimiragradecimentos{1-pre-textuais/agradecimentos}
 	%\imprimirepigrafe{1-pre-textuais/epigrafe}
-	%\imprimirresumo{1-pre-textuais/resumo}
-	%\imprimirabstract{1-pre-textuais/abstract}
+	\imprimirresumo{1-pre-textuais/resumo}
+	\imprimirabstract{1-pre-textuais/abstract}
 	\renewcommand*\listfigurename{Lista de Figuras} %Se você comentar esta linha o título da lista fica: LISTA DE ILUSTRAÇÕES
 	\imprimirlistadeilustracoes
 	\ifentregaparcial\else
