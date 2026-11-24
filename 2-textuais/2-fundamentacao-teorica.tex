@@ -179,21 +179,26 @@ provedor: na API da Anthropic, a solicitação chega em blocos
 \cite{anthropictools}, enquanto a OpenAI estrutura o mesmo ciclo em torno de
 chamadas de função (\textit{function calling}) \cite{openaifunctions}. Quanto à interface entre agente e ferramenta,
 \citeonline{zhu2026} comparam o protocolo \textit{Model Context
-Protocol} (MCP)\glsadd{MCP} e o protocolo agente-agente A2A\glsadd{A2A}; o
-protocolo A2A trata de sistemas multiagente e o MCP também fica fora do escopo
-experimental, pois as ferramentas são funções locais determinísticas definidas
-na própria aplicação.
+Protocol} (MCP)\glsadd{MCP} e o protocolo agente-agente A2A\glsadd{A2A}: o
+A2A trata de sistemas multiagente e fica fora do escopo, e o MCP, voltado à
+interoperabilidade com ecossistemas amplos de ferramentas externas, também não
+integra o produto mínimo deste trabalho, que opera sobre um conjunto reduzido de
+ferramentas determinísticas internas à aplicação.
 
-Outro mecanismo recorrente nas APIs comerciais é o \textbf{cache de
-\textit{prompt}} (\textit{prompt caching}), pelo qual o provedor reutiliza o
-processamento de prefixos repetidos de contexto (como instruções de sistema e
-definições de ferramentas) acima de um comprimento mínimo, reduzindo latência e
-custo por \textit{token} \cite{anthropiccache,openaicache}. Segundo a
-documentação técnica dos provedores, a exposição desse recurso é assimétrica:
-na API da Anthropic, o cache exige marcação explícita por meio de campo próprio
-na requisição \cite{anthropiccache}, ao passo que na da OpenAI ele é aplicado
-automaticamente aos prefixos elegíveis \cite{openaicache}. Essa assimetria
-fundamenta o cenário de recurso específico de provedor avaliado neste trabalho
+Além da chamada de ferramentas, os provedores comerciais oferecem
+\textbf{saídas estruturadas com esquema estrito} (\textit{structured outputs}),
+recurso pelo qual a resposta do modelo é restringida a um esquema JSON
+predefinido \cite{anthropicstructured,openaistructured}. Conforme a documentação
+técnica das duas APIs, a exposição e as exigências contratuais variam entre
+fornecedores: na Anthropic, o esquema é informado em
+\texttt{output\_config.format} (com \texttt{strict: true} no uso estrito de
+ferramentas) e o JSON validado retorna no bloco de texto da resposta
+\cite{anthropicstructured}, enquanto na OpenAI é declarado em
+\texttt{response\_format} com \texttt{type: "json\_schema"}, exigindo
+\texttt{strict: true}, \texttt{additionalProperties: false} em cada objeto
+aninhado, obrigatoriedade de todas as propriedades e tratamento explícito de
+recusa (\texttt{refusal}) \cite{openaistructured}. Essa assimetria contratual
+fundamenta o cenário com recurso específico de provedor avaliado neste trabalho
 (Seção~\ref{sec:abstracao} e Capítulo~\ref{cap:metodologia}).
 
 Dessa descrição decorre a distinção que o experimento usa. Chama-se aqui
@@ -307,10 +312,11 @@ acoplamento ao provedor pode ser trocado por acoplamento à
 interface da própria camada, risco que o catálogo de \citeonline{liu2025}
 registra para o \textit{Tool/agent registry}, que pode tornar-se ele próprio uma
 solução de aprisionamento a fornecedor e um ponto único de falha. Em leitura
-própria do catálogo, 14 dos 18 padrões listam a sobrecarga (\textit{overhead})
-entre as desvantagens, e um décimo quinto, a sobrecarga de manutenção; nenhum a
-quantifica. A hipótese energética deste trabalho testa esse custo da indireção,
-e o custo de substituição mede o benefício da abstração.
+própria do catálogo, 11 dos 18 padrões listam a sobrecarga (\textit{overhead})
+entre as desvantagens, e outros três --- entre eles o \textit{Agent adapter}, o
+mais próximo da camada estudada --- listam a sobrecarga de manutenção, somando
+14 padrões; nenhum a quantifica. A hipótese energética deste trabalho testa o
+efeito da indireção, e o custo de substituição mede o benefício da abstração.
 % 16/11/2026 (A31): limite da interface comum, base do cenário com recurso
 % específico de provedor do Benchmark 1. Fonte: relato de prática, rotulado.
 A abstração tem ainda um limite de alcance. Uma interface comum a vários
@@ -404,10 +410,9 @@ energético da camada, que inclui a orquestração de ferramentas da
 responsabilidade 2. As
 responsabilidades 3, 4 e 5 são implementadas porque o experimento as exige, e
 os atributos de qualidade ligados a elas, como a recuperação de falhas e a
-auditabilidade, ficam fora da avaliação (Seção~\ref{sec:justificativa}). A
-versão sem a camada executa as mesmas funções por outros meios, no código de
-negócio ou pelos recursos do SDK, de modo que a energia delas não entra na
-diferença medida entre as duas versões.
+auditabilidade, ficam fora da avaliação (Seção~\ref{sec:justificativa}). A versão sem a camada executa as mesmas funções por outros meios, no código de
+negócio ou pelos recursos do SDK, de modo que o experimento isola a
+interposição da camada, e não a presença dessas funções.
 
 Como a lista não vem da literatura, as subseções seguintes a confrontam com
 publicações: apresentam o catálogo de padrões de \citeonline{liu2025} e
@@ -504,11 +509,13 @@ tentativa após falha transitória) e o \textit{Circuit Breaker} (interrupção
 temporária das chamadas a um serviço que falha repetidamente) são padrões de
 resiliência usados em microsserviços \cite{aderaldo2025}, já analisados por meio
 de modelos \cite{mendonca2020} e avaliados experimentalmente
-\cite{sedghpour2022,aderaldo2025}. Embora ambos integrem o repertório conceitual
-de resiliência, o produto mínimo do \harness{} implementado neste trabalho adota
-apenas o \textit{Retry}, pois, em baterias experimentais controladas, a
-indisponibilidade persistente do provedor deve interromper e invalidar a sessão
-em vez de acionar degradação em circuito aberto. Na responsabilidade 5, adota-se a documentação
+\cite{sedghpour2022,aderaldo2025}; no produto mínimo projetado no
+Capítulo~\ref{cap:metodologia}, implementa-se apenas o \textit{Retry}, enquanto
+o \textit{Circuit Breaker} permanece documentado como extensão fora do escopo
+mínimo (de modo análogo, na responsabilidade 3 retém-se de \citeonline{chang2025}
+apenas a separação conceitual entre preservação de estado e compensação
+semântica, implementando-se o histórico de mensagens da interação). Na
+responsabilidade 5, adota-se a documentação
 do OpenTelemetry, projeto de padronização de telemetria, segundo a qual o
 registro (\textit{log}) estruturado pode carregar o identificador do rastreio e
 do segmento da requisição (\textit{TraceId} e \textit{SpanId}), que o associam à
@@ -534,15 +541,7 @@ instantânea de consumo, em watts; a \textbf{energia} é a potência integrada n
 tempo, em joules. Uma requisição pode consumir mais energia por durar mais, com
 a mesma potência, ou por exigir mais potência no mesmo intervalo. Chamam-se aqui,
 respectivamente, de \textbf{efeito de duração} e \textbf{efeito de potência}; a
-distinção se faz relatando em separado a duração e a potência média. Quando se
-deseja expressar o consumo em emissões de carbono equivalentes ($\text{gCO}_2\text{e}$),
-a energia em joules convertida para quilowatt-hora
-($1\text{ kWh} = 3{,}6 \times 10^6\text{ J}$) é multiplicada pelo fator médio
-de emissão da matriz elétrica que alimenta o equipamento \cite{luccioni2024}; no
-Brasil, esse fator é publicado para o Sistema Interligado Nacional
-(SIN)\glsadd{SIN} pelo Ministério da Ciência, Tecnologia e Inovação
-\cite{mcti_sirene}, servindo aqui como conversão proporcional secundária da
-energia medida.
+distinção se faz relatando em separado a duração e a potência média.
 
 O custo de uma camada de \textit{software} já foi decomposto em partes:
 \citeonline{vellaisamy2026} separam o tempo que o processador hospedeiro gasta
@@ -564,21 +563,28 @@ autor é coautor \cite{barros2026}. A
 telemetria é lida pela NVIDIA Management Library (NVML)\glsadd{NVML}, API em C
 da fabricante para monitorar e gerenciar suas GPUs, que expõe as duas grandezas
 definidas acima: a potência consumida pela GPU e pelos seus circuitos
-associados, em miliwatts, e a energia total consumida desde o último
-carregamento do \textit{driver}, em milijoules \cite{nvml}. A energia de uma
-requisição pode, assim, ser obtida pela diferença entre duas leituras do
-contador ou pela integração no tempo das leituras de potência; a escolha entre
-as duas e a frequência de amostragem são decisões de protocolo.
+associados, em miliwatts (\texttt{nvmlDevice\-GetPowerUsage}), e a energia total
+consumida desde o último carregamento do \textit{driver}, em milijoules
+(\texttt{nvmlDevice\-GetTotalEnergy\-Consumption}) \cite{nvml}. Como leituras
+instantâneas de potência podem refletir janelas móveis suavizadas pelo
+\textit{driver} e sofrer erro de amostragem em requisições curtas, a diferença
+entre leituras do contador acumulado de energia é adotada como medida primária
+de energia por requisição, enquanto as leituras de potência e a duração são
+reportadas separadamente para distinguir o efeito de duração do efeito de
+potência.
 
 Esse instrumento delimita o que a medição alcança. No arranjo deste trabalho,
-o modelo é executado no servidor, e as duas versões da aplicação, em outra
-máquina, de onde o acessam pela rede. A energia de uma requisição tem, assim,
-duas parcelas: a da GPU do servidor, onde se concentra o consumo da inferência,
-e a da CPU da máquina da aplicação, onde ocorre o trabalho próprio da camada, a
-mesma sobrecarga do hospedeiro que \citeonline{vellaisamy2026} identificaram na
-latência. A NVML lê só a primeira. Como as duas versões enviam ao modelo as
-mesmas chamadas, a medição na GPU verifica se a camada altera a energia de
-inferência, por exemplo por aumentar o contexto ou a duração das chamadas.
+o modelo auto-hospedado executa no servidor institucional, e as duas versões da
+aplicação executam em outra máquina, de onde o acessam pela rede. A energia de
+uma requisição tem, assim, duas parcelas: a da GPU do servidor, onde se
+concentra o consumo da inferência, e a da CPU da máquina da aplicação, onde
+ocorre o trabalho próprio da camada, a mesma sobrecarga do hospedeiro que
+\citeonline{vellaisamy2026} identificaram na latência. A NVML lê só a primeira.
+Como as duas versões executam a mesma tarefa com os mesmos parâmetros, a medição
+na GPU verifica se a interposição da camada preserva a eficiência energética da
+inferência --- isto é, se não a degrada além de uma margem prática aceitável,
+seja por diferenças de serialização de contexto e esquemas, seja por alterações
+na duração das interações agênticas.
 
 A segunda parcela não é medida: é estimada por um limite superior. Mede-se, em
 cada versão, o tempo de processamento na máquina da aplicação, isto é, a duração
@@ -587,13 +593,22 @@ as versões é o tempo que a camada acrescenta, e o produto desse tempo pela
 potência máxima do processador limita por cima a energia de CPU que ela
 consome. Ao contrário das estimativas que \citeonline{fernandez2025} mostraram
 subestimar o consumo, esta adota a potência máxima e, por construção, o
-superestima; serve apenas para dizer quanto o custo direto da camada pode
-representar diante da energia medida na inferência. A medição direta dessa
-parcela exigiria um instrumento próprio para a CPU, como a interface RAPL
-(\textit{Running Average Power Limit})\glsadd{RAPL} dos processadores Intel,
-que fornece leituras de energia da CPU e da memória \cite{khan2018}, da qual a
-máquina prevista para a aplicação --- um computador Mac com processador Apple M1
-(arquitetura ARM) --- não dispõe.
+superestima; serve como cota de pior caso para somar ao efeito medido na GPU e
+verificar se o custo direto da camada permanece desprezível diante da
+inferência. A medição direta dessa parcela exigiria um instrumento próprio para
+a CPU, como a interface RAPL (\textit{Running Average Power Limit})\glsadd{RAPL}
+dos processadores Intel, que fornece leituras de energia da CPU e da memória
+\cite{khan2018}, da qual a máquina prevista para a aplicação --- um computador
+Mac com processador Apple M1 (arquitetura ARM) --- não dispõe.
+
+A partir da energia líquida medida na GPU (convertida para quilowatts-hora,
+$1\text{ kWh} = 3{,}6 \times 10^6\text{ J}$), é possível ainda estimar, como
+métrica secundária e contextual, as emissões equivalentes de carbono em gramas
+de CO$_2$ equivalente (gCO$_2$e), multiplicando o consumo energético pelo fator
+médio de emissão da matriz elétrica local \cite{luccioni2024}; no Brasil, esse
+fator é publicado oficialmente para o Sistema Interligado Nacional
+(SIN)\glsadd{SIN} pelo Ministério da Ciência, Tecnologia e Inovação
+\cite{mcti_sirene}.
 
 A unidade de medida é a requisição completa, e não a chamada isolada ao modelo,
 porque o fluxo agêntico encadeia várias chamadas e o custo de cada uma depende do
@@ -617,10 +632,14 @@ substituição do provedor e o custo energético, medidos em dois
 funcionalmente equivalentes, a diferença observada pode ser atribuída à camada.
 
 Os mesmos autores classificam as ameaças à validade em quatro tipos: interna,
-externa, de construto e de conclusão. Duas decisões do desenho dependem desse referencial: o
-uso de métricas de estrutura de código entre as medidas do custo de
-substituição, com precedente em \citeonline{mo2023}, e o critério de decisão final, definido antes
-da coleta de dados, para que a conclusão não seja ajustada aos resultados
+externa, de construto e de conclusão. Neste projeto, essas quatro categorias
+orientam os controles preventivos embutidos nas atividades do
+Capítulo~\ref{cap:metodologia}, e a sua análise consolidada frente ao que de
+fato ocorrer na coleta comporá a seção de limitações da Conclusão. Duas decisões
+do desenho dependem diretamente desse referencial: o uso de métricas de
+estrutura de código entre as medidas do custo de substituição, com precedente em
+\citeonline{mo2023}, e o critério de decisão final, definido antes da coleta de
+dados, para que a conclusão não seja ajustada aos resultados
 (Seção~\ref{subsec:objetivos-especificos}). As subseções seguintes tratam de
 três pontos de que o desenho depende: como a equivalência entre as versões é
 verificada, como a variação das medições é tratada e como os dois custos são
@@ -660,45 +679,43 @@ versões. As \textbf{repetições} são as execuções da mesma requisição sob
 mesmas condições. Uma execução isolada não separa o efeito da camada da variação
 entre execuções, e quanto menor o efeito esperado, mais repetições são
 necessárias para detectá-lo; \citeonline{wohlin2024} incluem o baixo poder
-estatístico entre as ameaças à validade de conclusão. Para resultados que mudam
-a cada execução, \citeonline{arcuri2011} recomendam coletar um número grande de
-execuções e aplicar diretamente o teste não paramétrico de Mann-Whitney~U, sem
-condicionar a escolha a um pré-teste de normalidade. O terceiro conceito é o
+estatístico entre as ameaças à validade de conclusão. O terceiro conceito é o
 \textbf{tamanho de efeito}, medida padronizada da magnitude da diferença entre
-duas amostras. Os mesmos autores observam que, com execuções suficientes, uma
-diferença pode ser estatisticamente significativa sem ter valor prático, e por
-isso recomendam relatar sempre o tamanho de efeito ao lado do valor-$p$
-\cite{arcuri2011}.
+duas amostras. Para resultados que mudam a cada execução e não garantem normalidade,
+\citeonline{arcuri2011} recomendam coletar um número grande de execuções, usar
+testes não paramétricos e relatar sempre o tamanho de efeito ao lado do
+valor-$p$, pois, com execuções suficientes, uma diferença pequena pode ser
+estatisticamente significativa sem ter valor prático. Quando a coleta é
+fragmentada em sessões ao longo de dias e as duas versões são intercaladas em
+pares dentro de cada sessão (blocagem, conforme \citeonline{wohlin2024}), a
+análise pareada por bloco --- por meio do \textbf{teste dos postos sinalizados
+de Wilcoxon} \cite{wilcoxon1945} e do estimador de deslocamento de
+\textbf{Hodges-Lehmann} \cite{hodges1963} (ou \textit{bootstrap} pareado por
+bloco) --- remove a variação entre sessões melhor do que testes para amostras
+independentes como Mann-Whitney~U.
 
-Para quantificar esse tamanho de efeito sem suposição de normalidade, adota-se
-o \textbf{delta de Cliff} ($\delta$), estatística de dominância ordinal que
-mede a diferença entre a probabilidade de uma observação da primeira amostra
-superar uma da segunda e a probabilidade inversa, variando de $-1$ a $+1$
-\cite{cliff1993}. Na interpretação usual proposta por \citeonline{romano2006},
-valores de $|\delta|$ abaixo de $0{,}147$ são considerados desprezíveis; de
-$0{,}147$ a $0{,}33$, pequenos; de $0{,}33$ a $0{,}474$, médios; e iguais ou
-superiores a $0{,}474$, grandes. Quando várias comparações ou métricas são
-testadas na mesma família experimental, aplica-se a \textbf{correção de
-Holm-Bonferroni}, um procedimento sequencial (\textit{step-down}) que controla a
-taxa de erro familiar em nível $\alpha$ com maior poder estatístico que a
-correção clássica de Bonferroni \cite{holm1979}.
-
-Por fim, como a camada pode não alterar de modo apreciável o consumo de energia
-na GPU, um teste clássico de diferença que resulte em $p \ge \alpha$ não basta
-para afirmar que os consumos são equivalentes ou comparáveis. A literatura de
-testes de equivalência e não inferioridade mostra que essa conclusão exige
-inverter a hipótese nula e verificar se o limite superior do intervalo de
-confiança da diferença entre os grupos fica abaixo de uma margem de tolerância
-$\Delta$ definida \textit{a priori} \cite{wellek2010}. Neste trabalho, adota-se
-a mesma margem $\Delta$ como o menor efeito de interesse prático, que orienta o
-cálculo do número de repetições a partir da variância observada no piloto.
+A observação de \citeonline{arcuri2011} pesa neste trabalho porque o efeito
+esperado da camada é pequeno (Seção~\ref{sec:contexto}). Não rejeitar a
+igualdade em um teste bilateral de diferença não demonstra que o consumo seja
+comparável, pois pode decorrer apenas de baixo poder estatístico. Para sustentar
+evidência positiva de que a sobrecarga é aceitável, adota-se um \textbf{teste de
+não inferioridade} \cite{wellek2010}: fixa-se antes da coleta uma margem prática
+máxima $\Delta_0 > 0$ e verifica-se, por intervalo de confiança unilateral de
+95\% e teste unilateral ($\alpha = 0{,}05$), se a diferença energética entre as
+versões permanece estritamente abaixo de $\Delta_0$. A magnitude da diferença é
+complementada pelo \textbf{delta de Cliff} \cite{cliff1993} (tamanho de efeito
+não paramétrico cujos valores de $|\delta| < 0{,}147$ são interpretados como
+desprezíveis segundo \citeonline{romano2006}) e pelo deslocamento relativo
+mediano; como o experimento avalia mais de uma métrica primária em dois níveis
+de requisição, aplica-se a \textbf{correção de Holm-Bonferroni} \cite{holm1979}
+para controlar a taxa de erro familiar nas comparações múltiplas.
 
 \subsection{Confronto de atributos de qualidade e critério de decisão}
 \label{subsec:exp-criterio}
 
 O quinto objetivo específico confronta dois custos de natureza diferente: o de
-substituição, expresso em alterações de código, e o energético, expresso em
-joules. A literatura de arquitetura trata essa situação como um compromisso
+substituição, expresso em alterações de código, e o efeito energético, expresso
+em joules. A literatura de arquitetura trata essa situação como um compromisso
 (\textit{trade-off}) entre atributos de qualidade, que não são alcançados
 isoladamente: a decisão que favorece um deles costuma afetar outros
 \cite{bass2021}. O \textit{Architecture Tradeoff Analysis Method}
@@ -710,12 +727,17 @@ mais de um atributo \cite{kazman1998}.
 
 Este trabalho segue a mesma ordem. A camada de \harness{} é o ponto de
 compromisso, pois a mesma decisão afeta a modificabilidade da aplicação e o
-consumo de energia. Cada custo é medido em um experimento próprio, na sua
+consumo de energia. Cada dimensão é avaliada em um experimento próprio, na sua
 unidade, e o confronto vem depois. Como não há conversão natural entre linhas de
 código alteradas e joules, o critério de decisão não soma nem pondera as duas
-medidas. Ele fixa um limite para cada dimensão, uma redução mínima do custo de
-substituição e um acréscimo máximo de energia, e considera a camada justificada,
-em cada tipo de requisição, quando os dois limites são atendidos. Do ATAM,
-método de avaliação conduzido com as partes interessadas de um sistema, retém-se
-só a estrutura da análise. Os valores dos limites são decisão de protocolo,
-tomada antes da coleta.
+medidas: fixa dois limiares refutáveis antes da coleta --- uma redução mínima no
+código de negócio (com preservação integral dos casos de uso) e um teto máximo
+para o acréscimo energético combinado (GPU em teste de não inferioridade somado
+à cota superior de CPU) --- e considera a camada justificada pelo desacoplamento,
+em cada combinação de tipo de requisição e cenário, se e somente se ambos os
+limiares forem atendidos (Seção~\ref{subsec:at-planejamento}). Do ATAM, método
+de avaliação conduzido com as partes interessadas de um sistema, retém-se só a
+estrutura da análise. Os valores dos limiares são ancorados nos efeitos
+arquiteturais práticos relatados na literatura \cite{xiao2025,matinpour2026} e
+na tolerância típica da telemetria de GPU, e estão fixados na
+Seção~\ref{subsec:at-planejamento}.
