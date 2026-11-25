@@ -228,7 +228,8 @@ A avaliação energética será feita sobre um único modelo aberto, o Qwen3.6 d
 bilhões de parâmetros, integrado às duas versões da aplicação, com e sem a
 camada, e hospedado em servidor institucional com GPU NVIDIA H100, cuja
 telemetria é coletada por meio da biblioteca NVML; como a aplicação e a camada
-executam em outra máquina e acessam o servidor pela rede, o custo direto da
+executam em outra máquina (computador Mac com processador Apple M1) e acessam o
+servidor pela rede, o custo direto da
 camada na CPU é estimado à parte por um limite superior
 (Seção~\ref{sec:energia}). Para a camada, esse servidor
 é um terceiro provedor, atendido por um adaptador próprio. Entre os modelos abertos
@@ -288,6 +289,7 @@ camada, em comparação com a integração direta ao provedor.
 \section{Estrutura do trabalho}
 \label{sec:estrutura}
 
+\ifentregaparcial
 O restante deste trabalho está organizado em três capítulos e dois apêndices,
 que compõem o projeto de pesquisa. O Capítulo~\ref{cap:trabalhos-relacionados}
 posiciona a proposta diante dos trabalhos relacionados sobre camadas de
@@ -301,3 +303,19 @@ experimentação controlada. O Capítulo~\ref{cap:metodologia} descreve as treze
 atividades do estudo, os protocolos dos dois \textit{benchmarks}, o critério de
 decisão pré-registrado e o cronograma de execução; os capítulos de Resultados e
 Análise e de Conclusão serão incorporados na etapa de execução experimental.
+\else
+O restante deste trabalho está organizado em cinco capítulos e apêndices. O
+Capítulo~\ref{cap:trabalhos-relacionados} posiciona a proposta diante dos
+trabalhos relacionados sobre camadas de integração, dependência de fornecedor e
+custo energético de decisões arquiteturais e de orquestração, apoiado pelo
+protocolo de busca registrado no Apêndice~\ref{ap:busca}. O
+Capítulo~\ref{cap:fundamentacao} apresenta os conceitos de agentes com chamada
+de ferramentas, arquitetura de \textit{software}, \textit{middleware}, \harness{}
+(com o detalhamento das responsabilidades no Apêndice~\ref{ap:delimitacao}),
+energia em inferência e experimentação controlada. O
+Capítulo~\ref{cap:metodologia} descreve as treze atividades do estudo, os
+protocolos dos dois \textit{benchmarks} e o critério de decisão
+pré-registrado. O Capítulo~\ref{cap:resultados} relata e analisa os resultados
+obtidos, e o Capítulo~\ref{cap:conclusao} sintetiza as conclusões, limitações e
+trabalhos futuros.
+\fi

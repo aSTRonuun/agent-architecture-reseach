@@ -8,8 +8,9 @@
 % Protocolo da busca (strings, contagens, triagem): Apêndice ap:busca.
 % Lidos na versão arXiv: Bucaioni et al. (2501.12904v1), Kandogan et al.
 % (2504.08148v1), Tripathy et al. (2512.09543), Xiao et al. (2501.14402).
-% Lidos só pelo resumo: Morais et al. (negativas formuladas como "o resumo não
-% relata") e Matinpour et al. (números conferidos no resumo). Feitosa et al. e
+% Lido na íntegra (PDF no repositório): Morais et al. (2026)
+% (context/full-papers/3843778.3844518.pdf).
+% Lido só pelo resumo: Matinpour et al. (números conferidos no resumo). Feitosa et al. e
 % Mo et al. lidos pelo Portal CAPES.
 % -----------------------------------------------------------------------------
 % Enxugamento de 03/11/2026: o capítulo passou de 21 para 12 trabalhos e de
@@ -71,14 +72,17 @@ da abstração sobre o custo de substituição e sobre o custo de execução nã
 medido.
 
 Mais próximo quanto ao objetivo, \citeonline{morais2026} especificam agentes de
-IA como artefatos declarativos, independentes do modelo e do provedor,
-executados por uma arquitetura com substituição transparente do modelo; um
-estudo de viabilidade com agentes de análise de \textit{code smells} mostra que
-a portabilidade entre configurações de modelo se preserva. Como na proposta,
-uma camada é interposta para que a aplicação não dependa do provedor. O estudo
-demonstra que a troca é possível, mas o seu resumo não relata medição do custo
-de fazê-la, comparação com uma integração direta nem medição do custo de
-execução da camada.
+IA heterogêneos por meio de manifestos declarativos com contratos em
+\textit{JSON Schema} e acordos operacionais (\textit{Agent Level Agreements}),
+avaliados em estudo de viabilidade com agentes de análise de \textit{code
+smells}. Como na proposta, o orquestrador media a invocação sem código de
+adaptação específico por agente. O texto completo do artigo evidencia três
+diferenças em relação a este trabalho: (i) a portabilidade avaliada (RQ3) altera
+apenas o campo \texttt{defaultModel} entre dois modelos hospedados no mesmo
+provedor (Ollama Cloud), deixando cenários multiprovevedor para trabalhos
+futuros; (ii) o contraste com uma abordagem imperativa é explicitamente
+conceitual, sem implementação paralela nem medição de esforço de substituição; e
+(iii) o consumo de CPU, memória e energia não é instrumentado.
 
 Em vez de construir a camada, uma equipe pode adotar um \textit{framework} de
 orquestração. \citeonline{zhu2026} comparam seis deles, entre eles LangGraph,
@@ -93,7 +97,7 @@ quanto à consistência comportamental, faturamento e transparência, problema
 distinto da interposição de uma camada própria na aplicação.
 
 Fora da IA, o precedente empírico mais próximo é o de \citeonline{mo2023}, que
-comparam funções \textit{serverless} na AWS e no Google Cloud escritas sobre a
+comparam funções \textit{serverless} na AWS\glsadd{AWS} e no Google Cloud escritas sobre a
 biblioteca de abstração Apache jclouds e sobre as APIs nativas de cada
 plataforma, quanto ao desempenho, à qualidade do código e à portabilidade,
 medida em um estudo com 42 estudantes. O desenho é o mesmo deste trabalho: duas
@@ -112,7 +116,7 @@ versões difiram apenas por ela.
 \label{sec:tr-energia}
 
 \citeonline{feitosa2017} compararam o consumo de 169 métodos que participam dos
-padrões \textit{State}/\textit{Strategy} e \textit{Template Method} com
+padrões \textit{State}/\allowbreak\textit{Strategy} e \textit{Template Method} com
 alternativas equivalentes sem o padrão: a alternativa consumiu menos na maior
 parte dos casos, mas, em métodos grandes ou que invocam muitos outros, o padrão
 teve consumo semelhante ou menor. O trabalho compartilha com a proposta a
@@ -177,10 +181,10 @@ como um todo (Seção~\ref{subsec:arq-conceitos}).
   \centering
   \Caption{\label{qua:trabalhos-relacionados}Comparação entre os trabalhos
   relacionados e a proposta quanto ao objeto e às dimensões avaliadas}
-  \UFCqua{}{
+  \UFCqua{}{%
     \scriptsize
-    \setlength{\tabcolsep}{3pt}
-    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.0cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{1.95cm}|>{\raggedright\arraybackslash}p{1.8cm}|>{\raggedright\arraybackslash}p{2.45cm}|>{\raggedright\arraybackslash}p{1.8cm}|>{\raggedright\arraybackslash}p{1.9cm}|}
+    \setlength{\tabcolsep}{2.5pt}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.0cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{1.9cm}|>{\raggedright\arraybackslash}p{1.8cm}|>{\raggedright\arraybackslash}p{2.4cm}|>{\raggedright\arraybackslash}p{1.8cm}|>{\raggedright\arraybackslash}p{1.9cm}|}
       \hline
       \textbf{Trabalho} & \textbf{Objeto} & \textbf{Tipo de avaliação} & \textbf{Custo de substituição medido} & \textbf{Manutenibilidade medida} & \textbf{Energia medida} & \textbf{Compara com e sem a decisão} \\
       \hline
@@ -190,7 +194,7 @@ como um todo (Seção~\ref{subsec:arq-conceitos}).
       \hline
       \citeonline{kandogan2025} & Arquitetura para IA composta com registros de agentes e dados & Caso de uso ilustrativo & Não & Não & Não & Não \\
       \hline
-      \citeonline{morais2026} & Composição declarativa de agentes, independente do provedor & Estudo de viabilidade & Não (resumo) & Não (resumo) & Não & Não \\
+      \citeonline{morais2026} & Composição declarativa de agentes, independente do provedor & Estudo de viabilidade & Não & Não & Não & Não \\
       \hline
       \citeonline{zhu2026} & \textit{Frameworks} e protocolos multiagente & \textit{Survey} & Não & Qualitativo & Não & Não \\
       \hline
@@ -210,7 +214,7 @@ como um todo (Seção~\ref{subsec:arq-conceitos}).
       \hline
       \textbf{Proposta deste trabalho} & \textbf{Camada de \harness{} entre aplicação \textit{web} e provedor de IA} & \textbf{Experimento} & \textbf{Sim} & \textbf{Em parte} & \textbf{Sim} & \textbf{Sim} \\
       \hline
-    \end{tabularx}
+    \end{tabularx}%
   }{
     \Fonte{Elaborado pelo autor}
   }

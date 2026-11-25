@@ -127,9 +127,12 @@ experimento, a medição de energia em inferência (Seção~\ref{sec:energia}) e
 experimentação controlada (Seção~\ref{sec:experimentacao}).
 
 Duas convenções valem para todo o capítulo. A primeira trata das fontes: os
-documentos técnicos, isto é, a documentação da Anthropic, da OpenAI, da NVIDIA e
-do OpenTelemetry e o \textit{site} do modelo C4, não são revisados por pares e
-servem só para descrever mecanismos, instrumentos e notações, nunca para
+documentos técnicos e publicações não revisadas por pares --- isto é, as
+documentações da Anthropic, da OpenAI, da NVIDIA e do OpenTelemetry, o
+\textit{site} do modelo C4, o relato de prática do \textit{Technology Radar} e
+a publicação oficial de fatores de emissão do Ministério da Ciência, Tecnologia
+e Inovação (MCTI) --- servem apenas para descrever mecanismos, instrumentos,
+notações, cenários de prática e parâmetros oficiais da rede elétrica, nunca para
 sustentar afirmação empírica. A segunda
 trata das definições: as distinções e classificações operacionais, como a de
 requisição simples e agêntica, a lista de responsabilidades do \harness{} e a
@@ -181,6 +184,22 @@ A2A trata de sistemas multiagente e fica fora do escopo, e o MCP, voltado à
 interoperabilidade com ecossistemas amplos de ferramentas externas, também não
 integra o produto mínimo deste trabalho, que opera sobre um conjunto reduzido de
 ferramentas determinísticas internas à aplicação.
+
+Além da chamada de ferramentas, os provedores comerciais oferecem
+\textbf{saídas estruturadas com esquema estrito} (\textit{structured outputs}),
+recurso pelo qual a resposta do modelo é restringida a um esquema JSON
+predefinido \cite{anthropicstructured,openaistructured}. Conforme a documentação
+técnica das duas APIs, a exposição e as exigências contratuais variam entre
+fornecedores: na Anthropic, o esquema é informado em
+\texttt{output\_config.format} (com \texttt{strict: true} no uso estrito de
+ferramentas) e o JSON validado retorna no bloco de texto da resposta
+\cite{anthropicstructured}, enquanto na OpenAI é declarado em
+\texttt{response\_format} com \texttt{type: "json\_schema"}, exigindo
+\texttt{strict: true}, \texttt{additionalProperties: false} em cada objeto
+aninhado, obrigatoriedade de todas as propriedades e tratamento explícito de
+recusa (\texttt{refusal}) \cite{openaistructured}. Essa assimetria contratual
+fundamenta o cenário com recurso específico de provedor avaliado neste trabalho
+(Seção~\ref{sec:abstracao} e Capítulo~\ref{cap:metodologia}).
 
 Dessa descrição decorre a distinção que o experimento usa. Chama-se aqui
 \textbf{requisição simples} a consulta ao modelo sem ferramentas, e
@@ -439,7 +458,7 @@ fonte que as complementa.
   \centering
   \Caption{\label{qua:harness-liu}Correspondência entre as responsabilidades do
   \harness{} e os padrões de Liu et al. (2025)}
-  \UFCqua{}{
+  \UFCqua{}{%
     \small
     \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.4cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{2.1cm}|>{\raggedright\arraybackslash}X|}
       \hline
@@ -470,7 +489,7 @@ fonte que as complementa.
         & Nenhuma
         & Documentação do OpenTelemetry \cite{opentelemetrylogs} \\
       \hline
-    \end{tabularx}
+    \end{tabularx}%
   }{
     \Fonte{Elaborado pelo autor, com base em \citeonline{liu2025}}
   }
@@ -509,7 +528,7 @@ requisição em cujo processamento foi emitido \cite{opentelemetrylogs}.
 A área de \textit{Green AI} nasce de uma crítica à avaliação de modelos apenas
 pela acurácia: \citeonline{schwartz2020} defendem que o custo computacional seja
 relatado ao lado dela e propõem, como indicador, o número de operações de ponto
-flutuante (\textit{floating point operations}, FPO). Esse alerta tem como
+flutuante (\textit{floating point operations}, FPO)\glsadd{FPO}. Esse alerta tem como
 antecedente a estimativa do custo energético e ambiental do treinamento de
 modelos de linguagem feita por \citeonline{strubell2019}. Este trabalho se
 concentra na inferência, fase em que o custo se repete a cada requisição.
@@ -579,13 +598,17 @@ verificar se o custo direto da camada permanece desprezível diante da
 inferência. A medição direta dessa parcela exigiria um instrumento próprio para
 a CPU, como a interface RAPL (\textit{Running Average Power Limit})\glsadd{RAPL}
 dos processadores Intel, que fornece leituras de energia da CPU e da memória
-\cite{khan2018}, de que a máquina prevista para a aplicação não dispõe.
+\cite{khan2018}, da qual a máquina prevista para a aplicação --- um computador
+Mac com processador Apple M1 (arquitetura ARM) --- não dispõe.
 
-A partir da energia líquida medida na GPU (convertida para quilowatts-hora), é
-possível ainda estimar, como métrica secundária e contextual, as emissões
-equivalentes de carbono em gramas de CO$_2$ equivalente (gCO$_2$e),
-multiplicando o consumo energético pelo fator de emissão da matriz elétrica
-local.
+A partir da energia líquida medida na GPU (convertida para quilowatts-hora,
+$1\text{ kWh} = 3{,}6 \times 10^6\text{ J}$), é possível ainda estimar, como
+métrica secundária e contextual, as emissões equivalentes de carbono em gramas
+de CO$_2$ equivalente (gCO$_2$e), multiplicando o consumo energético pelo fator
+médio de emissão da matriz elétrica local \cite{luccioni2024}; no Brasil, esse
+fator é publicado oficialmente para o Sistema Interligado Nacional
+(SIN)\glsadd{SIN} pelo Ministério da Ciência, Tecnologia e Inovação
+\cite{mcti_sirene}.
 
 A unidade de medida é a requisição completa, e não a chamada isolada ao modelo,
 porque o fluxo agêntico encadeia várias chamadas e o custo de cada uma depende do
@@ -666,24 +689,26 @@ estatisticamente significativa sem ter valor prático. Quando a coleta é
 fragmentada em sessões ao longo de dias e as duas versões são intercaladas em
 pares dentro de cada sessão (blocagem, conforme \citeonline{wohlin2024}), a
 análise pareada por bloco --- por meio do \textbf{teste dos postos sinalizados
-de Wilcoxon} e do estimador de deslocamento de \textbf{Hodges-Lehmann} (ou
-\textit{bootstrap} pareado por bloco) --- remove a variação entre sessões melhor
-do que testes para amostras independentes como Mann-Whitney~U.
+de Wilcoxon} \cite{wilcoxon1945} e do estimador de deslocamento de
+\textbf{Hodges-Lehmann} \cite{hodges1963} (ou \textit{bootstrap} pareado por
+bloco) --- remove a variação entre sessões melhor do que testes para amostras
+independentes como Mann-Whitney~U.
 
 A observação de \citeonline{arcuri2011} pesa neste trabalho porque o efeito
 esperado da camada é pequeno (Seção~\ref{sec:contexto}). Não rejeitar a
 igualdade em um teste bilateral de diferença não demonstra que o consumo seja
 comparável, pois pode decorrer apenas de baixo poder estatístico. Para sustentar
 evidência positiva de que a sobrecarga é aceitável, adota-se um \textbf{teste de
-não inferioridade}: fixa-se antes da coleta uma margem prática máxima
-$\Delta_0 > 0$ e verifica-se, por intervalo de confiança unilateral de 95\% e
-teste unilateral ($\alpha = 0{,}05$), se a diferença energética entre as versões
-permanece estritamente abaixo de $\Delta_0$. A magnitude da diferença é
-complementada pelo \textbf{delta de Cliff} (tamanho de efeito não paramétrico) e
-pelo deslocamento relativo mediano; como o experimento avalia mais de uma
-métrica primária em dois níveis de requisição, aplica-se a \textbf{correção de
-Holm-Bonferroni} para controlar a taxa de erro familiar nas comparações
-múltiplas.
+não inferioridade} \cite{wellek2010}: fixa-se antes da coleta uma margem prática
+máxima $\Delta_0 > 0$ e verifica-se, por intervalo de confiança unilateral de
+95\% e teste unilateral ($\alpha = 0{,}05$), se a diferença energética entre as
+versões permanece estritamente abaixo de $\Delta_0$. A magnitude da diferença é
+complementada pelo \textbf{delta de Cliff} \cite{cliff1993} (tamanho de efeito
+não paramétrico cujos valores de $|\delta| < 0{,}147$ são interpretados como
+desprezíveis segundo \citeonline{romano2006}) e pelo deslocamento relativo
+mediano; como o experimento avalia mais de uma métrica primária em dois níveis
+de requisição, aplica-se a \textbf{correção de Holm-Bonferroni} \cite{holm1979}
+para controlar a taxa de erro familiar nas comparações múltiplas.
 
 \subsection{Confronto de atributos de qualidade e critério de decisão}
 \label{subsec:exp-criterio}
