@@ -39,143 +39,95 @@
 \chapter{Trabalhos Relacionados}
 \label{cap:trabalhos-relacionados}
 
-Este capítulo compara a proposta com os trabalhos que compartilham a sua
-motivação, o seu objeto ou o seu método, em dois grupos: as camadas propostas
-para integrar modelos de linguagem e reduzir a dependência de fornecedor
-(Seção~\ref{sec:tr-arquiteturas}) e o custo energético de decisões
-arquiteturais e de orquestração (Seção~\ref{sec:tr-energia}). O Quadro~\ref{qua:trabalhos-relacionados}, ao
-final do capítulo, compara os trabalhos com a proposta. O
-protocolo da busca está no Apêndice~\ref{ap:busca}.
+Este capítulo compara a proposta com estudos que abordam camadas de integração
+e dependência de fornecedor (Seção~\ref{sec:tr-arquiteturas}) ou custo
+energético de decisões arquiteturais e de orquestração
+(Seção~\ref{sec:tr-energia}), sintetizados no
+Quadro~\ref{qua:trabalhos-relacionados}. O protocolo da busca consta do
+Apêndice~\ref{ap:busca}.
 
 % -----------------------------------------------------------------------------
 \section{Camadas de integração e dependência de fornecedor}
 \label{sec:tr-arquiteturas}
 
 \citeonline{liu2025} catalogam 18 padrões arquiteturais para agentes baseados
-em modelos de fundação, descrevendo, para cada um, contexto, forças e
-consequências. O catálogo serve aqui de referência para delimitar as
-responsabilidades da camada, parte das quais tem correspondência, parcial ou
-por analogia, com os seus padrões. Diferencia-se da proposta em dois pontos:
-avalia os compromissos de forma qualitativa, e os próprios autores observam que
-a maior parte deles ainda exige quantificação; e tem como objeto o projeto
-interno do agente, e não a camada que liga a aplicação ao provedor do modelo.
+em modelos de fundação, descrevendo contexto, forças e consequências. O
+catálogo delimita parte das responsabilidades da camada aqui proposta, mas
+avalia compromissos qualitativamente e foca o projeto interno do agente, não a
+fronteira entre aplicação e provedor.
 
 \citeonline{bucaioni2025} e \citeonline{kandogan2025} propõem arquiteturas de
-referência que isolam a integração com o modelo: os primeiros, em uma camada
-própria, separada da lógica de aplicação, em sistemas integrados a LLMs; os
-segundos, em registros de agentes e de dados que abstraem provedores e APIs
-proprietárias em ambiente corporativo. Como na proposta, a aplicação passa por
-um intermediário para chegar aos provedores. As duas arquiteturas,
-porém, são verificadas por mapeamento a sistemas existentes ou por um caso de
-uso ilustrativo, sem comparação com uma integração direta, de modo que o efeito
-da abstração sobre o custo de substituição e sobre o custo de execução não é
-medido.
+referência que isolam o acesso a modelos por meio de camadas ou registros de
+agentes e dados. Ambas são verificadas por mapeamento a sistemas existentes ou
+caso ilustrativo, sem comparação controlada contra integração direta nem medição
+de substituição ou energia.
 
-Mais próximo quanto ao objetivo, \citeonline{morais2026} especificam agentes de
-IA heterogêneos por meio de manifestos declarativos com contratos em
-\textit{JSON Schema} e acordos operacionais (\textit{Agent Level Agreements}),
-avaliados em estudo de viabilidade com agentes de análise de \textit{code
-smells}. Como na proposta, o orquestrador media a invocação sem código de
-adaptação específico por agente. O texto completo do artigo evidencia três
-diferenças em relação a este trabalho: (i) a portabilidade avaliada (RQ3) altera
-apenas o campo \texttt{defaultModel} entre dois modelos hospedados no mesmo
-provedor (Ollama Cloud), deixando cenários multiprovevedor para trabalhos
-futuros; (ii) o contraste com uma abordagem imperativa é explicitamente
-conceitual, sem implementação paralela nem medição de esforço de substituição; e
-(iii) o consumo de CPU, memória e energia não é instrumentado.
+Mais próximo ao objetivo de abstrair provedores, \citeonline{morais2026}
+especificam agentes heterogêneos via manifestos em \textit{JSON Schema} e
+acordos operacionais, validados em estudo de análise de \textit{code smells}. O
+estudo completo difere em três aspectos: a portabilidade avaliada troca apenas o
+campo \texttt{defaultModel} no mesmo provedor (Ollama Cloud), sem cenários
+multiprovevedor; a comparação com abordagem imperativa é conceitual, sem
+implementação paralela; e não há instrumentação de energia.
 
-Em vez de construir a camada, uma equipe pode adotar um \textit{framework} de
-orquestração. \citeonline{zhu2026} comparam seis deles, entre eles LangGraph,
-CrewAI e AutoGen, e distinguem os achados relatados pelos fornecedores dos
-sustentados por avaliação revisada por pares, o que reforça a motivação para
-medir. Este trabalho não compara \textit{frameworks}: implementa uma camada
-própria para que a única diferença entre as duas versões da aplicação seja a
-presença dela, o que um \textit{framework} completo, com decisões de projeto
-próprias, não permitiria isolar. Em linha distinta, \citeonline{lin2026}
-auditam \textit{gateways} comerciais de APIs de LLMs mantidos por terceiros
-quanto à consistência comportamental, faturamento e transparência, problema
-distinto da interposição de uma camada própria na aplicação.
+Equipes também podem adotar \textit{frameworks} prontos como LangGraph, CrewAI
+e AutoGen. \citeonline{zhu2026} comparam seis dessas ferramentas e apontam que
+parte dos benefícios vem apenas de relatos de fornecedores. Este estudo
+implementa camada própria em vez de adotar um \textit{framework} completo para
+isolar o efeito exclusivo da camada entre as duas versões. Já
+\citeonline{lin2026} auditam \textit{gateways} comerciais de terceiros quanto a
+consistência e faturamento, problema distinto da interposição de camada própria
+na aplicação.
 
-Fora da IA, o precedente empírico mais próximo é o de \citeonline{mo2023}, que
-comparam funções \textit{serverless} na AWS\glsadd{AWS} e no Google Cloud escritas sobre a
-biblioteca de abstração Apache jclouds e sobre as APIs nativas de cada
-plataforma, quanto ao desempenho, à qualidade do código e à portabilidade,
-medida em um estudo com 42 estudantes. O desenho é o mesmo deste trabalho: duas
-versões da aplicação, com e sem a camada, comparadas quanto ao benefício e ao
-preço da abstração. As diferenças estão no domínio (provedores de modelos, que
-diferem também no formato das mensagens e do ciclo de ferramentas), no custo
-medido (energia no lugar de desempenho) e em duas escolhas de método. Primeiro,
-o custo de substituição é medido por métricas de código, sem participantes: perde-se
-a validade de construto do esforço percebido, mas dispensa-se o recrutamento e
-elimina-se a variação entre pessoas. Segundo, a abstração é uma camada
-construída pelo autor em vez de uma biblioteca pronta, o que garante que as duas
-versões difiram apenas por ela.
+Fora do domínio de IA, \citeonline{mo2023} comparam funções \textit{serverless}
+na AWS\glsadd{AWS} e no Google Cloud usando Apache jclouds contra APIs nativas,
+medindo desempenho, qualidade de código e portabilidade com 42 estudantes. O
+desenho pareado (com e sem camada) é o mesmo adotado aqui. Difere no domínio
+(mensagens e ciclo de ferramentas de LLMs), no custo medido (energia no lugar de
+desempenho) e no uso de métricas de código em vez de participantes, eliminando
+variação individual em troca de menor validade de construto.
 
 % -----------------------------------------------------------------------------
 \section{Custo energético de decisões arquiteturais e de orquestração}
 \label{sec:tr-energia}
 
-\citeonline{feitosa2017} compararam o consumo de 169 métodos que participam dos
-padrões \textit{State}/\allowbreak\textit{Strategy} e \textit{Template Method} com
-alternativas equivalentes sem o padrão: a alternativa consumiu menos na maior
-parte dos casos, mas, em métodos grandes ou que invocam muitos outros, o padrão
-teve consumo semelhante ou menor. O trabalho compartilha com a proposta a
-comparação de uma estrutura de indireção com uma alternativa equivalente sem
-ela. A diferença está na escala: os autores estudam padrões no nível do código,
-e este trabalho, uma camada arquitetural diante de um serviço externo. Por
-analogia, este trabalho supõe que o peso da camada diminua diante do custo de
-uma requisição a um LLM, hipótese que os autores não testam.
+\citeonline{feitosa2017} compararam o consumo de 169 métodos com padrões GoF
+(\textit{State}/\allowbreak\textit{Strategy} e \textit{Template Method}) frente
+a alternativas diretas, constatando que a indireção custa mais na maioria dos
+casos, mas se dilui em métodos grandes. Por analogia, supõe-se aqui que o peso
+da camada seja pequeno diante de uma requisição a um LLM, hipótese não testada
+pelos autores nessa escala arquitetural.
 
-No domínio de sistemas com aprendizado de máquina, \citeonline{jarvenpaa2024}
-sintetizam um catálogo de 30 táticas arquiteturais verdes voltadas à eficiência
-energética, mas sem avaliação experimental controlada. Já \citeonline{xiao2025}
-avaliam, sobre o sistema de microsserviços Online Boutique, três táticas
-arquiteturais (decisões de projeto tomadas para influenciar um atributo de
-qualidade \cite{bass2021}) e três padrões voltados a reduzir o consumo de
-energia, sob três níveis de carga. Todas as técnicas reduziram o
-consumo em ao menos um nível, em até 5,6\%, mas três prejudicaram a
-manutenibilidade, uma a favoreceu e duas não a alteraram. É o trabalho mais
-próximo quanto à forma da pergunta, pois confronta energia e manutenibilidade
-da mesma decisão arquitetural. A direção, porém, é inversa: lá, as técnicas
-economizam energia e podem custar manutenibilidade; aqui, a camada reduz o
-custo de substituição do provedor e pode custar energia. Os autores também não
-propõem um critério para decidir quando a economia compensa a perda, de modo
-que o critério de decisão do quinto objetivo específico é contribuição própria
-deste trabalho (Seção~\ref{subsec:exp-criterio}).
+Em sistemas de aprendizado de máquina, \citeonline{jarvenpaa2024} catalogam 30
+táticas arquiteturais verdes, mas sem avaliação experimental. Já
+\citeonline{xiao2025} avaliam três táticas arquiteturais (\cite{bass2021}) e
+três padrões energéticos no sistema Online Boutique sob três níveis de carga.
+Todas as técnicas reduziram energia em até 5,6\%, mas três prejudicaram a
+manutenibilidade. O formato da pergunta assemelha-se ao deste trabalho ao
+confrontar energia e manutenibilidade, porém em direção inversa (economia de
+energia com eventual perda de manutenibilidade) e sem um critério explícito de
+decisão, contribuição do quinto objetivo específico
+(Seção~\ref{subsec:exp-criterio}).
 
-Em sistemas com LLMs, \citeonline{vellaisamy2026} mostram que a sobrecarga de
-orquestração no processador hospedeiro, separada do trabalho executado na GPU,
-é um custo oculto da latência da inferência. Como aqui, isolam o custo do
-\textit{software} em torno do modelo, mas o fazem na pilha de inferência, abaixo
-da camada de aplicação. A sobrecarga que descrevem ocorre fora da GPU, o que
-delimita o alcance da telemetria usada neste trabalho
-(Seção~\ref{sec:energia}). Mais próximos do objeto estão os estudos que
-comparam formas de orquestrar o modelo na aplicação. \citeonline{matinpour2026}
-mostram, segundo o resumo do trabalho, que a escolha entre LangChain e
-LlamaIndex altera latência e energia independentemente do modelo: nas tarefas
-com recuperação, o LlamaIndex teve latência 3\% a 15\% menor e energia 2\% a
-4\% maior.
-\citeonline{tripathy2026} mostram que, entre quatro \textit{frameworks}
-agênticos de correção de \textit{issues}, o mais custoso consumiu, em média, 9,4
-vezes a energia do menos custoso, embora quase nenhuma execução tenha resolvido
-a tarefa. Em trabalho anterior, do qual o autor é coautor,
-\citeonline{barros2026} compararam, por telemetria NVML (\textit{NVIDIA
-Management Library}; Seção~\ref{sec:energia}) em uma GPU H100, um
-\textit{prompt} único com um debate entre agentes em 100 tarefas de contexto
-longo; esse protocolo de medição, que cobre a GPU, é reaproveitado aqui.
+Em sistemas com LLMs, \citeonline{vellaisamy2026} mostram que a orquestração na
+CPU hospedeira acrescenta latência oculta na pilha de inferência, abaixo da
+camada de aplicação, delimitando o alcance da telemetria usada aqui
+(Seção~\ref{sec:energia}). Na camada de aplicação, \citeonline{matinpour2026}
+(avaliado pelo resumo) relatam que a escolha entre LangChain e LlamaIndex altera
+latência em 3\% a 15\% e energia em 2\% a 4\% para o mesmo modelo.
+\citeonline{tripathy2026} observaram razão média de 9,4 vezes no consumo entre
+quatro \textit{frameworks} agênticos, enquanto \citeonline{barros2026}
+compararam \textit{prompt} único e debate multiagente em GPU H100 via NVML,
+protocolo de telemetria reutilizado neste trabalho. Embora comprovem que a
+orquestração altera o consumo, esses estudos comparam \textit{frameworks} ou
+topologias inteiras, sem isolar uma camada de integração sobre a mesma
+aplicação nem medir o custo de troca de provedor.
 
-Esses estudos sustentam a hipótese de que decisões tomadas na aplicação alteram
-o consumo de energia, mas comparam \textit{frameworks} inteiros, que diferem em
-muitas decisões ao mesmo tempo, ou topologias de agentes. Nenhum compara a
-mesma aplicação com e sem uma camada de integração, mantendo fixa a
-orquestração, nem avalia o custo de substituir o provedor do modelo.
-
-O Quadro~\ref{qua:trabalhos-relacionados} compara os trabalhos discutidos nas
-duas seções com a proposta quanto ao objeto e às dimensões avaliadas. Nele,
-\textit{Não (resumo)} indica que o resumo do trabalho não relata a dimensão, e
-\textit{Em parte}, na linha da proposta, indica que ela mede só a
-modificabilidade, por meio do custo de substituição, e não a manutenibilidade
-como um todo (Seção~\ref{subsec:arq-conceitos}).
+O Quadro~\ref{qua:trabalhos-relacionados} sintetiza a comparação. Nele,
+\textit{Não (resumo)} indica ausência de relato no resumo consultado, e
+\textit{Em parte}, na proposta, indica que a avaliação cobre a modificabilidade
+pelo custo de substituição, não a manutenibilidade integral
+(Seção~\ref{subsec:arq-conceitos}).
 
 \begin{quadro}[h!]
   \centering
@@ -220,12 +172,5 @@ como um todo (Seção~\ref{subsec:arq-conceitos}).
   }
 \end{quadro}
 
-Em conjunto, os trabalhos comparados no Quadro~\ref{qua:trabalhos-relacionados}
-mostram que a literatura já documenta padrões e arquiteturas para isolar
-provedores de modelos e já mede a energia de inferência e de \textit{frameworks}
-inteiros, mas ainda carece de avaliação controlada que confronte, sobre a mesma
-aplicação com e sem camada intermediária, o custo de substituição do provedor e
-o efeito energético da interposição. Para sustentar o desenho experimental que
-aborda essa lacuna, o Capítulo~\ref{cap:fundamentacao} apresenta a base
-conceitual de agentes, arquitetura de \textit{software}, \harness{}, energia em
-inferência e experimentação controlada.
+Para sustentar o desenho experimental que preenche essa lacuna, o
+Capítulo~\ref{cap:fundamentacao} apresenta a base conceitual do estudo.

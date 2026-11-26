@@ -5,92 +5,73 @@
 \apendice{Protocolo da busca bibliográfica}
 \label{ap:busca}
 
-Este apêndice registra a busca que sustenta o Capítulo~\ref{cap:trabalhos-relacionados}
-e a afirmação, da Seção~\ref{sec:problema}, de que não foram encontrados
-estudos que reúnam as características da proposta. A busca foi feita em
-2 de novembro de 2026, com filtro de período de 2023 a 2026, exceto para um
-trabalho fora do domínio da IA (\citeonline{feitosa2017}), escolhido pelo
-tema.
+Este apêndice registra o protocolo de busca realizado em 2 de novembro de 2026
+para o Capítulo~\ref{cap:trabalhos-relacionados} e para a lacuna apontada na
+Seção~\ref{sec:problema}, filtrando publicações de 2023 a 2026 (com exceção de
+\citeonline{feitosa2017}, selecionado pela aderência temática).
 
 \section*{Bases com \textit{strings} registradas}
 
-Na ACM Digital Library, acessada pelo Portal de Periódicos CAPES (acesso UFC),
-as \textit{strings} foram aplicadas ao campo \textit{Abstract}, exceto a A3,
-aplicada ao título. Os resultados são dados para a \textit{ACM Full-Text
-Collection} (\textit{dl}) e, quando registrado, para o \textit{ACM Guide}
-(\textit{guide}), que inclui outras editoras.
+Na ACM Digital Library (via Portal CAPES/UFC), as buscas cobriram o campo
+\textit{Abstract} (exceto A3, aplicada ao título), registrando contagens para a
+\textit{ACM Full-Text Collection} (\textit{dl}) e, quando aplicável, para o
+\textit{ACM Guide} (\textit{guide}). No IEEE Xplore, aplicaram-se ao campo
+\textit{Abstract}. O Quadro~\ref{qua:strings-busca} lista as nove
+\textit{strings} e os totais retornados.
 
-\begin{description}
-  \item[A1] (``large language model'' OR LLM) AND (``vendor lock-in'' OR
-  ``abstraction layer'' OR middleware OR gateway OR ``provider-agnostic'' OR
-  ``model-agnostic'') AND (architecture OR integration). \textit{dl}: 61.
-  \item[A2] (``large language model'' OR LLM OR ``language model'') AND
-  (``vendor lock-in'' OR ``lock-in'' OR ``provider-agnostic'' OR ``switching
-  provider'' OR ``provider switching'' OR ``model migration'' OR portability OR
-  replaceability OR substitutability). \textit{dl}: 439.
-  \item[A3] Título: (LLM OR ``language model(s)'' OR ``foundation model'') AND
-  Título: (gateway OR middleware OR abstraction OR ``lock-in'' OR portability OR
-  ``provider-agnostic'' OR migration). \textit{dl}: 82; \textit{guide}: 194.
-  \item[A4] (``large language model'' OR LLM) AND (``software architecture'' OR
-  ``architectural decision'' OR ``reference architecture'' OR ``architectural
-  tactic'') AND (integrated OR integration). \textit{dl}: 10; \textit{guide}: 20.
-  \item[A5] energy AND (``agentic framework(s)'' OR ``agent framework'' OR
-  LangChain OR AutoGen OR ``orchestration framework'' OR ``LLM framework'').
-  \textit{dl}: 7; \textit{guide}: 26.
-  \item[A6] energy AND (``design pattern(s)'' OR ``architectural tactic(s)'' OR
-  ``abstraction layer'' OR indirection) AND (consumption OR overhead OR
-  efficiency). \textit{dl}: 33; \textit{guide}: 118.
-  \item[A7] (``large language model'' OR LLM) AND (LangChain OR LiteLLM OR
-  ``LLM framework(s)'' OR ``LLM library'' OR ``LLM SDK'' OR
-  ``LLM API'') AND (empirical OR developers OR maintenance OR evolution).
-  \textit{dl}: 52; \textit{guide}: 103.
-\end{description}
+\begin{quadro}[h!]
+  \centering
+  \Caption{\label{qua:strings-busca}\textit{Strings} de busca e registros retornados por base}
+  \UFCqua{}{%
+    \scriptsize
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.8cm}|>{\raggedright\arraybackslash}p{1.6cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{2.2cm}|}
+      \hline
+      \textbf{Cód.} & \textbf{Base} & \textbf{\textit{String} de busca} & \textbf{Registros} \\
+      \hline
+      A1 & ACM (\textit{Abstract}) & (``large language model'' OR LLM) AND (``vendor lock-in'' OR ``abstraction layer'' OR middleware OR gateway OR ``provider-agnostic'' OR ``model-agnostic'') AND (architecture OR integration) & \textit{dl}: 61 \\
+      \hline
+      A2 & ACM (\textit{Abstract}) & (``large language model'' OR LLM OR ``language model'') AND (``vendor lock-in'' OR ``lock-in'' OR ``provider-agnostic'' OR ``switching provider'' OR ``provider switching'' OR ``model migration'' OR portability OR replaceability OR substitutability) & \textit{dl}: 439 \\
+      \hline
+      A3 & ACM (Título) & (LLM OR ``language model(s)'' OR ``foundation model'') AND (gateway OR middleware OR abstraction OR ``lock-in'' OR portability OR ``provider-agnostic'' OR migration) & \textit{dl}: 82; \textit{guide}: 194 \\
+      \hline
+      A4 & ACM (\textit{Abstract}) & (``large language model'' OR LLM) AND (``software architecture'' OR ``architectural decision'' OR ``reference architecture'' OR ``architectural tactic'') AND (integrated OR integration) & \textit{dl}: 10; \textit{guide}: 20 \\
+      \hline
+      A5 & ACM (\textit{Abstract}) & energy AND (``agentic framework(s)'' OR ``agent framework'' OR LangChain OR AutoGen OR ``orchestration framework'' OR ``LLM framework'') & \textit{dl}: 7; \textit{guide}: 26 \\
+      \hline
+      A6 & ACM (\textit{Abstract}) & energy AND (``design pattern(s)'' OR ``architectural tactic(s)'' OR ``abstraction layer'' OR indirection) AND (consumption OR overhead OR efficiency) & \textit{dl}: 33; \textit{guide}: 118 \\
+      \hline
+      A7 & ACM (\textit{Abstract}) & (``large language model'' OR LLM) AND (LangChain OR LiteLLM OR ``LLM framework(s)'' OR ``LLM library'' OR ``LLM SDK'' OR ``LLM API'') AND (empirical OR developers OR maintenance OR evolution) & \textit{dl}: 52; \textit{guide}: 103 \\
+      \hline
+      I1 & IEEE (\textit{Abstract}) & Mesma \textit{string} de A1 & 90 \\
+      \hline
+      I2 & IEEE (\textit{Abstract}) & (energy OR ``power consumption'') AND (``large language model'' OR LLM OR agentic) AND (framework OR orchestration OR middleware OR ``abstraction layer'' OR ``software architecture'') AND (overhead OR ``energy consumption'') & 171 \\
+      \hline
+    \end{tabularx}%
+  }{
+    \Fonte{Elaborado pelo autor}
+  }
+\end{quadro}
 
-No IEEE Xplore, também pelo Portal CAPES, no campo \textit{Abstract}:
+\section*{Buscas complementares e triagem}
 
-\begin{description}
-  \item[I1] a mesma \textit{string} da A1. Resultados: 90.
-  \item[I2] (energy OR ``power consumption'') AND (``large language model'' OR
-  LLM OR agentic) AND (framework OR orchestration OR middleware OR
-  ``abstraction layer'' OR ``software architecture'') AND (overhead OR ``energy
-  consumption''). Resultados: 171.
-\end{description}
+Consultas complementares sem registro de \textit{string} ocorreram via OpenAlex,
+Crossref, busca na \textit{web} e anais da SBC OpenLib (SBES, SBCARS, SEMISH,
+WSCAD/SSCAD, WCAMA e SBSI). A triagem por título e resumo incluiu estudos
+revisados por pares com motivação, objeto ou método compatível, excluindo
+\textit{preprints} sem veículo de publicação, revisões redundantes, comparações
+focadas apenas em acurácia e itens fora do escopo.
 
-\section*{Buscas complementares}
-
-A OpenAlex e a Crossref (por suas APIs) e a busca na \textit{web} serviram
-para localizar trabalhos por tema e conferir metadados. A SBC OpenLib foi
-buscada por evento, e não pela busca geral, que exige \textit{login}: SBES,
-SBCARS, SEMISH, WSCAD/SSCAD, WCAMA e SBSI. Para essas buscas não há
-\textit{strings} nem contagens registradas, de modo que a repetição exata do
-protocolo vale para a ACM Digital Library e para o IEEE Xplore.
-
-\section*{Triagem}
-
-A triagem foi feita por título e resumo. O critério de inclusão foi o trabalho
-ser revisado por pares e ter a mesma motivação, o mesmo objeto ou o mesmo
-método da proposta. Foram excluídos os \textit{preprints} sem veículo de
-publicação, as revisões redundantes com um trabalho já incluído, os trabalhos
-que comparam \textit{frameworks} apenas pela qualidade da saída do modelo e os
-resultados fora do tema (aplicações de LLMs, segurança, inferência em
-\textit{hardware}). Somando as \textit{strings} registradas, as buscas
-retornaram 945 registros brutos antes da desduplicação entre \textit{strings} e
-bases (684 na coleção \textit{dl} da ACM Digital Library e 261 no IEEE Xplore),
-aos quais se juntaram os itens localizados nas buscas complementares. Desse
-conjunto, 21 trabalhos foram selecionados na etapa inicial; desses,
-os 12 mais próximos do objeto ou do método da proposta compõem o
-Quadro~\ref{qua:trabalhos-relacionados}. Os nove trabalhos restantes foram
-removidos da tabela comparativa (embora dois sejam citados no corpo do
-Capítulo~\ref{cap:trabalhos-relacionados} para posicionamento) pelos seguintes
-motivos: arquitetura de referência redundante com trabalho já incluído
-(\citeonline{bandeira2026}); relatos de \textit{gateways} sem avaliação
-experimental (\citeonline{sheneman2026,rahaman2026}); auditoria de
-\textit{gateways} comerciais de terceiros (\citeonline{lin2026}); revisões ou
-mapeamentos sem estudo primário novo (\citeonline{kaur2017,poy2025}); catálogo
-de táticas verdes sem medição controlada (\citeonline{jarvenpaa2024}); resumo
-estendido (\citeonline{ifath2026}); e avaliação focada em escolha de matriz
-energética, e não em camada arquitetural (\citeonline{nascimento2026}). O número
-de trabalhos triados e excluídos nas etapas anteriores à seleção dos 21 não foi
-registrado, e a leitura integral de \citeonline{matinpour2026} (atualmente
-avaliado pelo resumo) permanece como verificação complementar prevista antes do
-fechamento da monografia.
+As buscas registradas somaram 945 registros brutos antes da desduplicação (684
+na coleção \textit{dl} da ACM e 261 no IEEE Xplore). Da triagem inicial
+resultaram 21 trabalhos, dos quais 12 compõem o
+Quadro~\ref{qua:trabalhos-relacionados}. Os 9 restantes foram removidos do
+quadro pelos seguintes motivos: arquitetura redundante (\citeonline{bandeira2026});
+relatos de \textit{gateways} sem avaliação (\citeonline{sheneman2026,rahaman2026});
+auditoria de \textit{gateways} de terceiros (\citeonline{lin2026}); revisões sem
+estudo primário novo (\citeonline{kaur2017,poy2025}); catálogo verde sem medição
+(\citeonline{jarvenpaa2024}); resumo estendido (\citeonline{ifath2026}); e foco
+em matriz energética (\citeonline{nascimento2026}). As contagens de exclusão
+anteriores aos 21 selecionados não foram registradas, e a leitura integral de
+\citeonline{matinpour2026} (atualmente avaliado pelo resumo) permanece pendente
+antes da versão final.

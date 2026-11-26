@@ -1,30 +1,27 @@
 % Versão provisória (projeto, sem resultados). Reescrever após o Cap. 5:
 % contexto · problema · método (B1 + B2) · resultados · conclusão.
 % 150–500 palavras (NBR 6028).
-A integração de modelos de linguagem de grande escala a aplicações \textit{web}
-costuma ser feita por chamadas diretas ao kit de desenvolvimento do provedor,
-espalhadas pelo código de negócio, o que acopla a aplicação a um fornecedor
-específico. Uma alternativa é interpor uma camada arquitetural intermediária
---- aqui denominada \textit{harness} --- que centraliza a comunicação com os
-provedores, a execução de ferramentas, o estado, o tratamento de falhas e o
-registro de eventos. A literatura propõe arquiteturas desse tipo e discute seus
-compromissos de forma qualitativa, mas não os mede em estudo controlado. Este
-trabalho projeta e avalia experimentalmente essa camada, confrontando o custo de
-substituição do provedor com o seu custo energético por meio da comparação de
-duas versões funcionalmente equivalentes de uma mesma aplicação \textit{web}: uma integrada
-ao provedor por meio do \textit{harness} e outra integrada diretamente. O custo
-de substituição do provedor, entendido como o esforço de alteração do código
-necessário para trocar o provedor preservando o comportamento da aplicação, é
-quantificado por métricas comportamentais e estruturais do código na troca entre
-os provedores Anthropic e OpenAI (em cenários sem e com saídas estruturadas por
-esquema estrito), e o efeito energético, pela medição da energia de inferência na
-GPU via telemetria de \textit{hardware} (NVML) em requisições simples e agênticas
-ao modelo aberto Qwen3.6 27B, hospedado em servidor institucional, combinada a um
-limite superior para o custo direto na CPU da máquina da aplicação.
-Espera-se caracterizar, por meio de um critério de decisão pré-registrado, em que
-condições o desacoplamento obtido compensa o efeito energético da camada,
-oferecendo evidência quantitativa para uma decisão arquitetural hoje tomada com
-base em princípios de projeto ou em alegações de fornecedores.
+A integração de modelos de linguagem de grande escala em aplicações \textit{web}
+ocorre geralmente por chamadas diretas ao SDK do provedor no código de negócio,
+gerando acoplamento ao fornecedor. Uma alternativa é interpor uma camada
+arquitetural intermediária, aqui chamada de \textit{harness}, para centralizar a
+comunicação com provedores, a execução de ferramentas, o gerenciamento de
+estado, o tratamento de falhas e o registro de eventos. A literatura propõe
+arquiteturas desse tipo e discute seus compromissos qualitativamente, mas ainda
+carece de medições controladas. Este trabalho projeta e avalia experimentalmente
+essa camada, confrontando o custo de substituição do provedor com o efeito
+energético da interposição. Para isso, compara duas versões funcionalmente
+equivalentes de uma mesma aplicação \textit{web}: uma integrada via
+\textit{harness} e outra integrada diretamente. O custo de substituição é
+quantificado por métricas estruturais de código e preservação de casos de uso
+na troca entre Anthropic e OpenAI, em cenários sem e com saídas estruturadas por
+esquema estrito. O efeito energético é avaliado pela energia de inferência na GPU
+via telemetria de \textit{hardware} (NVML) em requisições simples e agênticas ao
+modelo aberto Qwen3.6 27B em servidor institucional, somada a um limite superior
+para o custo direto na CPU da máquina da aplicação. Um critério de decisão
+pré-registrado permitirá verificar quando o ganho de desacoplamento compensa o
+custo energético, fornecendo evidência quantitativa para apoiar decisões
+arquiteturais.
 
 % Separe as palavras-chave por ponto
 \palavraschave{Arquitetura de \textit{software}. Integração de LLM. Substituibilidade. Eficiência energética. \textit{Green AI}.}
